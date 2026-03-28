@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حبنا | وعد الاصابع</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --peach: #FFDBBB;
+            --beige: #CCBEB1;
+            --taupe: #997E67;
+            --brown: #664930;
+            --cream: #FFF8F0;
+        }
+        
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(135deg, var(--cream) 0%, var(--peach) 100%);
+            min-height: 100vh;
+            color: var(--brown);
+            overflow-x: hidden;
+        }
+        
+        /* تأثيرات عائمة */
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            opacity: 0.1;
+            animation: float 15s infinite ease-in-out;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.1; }
+            90% { opacity: 0.1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+        
+        /* الهيدر */
+        header {
+            background: rgba(255, 248, 240, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 5%;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--beige);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--brown);
+            text-decoration: none;
+        }
+        
+        .nav-icons {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        
+        .nav-icons a {
+            color: var(--taupe);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-icons a:hover {
+            color: var(--brown);
+        }
+        
+        /* القسم الرئيسي */
+        .hero {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8rem 5% 3rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            text-align: center;
+        }
+        
+        .hero-text h1 {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--brown);
+            margin-bottom: 1rem;
+        }
+        
+        .hero-text h1 span {
+            color: var(--taupe);
+            display: block;
+            font-size: 2rem;
+            margin-top: 0.5rem;
+        }
+        
+        .hero-text p {
+            font-size: 1.3rem;
+            color: var(--taupe);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: var(--taupe);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            background: var(--brown);
+            transform: translateY(-3px);
+        }
+        
+        /* ملخص القصة في الرئيسية */
+        .summary-section {
+            padding: 4rem 5%;
+            background: rgba(255, 248, 240, 0.9);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .summary-box {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .summary-title {
+            font-size: 2rem;
+            color: var(--brown);
+            margin-bottom: 1.5rem;
+        }
+        
+        .summary-text {
+            font-size: 1.1rem;
+            line-height: 2;
+            color: var(--taupe);
+            margin-bottom: 2rem;
+        }
+        
+        .summary-highlight {
+            background: linear-gradient(135deg, var(--peach), var(--beige));
+            padding: 2rem;
+            border-radius: 20px;
+            margin-top: 2rem;
+        }
+        
+        .summary-highlight p {
+            color: var(--brown);
+            font-size: 1.2rem;
+            line-height: 1.8;
+        }
+        
+        /* الأقسام المخفية */
+        .hidden-section {
+            display: none;
+            padding: 6rem 5% 2rem;
+            min-height: 100vh;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .hidden-section.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 2rem;
+            padding: 0.8rem 1.5rem;
+            background: var(--beige);
+            color: var(--brown);
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: var(--taupe);
+            color: white;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--brown);
+            margin-bottom: 3rem;
+        }
+        
+        /* قسم القصة الكامل */
+        .story-full {
+            background: rgba(255, 248, 240, 0.9);
+            padding: 3rem;
+            border-radius: 20px;
+            line-height: 2.2;
+            font-size: 1.1rem;
+            color: var(--brown);
+        }
+        
+        .story-full h3 {
+            color: var(--taupe);
+            margin: 2rem 0 1rem;
+            font-size: 1.5rem;
+            border-right: 4px solid var(--taupe);
+            padding-right: 1rem;
+        }
+        
+        .story-full p {
+            margin-bottom: 1rem;
+            text-align: justify;
+        }
+        
+        /* قسم المشاعر */
+        .feelings-section {
+            background: linear-gradient(135deg, var(--cream) 0%, var(--peach) 100%);
+        }
+        
+        .feeling-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+        
+        .feeling-card h3 {
+            color: var(--taupe);
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+        
+        .feeling-text {
+            color: var(--brown);
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+        
+        .feeling-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--beige);
+            border-radius: 10px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .feeling-input:focus {
+            outline: none;
+            border-color: var(--taupe);
+        }
+        
+        /* قسم المشاكل */
+        .problems-section {
+            background: linear-gradient(135deg, var(--peach) 0%, var(--beige) 100%);
+        }
+        
+        .counter-box {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .counter-number {
+            font-size: 5rem;
+            font-weight: 700;
+            color: var(--brown);
+            display: block;
+        }
+        
+        .counter-label {
+            font-size: 1.2rem;
+            color: var(--taupe);
+            margin: 1rem 0;
+        }
+        
+        .counter-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+        
+        .counter-btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-minus {
+            background: #ff6b6b;
+            color: white;
+        }
+        
+        .btn-plus {
+            background: #51cf66;
+            color: white;
+        }
+        
+        .reminder-box {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--brown);
+        }
+        
+        /* قسم الوعد */
+        .promise-section {
+            background: linear-gradient(135deg, var(--brown) 0%, var(--taupe) 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .promise-section .section-title {
+            color: white;
+        }
+        
+        .promise-box {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 3rem;
+            border-radius: 20px;
+            border: 2px solid rgba(255,255,255,0.2);
+            text-align: center;
+        }
+        
+        .promise-counter {
+            font-size: 5rem;
+            font-weight: 700;
+            margin: 1rem 0;
+        }
+        
+        .promise-btn {
+            padding: 1rem 3rem;
+            background: white;
+            color: var(--brown);
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+        
+        .promise-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        /* تأثير الجملة الطائرة - بطيء جداً */
+        .flying-text {
+            position: fixed;
+            bottom: -150px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: rgba(255, 0, 0, 0.2);
+            text-shadow: 0 0 40px rgba(255, 0, 0, 0.4);
+            pointer-events: none;
+            z-index: 9999;
+            white-space: nowrap;
+            opacity: 0;
+            letter-spacing: 2px;
+        }
+        
+        .flying-text.animate {
+            animation: flyUpSlow 8s ease-out forwards;
+        }
+        
+        @keyframes flyUpSlow {
+            0% {
+                bottom: -150px;
+                opacity: 0;
+                transform: translateX(-50%) scale(0.8);
+            }
+            10% {
+                opacity: 1;
+                bottom: 10%;
+            }
+            30% {
+                bottom: 30%;
+                opacity: 1;
+            }
+            50% {
+                bottom: 50%;
+                opacity: 1;
+            }
+            70% {
+                bottom: 70%;
+                opacity: 0.8;
+            }
+            90% {
+                bottom: 90%;
+                opacity: 0.3;
+            }
+            100% {
+                bottom: 120%;
+                opacity: 0;
+                transform: translateX(-50%) scale(1.1);
+            }
+        }
+        
+        /* قسم الصور */
+        .photos-section {
+            background: linear-gradient(135deg, var(--cream) 0%, var(--peach) 100%);
+            text-align: center;
+        }
+        
+        .photos-box {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .photos-number {
+            font-size: 6rem;
+            font-weight: 700;
+            color: var(--brown);
+        }
+        
+        .photos-label {
+            font-size: 1.3rem;
+            color: var(--taupe);
+            margin: 1rem 0;
+        }
+        
+        .celebration {
+            display: none;
+            margin-top: 2rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            border-radius: 20px;
+            animation: celebrate 1s ease;
+        }
+        
+        .celebration.show {
+            display: block;
+        }
+        
+        @keyframes celebrate {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .celebration h3 {
+            color: var(--brown);
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* قسم التواريخ */
+        .dates-section {
+            background: linear-gradient(135deg, var(--beige) 0%, var(--peach) 100%);
+        }
+        
+        .date-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+        
+        .date-display {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--brown);
+            margin-bottom: 0.5rem;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        
+        .date-title {
+            font-size: 1.3rem;
+            color: var(--taupe);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .date-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--beige);
+            border-radius: 10px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1rem;
+            min-height: 60px;
+            resize: vertical;
+        }
+        
+        .date-input:focus {
+            outline: none;
+            border-color: var(--taupe);
+        }
+        
+        /* قسم الأغنية */
+        .music-section {
+            background: var(--cream);
+            text-align: center;
+        }
+        
+        .youtube-btn {
+            display: inline-block;
+            padding: 1.2rem 2.5rem;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .youtube-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+        }
+        
+        /* الفوتر */
+        footer {
+            background: var(--brown);
+            color: var(--peach);
+            padding: 2rem 5%;
+            text-align: center;
+        }
+        
+        /* التجاوب */
+        @media (max-width: 768px) {
+            .hero-text h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero-text h1 span {
+                font-size: 1.5rem;
+            }
+            
+            .flying-text {
+                font-size: 1.5rem;
+            }
+            
+            .flying-text.animate {
+                animation: flyUpSlow 10s ease-out forwards;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- قلوب عائمة -->
+    <div class="floating-hearts" id="hearts"></div>
+    
+    <!-- الجملة الطائرة -->
+    <div class="flying-text" id="flyingText">خالد وفاطمة ديما مع بعض ♾️❤️</div>
+    
+    <!-- الهيدر -->
+    <header>
+        <nav>
+            <a href="#" class="logo" onclick="showSection('home')">وعد الاصابع 💕</a>
+            <ul class="nav-icons">
+                <li><a href="#" onclick="showSection('story')">📖 قصتنا</a></li>
+                <li><a href="#" onclick="showSection('feelings')">🤍 المشاعر</a></li>
+                <li><a href="#" onclick="showSection('problems')">💪 المشاكل</a></li>
+                <li><a href="#" onclick="showSection('promise')">🤞 الوعد</a></li>
+                <li><a href="#" onclick="showSection('photos')">📸 الصور</a></li>
+                <li><a href="#" onclick="showSection('dates')">📅 التواريخ</a></li>
+                <li><a href="#" onclick="showSection('music')">🎵 الأغنية</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <!-- الصفحة الرئيسية -->
+    <div id="home">
+        <!-- القسم الرئيسي -->
+        <section class="hero">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>
+                        وعد الاصابع 🤞
+                        <span>مهما حصل، احنا مكملين 💕</span>
+                    </h1>
+                    <p>
+                        قصة حب مش عادية، بدأت بصدفة وكملت باختيار. 
+                        كل يوم بنختار بعض، وكل مشكلة بنتجاوزها مع بعض.
+                    </p>
+                    <a href="#" class="cta-button" onclick="showSection('story')">اقرأ القصة الكاملة 📖</a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- ملخص القصة -->
+        <section class="summary-section">
+            <div class="summary-box">
+                <h2 class="summary-title">ملخص قصتنا 💝</h2>
+                <p class="summary-text">
+                    اتعرفنا بالصدفة في جروب، وعدنا فترة من البلوك والرجوع. 
+                    اعترفنا بمشاعرنا يوم ١/٢/٢٠٢٣، وعدنا فترة من الفراق والحب. 
+                    رجعنا لبعض يوم ٩/٨/٢٠٢٥، ومن ساعتها واحنا بنختار بعض كل يوم.
+                </p>
+                <div class="summary-highlight">
+                    <p>
+                        💕 <strong>مهما حصل من مشاكل أو فراق، في الآخر اختيارنا الأول هو إحنا.</strong> 💕<br><br>
+                        🤞 وعد الاصابع ده وعد على الحب والاستمرار مهما كانت الظروف.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- قسم القصة الكامل -->
+    <div id="story" class="hidden-section">
+        <div class="container">
+            <a href="#" class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</a>
+            <h2 class="section-title">قصتنا الكاملة 📖</h2>
+            
+            <div class="story-full">
+                <h3>🎭 البداية الغريبة</h3>
+                <p>
+                    قصة حبنا دي غريبة شوية بصراحة. من أول ما اتعرفنا على بعض واحنا أصلاً مش عارفين مين اللي بيكلم التاني ولا بعت له ليه. 
+                    اتكلمنا لحد ما أخدتِ أول بلوك في علاقتنا، وبعدها فكيتِ البلوك وابتدينا نتعرف أكتر على بعض ونتكلم أكتر 
+                    بأي حجة على الجروب اللي كان بالصدفة أصلاً. عرفت إن صاحبي عامله وحسيت إن لازم أدخله.
+                </p>
+                
+                <h3>🎵 طريق الرجوع</h3>
+                <p>
+                    زي مثلاً لما كنت ببعتلك فيديوهات أغاني لحد ما وصلنا لتاني بلوك بينا، وده كان بسبب طنط. 
+                    وانتِ قولتِلي "متبعتش هنا تاني". بعدين رجعنا أصحاب على الجروب زي الأول وكنا بنتكلم يومياً 
+                    لحد ما خلاص لغينا الجروب وقولتِ إن علاقتنا انتهت.
+                </p>
+                
+                <h3>💫 لحظة الاعتراف</h3>
+                <p>
+                    عملنا جروب تاني بينا احنا وكنا بنتكلم أكتر وتعرفنا أكتر. يمكن كنا صغيرين ومش فاهمين يعني إيه نتعرف، 
+                    كل اللي كان هامنا وقتها نكتشف الحياة في الارتباط عاملة إزاي. بس أنا الفترة دي من أحسن فترات حياتي 
+                    وفاكر كل لحظة فيها. وفضلنا نتكلم كتير لحد ما وصلنا لليوم اللي كل واحد فينا قرر إنه يقول اللي جواه. 
+                    كانت تقريباً الساعة ٢ بالليل، واتكرر موقف حصل قبل موقف الاعتراف ده بأسبوع. سألتكِ "أنتِ مسجلاني إيه؟" 
+                    ورديتِ "My All"، وسألتكِ ليه؟ قولتِ "علشان أنتِ فعلاً كل حاجة بالنسبالي". وبعدين اعترفتلكِ بحبي، 
+                    والحمدلله طلع متبادل بينا.
+                </p>
+                
+                <h3>💔 الحفر والفراق</h3>
+                <p>
+                    أيوه كانت فترة قصيرة مكملتش شهر تقريباً، بس كانت فترة حبيتها وفاكر كل لحظة فيها. 
+                    وبعد كل الحب اللي كان في الفترة دي حصلت الحفرة الأولى - سبنا بعض لسبب غبي مني وأنا ندمان عليه لحد النهاردة. 
+                    ومن وقت اليوم ده لحد ما قررتِ ترجعلي تاني، كل يوم في حياتي كان عذاب حرفياً وكل حاجة كنت بعملها كنت بخيلكِ فيها. 
+                    لحد ما قررتِ خلاص إنكِ لازم ترجعي وأصلحي كل حاجة من تاني.
+                </p>
+                
+                <h3>🌅 العودة من جديد</h3>
+                <p>
+                    وفعلاً قررتِ ترجعي ونكمل مع بعض، بس بسبب إننا كنا صغيرين حصلت أول مشكلة. 
+                    ومن بعدها حصلت الحفرة التانية وهي إننا سبنا بعض. المرة دي أنا حاولت أرجعلكِ كتير بس انتِ كنتِ رافضة، 
+                    وأنا كنت مقدر ده منكِ علشان كل الأحداث اللي فاتت دي حصلت في وقت قليل. وبعدها رجعنا أصحاب بس طبعاً مستحيل ده يحصل. 
+                    وحصل الفراق الكبير بينا وهو من شهر ٥/٢٠٢٣ لحد شهر ٨/٢٠٢٤. وقتها صاحبتكِ دخلت كلمتني وحصل اللي احنا عارفينه طبعاً. 
+                    وجات فرصة إننا نتكلم، واتكلمنا وانتِ اعتذرتِلي عن معاملتكِ ليا.
+                </p>
+                
+                <h3>✨ التجدد والمستقبل</h3>
+                <p>
+                    بدأت فترة جميلة بينا وهي الاستعباط والتلميح. كل واحد كان بيحاول يلمح ويتأكد من حب التاني 
+                    بكل طريقة ممكنة. وفي ساعات كانت بتكون تلميحات صريحة بس كنا بنكدب نفسنا ونقنع نفسنا إن ده غلط. 
+                    وفترة الاستعباط كانت تقريباً سنة كاملة لحد ما جه يوم ٩/٨/٢٠٢٥ - اليوم اللي اتجدد فيه الاعتراف بالحب مرة تانية. 
+                    ومن وقتها واحنا مع بعض وبنقرب لبعض أكتر. يمكن من الوقت ده لحد دلوقتي مقسومين على فترتين: 
+                    أول فترة وهي البدايات ودي كانت لحد شهر ١٢، وتاني فترة كانت من أول السنة لحد دلوقتي. 
+                    وفي الفترة دي شوفنا فيها كل حاجة تقريباً وعرفنا كل حاجة عن بعض. وعرفنا إننا مهما نبعد عن بعض 
+                    فإحنا في الآخر ملناش غير بعض. ومهما حصلت مشكلة، اختيارنا الأول هو إحنا لو على حساب مين. 
+                    يمكن ده اختصار للقصة علشان نرجع لها بعدين. وفي أحداث كتير متقالتش فيه، بس الأحداث الجاية كلها هتتقال 
+                    وهتتكتب في باقي القصة اللي هنكتبها بأيدينا لحد ما نوصل لأهم فصل في القصة، وهو إننا نكون مع بعض قدام الكل.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- قسم المشاعر -->
+    <div id="feelings" class="hidden-section feelings-section">
+        <div class="container">
+            <a href="#" class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</a>
+            <h2 class="section-title">مشاعرنا 🤍</h2>
+            
+            <div class="feeling-card">
+                <h3>🤗 الأمان</h3>
+                <p class="feeling-text">
+                    معاكِ أحس إني في مكان آمن، زي ماكون في بيتي اللي مهما بعته أرجعله تاني. 
+                    أنتِ الأمان اللي مش بيخلص.
+                </p>
+                <textarea class="feeling-input" placeholder="✍️ اكتبي هنا شعورك بالأمان معايا..."></textarea>
+            </div>
+            
+            <div class="feeling-card">
+                <h3>🤝 الثقة</h3>
+                <p class="feeling-text">
+                    ثقتي فيكِ أكبر من أي شك، وأعرف إن مهما حصل هنفضل جنب بعض. 
+                    أنتِ الشخص اللي أقدر أحكيله كل حاجة.
+                </p>
+                <textarea class="feeling-input" placeholder="✍️ اكتبي هنا عن ثقتك فيا..."></textarea>
+            </div>
+            
+            <div class="feeling-card">
+                <h3>❤️ الحب</h3>
+                <p class="feeling-text">
+                    حبنا مش مجرد كلمة، هو اختيار بنعمله كل يوم. 
+                    مهما عدت سنين، هفضل أختاركِ أنا.
+                </p>
+                <textarea class="feeling-input" placeholder="✍️ اكتبي هنا عن حبك..."></textarea>
+            </div>
+        </div>
+    </div>
+    
+    <!-- قسم المشاكل -->
+    <div id="problems" class="hidden-section problems-section">
+        <div class="container">
+            <a href="#" class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</a>
+            <h2 class="section-title">المشاكل 💪</h2>
+            
+            <div class="counter-box">
+                <span class="counter-number" id="problemsCount">0</span>
+                <div class="counter-label">عدد المشاكل اللي عدت بينا</div>
+                <div class="counter-controls">
+                    <button class="counter-btn btn-minus" onclick="updateCounter(-1)">−</button>
+                    <button class="counter-btn btn-plus" onclick="updateCounter(1)">+</button>
+                </div>
+            </div>
+            
+            <div class="reminder-box">
+                💕 <strong>مع كل مشكلة بينا، نفتكر الحب اللي بينا والمجهود اللي اتبذل علشان العلاقة دي تكمل.</strong><br><br>
+                كل مشكلة عدت خلتنا أقوى وأقرب لبعض. 
+                <br><br>
+                <em>احنا مش بنعد المشاكل، احنا بنعد اللحظات اللي قررنا فيها نكمل رغم كل حاجة.</em>
+            </div>
+        </div>
+    </div>
+    
+    <!-- قسم الوعد -->
+    <div id="promise" class="hidden-section promise-section">
+        <div class="container">
+            <a href="#" class="back-btn" onclick="showSection('home')" style="background: rgba(255,255,255,0.2); color: white;">← رجوع للرئيسية</a>
+            <h2 class="section-title">وعدنا 🤞</h2>
+            
+            <div class="promise-box">
+                <p style="font-size: 1.2rem; margin-bottom: 1rem; opacity: 0.9;">
+                    مهما أي حد فينا غلط، احنا مكملين.<br>
+                    علشان دايماً اختيارنا هيكون <strong>إحنا</strong> 💕
+                </p>
+                <div class="promise-counter" id="promiseCount">0</div>
+                <p style="margin-bottom: 1rem;">مرة اخترنا فيها إحنا</p>
+                <button class="promise-btn" onclick="makePromise()">أنا أختار إحنا ❤️</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- قسم الصور -->
+    <div id="photos" class="hidden-section photos-section">
+        <div class="container">
+            <a href="#" class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</a>
+            <h2 class="section-title">صورنا 📸</h2>
+            
+            <div class="photos-box">
+                <div class="photos-number" id="photosCount">0</div>
+                <div class="photos-label">صورة مع بعض 💕</div>
+                <p style="color: var(--taupe); margin-top: 1rem;">
+                    العد مستمر إلى ما لا نهاية... ♾️
+                </p>
+            </div>
+            
+            <div class="celebration" id="celebration">
+                <h3>🎉 مبروك! أول 100 صورة! 📸💕</h3>
+                <p>كل صورة كانت ذكرى جميلة جمعتنا، وهناك المزيد قادم! 🌟</p>
+            </div>
+            
+            <div style="margin-top: 2rem;">
+                <button class="cta-button" onclick="addPhoto()">📷 أضف صورة جديدة</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- قسم التواريخ -->
+    <div id="dates" class="hidden-section dates-section">
+        <div class="container">
+            <a href="#" class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</a>
+            <h2 class="section-title">تواريخنا المميزة 📅</h2>
+            
+            <div class="date-card">
+                <div class="date-display">📅 1 / 2 / 2023</div>
+                <div class="date-title">🌸 البداية</div>
+                <textarea class="date-input" placeholder="✍️ اكتبي هنا ذكرياتك عن يوم ما اتعرفنا على بعض..."></textarea>
+            </div>
+            
+            <div class="date-card" style="border: 3px solid var(--taupe);">
+                <div class="date-display">📅 9 / 8 / 2025</div>
+                <div class="date-title">💫 تجدد الحب</div>
+                <textarea class="date-input" placeholder="✍️ اكتبي هنا ذكرياتك عن يوم تجديد الاعتراف..."></textarea>
+            </div>
+            
+            <div class="date-card">
+                <div class="date-display">📅 ❓ / 11 / 2026</div>
+                <div class="date-title">🤝 أول مقابلة</div>
+                <textarea class="date-input" placeholder="✍️ اكتبي هنا توقعاتك وأحلامك عن أول مقابلة..."></textarea>
+            </div>
+        </div>
+    </div>
+    
+    <!-- قسم الأغنية -->
+    <div id="music" class="hidden-section music-section">
+        <div class="container">
+            <a href="#" class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</a>
+            <h2 class="section-title">أغنيتنا 🎵</h2>
+            <p style="color: var(--taupe); margin-bottom: 2rem; font-size: 1.1rem;">
+                الأغنية اللي بتذكرنا بكل لحظة حلوة عدت بينا 💕
+            </p>
+            <a href="https://youtu.be/XMwey5J6VEs" target="_blank" class="youtube-btn">
+                ▶️ شغل الأغنية على YouTube
+            </a>
+        </div>
+    </div>
+    
+    <!-- الفوتر -->
+    <footer>
+        <p>وعد الاصابع 🤞 | خالد وفاطمة 💕</p>
+    </footer>
+    
+    <script>
+        // قلوب عائمة
+        const heartsContainer = document.getElementById('hearts');
+        const heartSymbols = ['💕', '💖', '💗', '💓', '💝', '❤️', '🤍'];
+        
+        for (let i = 0; i < 15; i++) {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.animationDelay = Math.random() * 15 + 's';
+            heart.style.animationDuration = (10 + Math.random() * 10) + 's';
+            heartsContainer.appendChild(heart);
+        }
+        
+        // التنقل
+        function showSection(sectionId) {
+            document.querySelectorAll('#home, .hidden-section').forEach(el => {
+                el.style.display = 'none';
+            });
+            
+            if (sectionId === 'home') {
+                document.getElementById('home').style.display = 'block';
+            } else {
+                document.getElementById(sectionId).style.display = 'block';
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // عداد المشاكل
+        let problemsCount = 0;
+        function updateCounter(change) {
+            problemsCount = Math.max(0, problemsCount + change);
+            document.getElementById('problemsCount').textContent = problemsCount;
+        }
+        
+        // الوعد مع التأثير البطيء
+        let promiseCount = 0;
+        function makePromise() {
+            promiseCount++;
+            document.getElementById('promiseCount').textContent = promiseCount;
+            
+            // تأثير الجملة الطائرة البطيء
+            const flyingText = document.getElementById('flyingText');
+            flyingText.classList.remove('animate');
+            void flyingText.offsetWidth;
+            flyingText.classList.add('animate');
+        }
+        
+        // عداد الصور
+        let photosCount = 0;
+        function addPhoto() {
+            photosCount++;
+            document.getElementById('photosCount').textContent = photosCount;
+            
+            // احتفال خاص عند 100
+            if (photosCount === 100) {
+                document.getElementById('celebration').classList.add('show');
+                setTimeout(() => {
+                    alert('🎉 مبروك! وصلنا لـ 100 صورة مع بعض! 📸💕');
+                }, 500);
+            }
+        }
+    </script>
+</body>
+</html>
