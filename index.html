@@ -1,9 +1,13 @@
-ع<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>حبنا | وعد الاصابع</title>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap');
         
@@ -84,20 +88,43 @@
         
         .nav-icons {
             display: flex;
-            gap: 2rem;
+            gap: 1.5rem;
             list-style: none;
+            flex-wrap: wrap;
+            justify-content: center;
         }
         
         .nav-icons a {
             color: var(--taupe);
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 500;
             transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.2rem;
         }
         
         .nav-icons a:hover {
             color: var(--brown);
+            transform: translateY(-2px);
+        }
+        
+        .nav-icons .badge {
+            background: #ff6b6b;
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            display: none;
+        }
+        
+        .nav-icons .badge.show {
+            display: block;
         }
         
         /* القسم الرئيسي */
@@ -146,6 +173,8 @@
             border-radius: 50px;
             font-weight: 600;
             transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
         }
         
         .cta-button:hover {
@@ -220,6 +249,8 @@
             border-radius: 25px;
             font-weight: 500;
             transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
         }
         
         .back-btn:hover {
@@ -559,6 +590,149 @@
             border-color: var(--taupe);
         }
         
+        /* قسم الرسائل - Firebase 💌 */
+        .messages-section {
+            background: linear-gradient(135deg, #fff5f5 0%, var(--peach) 100%);
+        }
+        
+        .message-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .message-input-area {
+            margin-bottom: 2rem;
+        }
+        
+        .message-textarea {
+            width: 100%;
+            padding: 1.5rem;
+            border: 2px solid var(--beige);
+            border-radius: 15px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1.1rem;
+            resize: vertical;
+            min-height: 120px;
+            margin-bottom: 1rem;
+        }
+        
+        .message-textarea:focus {
+            outline: none;
+            border-color: var(--taupe);
+        }
+        
+        .send-btn {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--taupe), var(--brown));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0 auto;
+        }
+        
+        .send-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(102, 73, 48, 0.3);
+        }
+        
+        .send-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .messages-list {
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+        
+        .message-item {
+            background: linear-gradient(135deg, var(--cream), white);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            border-right: 4px solid var(--taupe);
+            position: relative;
+            animation: slideIn 0.5s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .message-item.new {
+            border-right-color: #ff6b6b;
+            background: linear-gradient(135deg, #fff0f0, white);
+            animation: pulseNew 2s infinite;
+        }
+        
+        @keyframes pulseNew {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(255, 107, 107, 0); }
+        }
+        
+        .message-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--brown);
+            margin-bottom: 0.5rem;
+        }
+        
+        .message-time {
+            font-size: 0.85rem;
+            color: var(--taupe);
+            text-align: left;
+        }
+        
+        .message-sender {
+            font-weight: 700;
+            color: var(--taupe);
+            margin-bottom: 0.5rem;
+        }
+        
+        .no-messages {
+            text-align: center;
+            padding: 3rem;
+            color: var(--taupe);
+            font-size: 1.1rem;
+        }
+        
+        .connection-status {
+            text-align: center;
+            padding: 0.5rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .connection-status.online {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .connection-status.offline {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
         /* قسم الأغنية */
         .music-section {
             background: var(--cream);
@@ -600,12 +774,24 @@
                 font-size: 1.5rem;
             }
             
+            .nav-icons {
+                gap: 1rem;
+            }
+            
+            .nav-icons a {
+                font-size: 0.75rem;
+            }
+            
             .flying-text {
                 font-size: 1.5rem;
             }
             
             .flying-text.animate {
                 animation: flyUpSlow 10s ease-out forwards;
+            }
+            
+            .story-full {
+                padding: 2rem;
             }
         }
     </style>
@@ -622,6 +808,12 @@
         <nav>
             <a href="#" class="logo" onclick="showSection('home')">وعد الاصابع 💕</a>
             <ul class="nav-icons">
+                <li style="position: relative;">
+                    <a href="#" onclick="showSection('messages')" id="messagesLink">
+                        💌 رسائل
+                        <span class="badge" id="messageBadge">0</span>
+                    </a>
+                </li>
                 <li><a href="#" onclick="showSection('story')">📖 قصتنا</a></li>
                 <li><a href="#" onclick="showSection('feelings')">🤍 المشاعر</a></li>
                 <li><a href="#" onclick="showSection('problems')">💪 المشاكل</a></li>
@@ -671,10 +863,49 @@
         </section>
     </div>
     
+    <!-- قسم الرسائل - Firebase 💌 -->
+    <div id="messages" class="hidden-section messages-section">
+        <div class="container">
+            <button class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</button>
+            <h2 class="section-title">رسائلنا 💌</h2>
+            
+            <div class="connection-status offline" id="connectionStatus">
+                جاري الاتصال بقاعدة البيانات...
+            </div>
+            
+            <!-- إرسال رسالة -->
+            <div class="message-box">
+                <div class="message-input-area">
+                    <textarea 
+                        class="message-textarea" 
+                        id="messageInput"
+                        placeholder="✍️ اكتب رسالتك هنا... كل كلمة هتوصل لقلبها فوراً 💕"
+                    ></textarea>
+                    <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                        <span>📤</span> إرسال الرسالة
+                    </button>
+                </div>
+            </div>
+            
+            <!-- عرض الرسائل -->
+            <div class="message-box">
+                <h3 style="color: var(--taupe); margin-bottom: 1.5rem; text-align: center;">
+                    📬 الرسائل المستلمة
+                </h3>
+                <div class="messages-list" id="messagesList">
+                    <div class="no-messages">
+                        💭 لا توجد رسائل بعد...<br>
+                        اكتب أول رسالة وابعتها لحبيبتك! 💕
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <!-- قسم القصة الكامل -->
     <div id="story" class="hidden-section">
         <div class="container">
-            <a href="#" class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</a>
+            <button class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</button>
             <h2 class="section-title">قصتنا الكاملة 📖</h2>
             
             <div class="story-full">
@@ -738,7 +969,7 @@
     <!-- قسم المشاعر -->
     <div id="feelings" class="hidden-section feelings-section">
         <div class="container">
-            <a href="#" class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</a>
+            <button class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</button>
             <h2 class="section-title">مشاعرنا 🤍</h2>
             
             <div class="feeling-card">
@@ -773,7 +1004,7 @@
     <!-- قسم المشاكل -->
     <div id="problems" class="hidden-section problems-section">
         <div class="container">
-            <a href="#" class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</a>
+            <button class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</button>
             <h2 class="section-title">المشاكل 💪</h2>
             
             <div class="counter-box">
@@ -797,7 +1028,7 @@
     <!-- قسم الوعد -->
     <div id="promise" class="hidden-section promise-section">
         <div class="container">
-            <a href="#" class="back-btn" onclick="showSection('home')" style="background: rgba(255,255,255,0.2); color: white;">← رجوع للرئيسية</a>
+            <button class="back-btn" onclick="showSection('home')" style="background: rgba(255,255,255,0.2); color: white;">← رجوع للرئيسية</button>
             <h2 class="section-title">وعدنا 🤞</h2>
             
             <div class="promise-box">
@@ -815,7 +1046,7 @@
     <!-- قسم الصور -->
     <div id="photos" class="hidden-section photos-section">
         <div class="container">
-            <a href="#" class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</a>
+            <button class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</button>
             <h2 class="section-title">صورنا 📸</h2>
             
             <div class="photos-box">
@@ -840,7 +1071,7 @@
     <!-- قسم التواريخ -->
     <div id="dates" class="hidden-section dates-section">
         <div class="container">
-            <a href="#" class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</a>
+            <button class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</button>
             <h2 class="section-title">تواريخنا المميزة 📅</h2>
             
             <div class="date-card">
@@ -866,7 +1097,7 @@
     <!-- قسم الأغنية -->
     <div id="music" class="hidden-section music-section">
         <div class="container">
-            <a href="#" class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</a>
+            <button class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</button>
             <h2 class="section-title">أغنيتنا 🎵</h2>
             <p style="color: var(--taupe); margin-bottom: 2rem; font-size: 1.1rem;">
                 الأغنية اللي بتذكرنا بكل لحظة حلوة عدت بينا 💕
@@ -883,6 +1114,155 @@
     </footer>
     
     <script>
+        // ==========================================
+        // Firebase Configuration - ضع بياناتك هنا
+        // ==========================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyAklV4_qndb_vTeSXNm0AbgqrdxkYwt7ok",
+            authDomain: "love-for-ever-a3077.firebaseapp.com",
+            databaseURL: "https://love-for-ever-a3077-default-rtdb.firebaseio.com",
+            projectId: "love-for-ever-a3077",
+            storageBucket: "love-for-ever-a3077.firebasestorage.app",
+            messagingSenderId: "265907206498",
+            appId: "1:265907206498:web:27b2f107a3a6c3a9c3943b",
+            measurementId: "G-Y3XEM1KGWC"
+        };
+        
+        // Initialize Firebase
+        let database;
+        let messagesRef;
+        let isConnected = false;
+        
+        try {
+            firebase.initializeApp(firebaseConfig);
+            database = firebase.database();
+            messagesRef = database.ref('messages');
+            isConnected = true;
+            console.log('✅ Firebase Connected Successfully');
+        } catch (error) {
+            console.error('❌ Firebase Error:', error);
+            isConnected = false;
+        }
+        
+        // ==========================================
+        // قسم الرسائل - Functions
+        // ==========================================
+        
+        // إرسال رسالة
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const btn = document.getElementById('sendBtn');
+            const content = input.value.trim();
+            
+            if (!content) {
+                alert('✍️ اكتب رسالتك الأول!');
+                return;
+            }
+            
+            if (!isConnected) {
+                alert('❌ لا يوجد اتصال بقاعدة البيانات. تحقق من الإنترنت.');
+                return;
+            }
+            
+            btn.disabled = true;
+            btn.innerHTML = '<span>⏳</span> جاري الإرسال...';
+            
+            const message = {
+                content: content,
+                sender: 'خالد', // يمكن تغييره حسب المستخدم
+                timestamp: Date.now(),
+                read: false
+            };
+            
+            messagesRef.push(message)
+                .then(() => {
+                    input.value = '';
+                    btn.disabled = false;
+                    btn.innerHTML = '<span>📤</span> إرسال الرسالة';
+                    alert('✅ تم إرسال الرسالة بنجاح! 💕');
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    btn.disabled = false;
+                    btn.innerHTML = '<span>❌</span> حاول مرة أخرى';
+                    alert('❌ حدث خطأ. حاول مرة أخرى.');
+                });
+        }
+        
+        // استلام الرسائل
+        function loadMessages() {
+            if (!isConnected) return;
+            
+            const messagesList = document.getElementById('messagesList');
+            const statusDiv = document.getElementById('connectionStatus');
+            const badge = document.getElementById('messageBadge');
+            
+            // تحديث حالة الاتصال
+            statusDiv.className = 'connection-status online';
+            statusDiv.textContent = '✅ متصل بقاعدة البيانات - الرسائل تصل فوراً';
+            
+            // الاستماع للرسائل الجديدة
+            messagesRef.orderByChild('timestamp').on('value', (snapshot) => {
+                const messages = [];
+                let unreadCount = 0;
+                
+                snapshot.forEach((childSnapshot) => {
+                    const msg = childSnapshot.val();
+                    msg.id = childSnapshot.key;
+                    messages.unshift(msg); // الأحدث أولاً
+                    if (!msg.read) unreadCount++;
+                });
+                
+                // تحديث الإشعار
+                if (unreadCount > 0) {
+                    badge.textContent = unreadCount;
+                    badge.classList.add('show');
+                } else {
+                    badge.classList.remove('show');
+                }
+                
+                // عرض الرسائل
+                if (messages.length === 0) {
+                    messagesList.innerHTML = `
+                        <div class="no-messages">
+                            💭 لا توجد رسائل بعد...<br>
+                            اكتب أول رسالة وابعتها لحبيبتك! 💕
+                        </div>
+                    `;
+                } else {
+                    messagesList.innerHTML = messages.map(msg => `
+                        <div class="message-item ${!msg.read ? 'new' : ''}">
+                            <div class="message-sender">👤 ${msg.sender}</div>
+                            <div class="message-content">${escapeHtml(msg.content)}</div>
+                            <div class="message-time">🕐 ${formatTime(msg.timestamp)}</div>
+                        </div>
+                    `).join('');
+                }
+            });
+        }
+        
+        // مساعدات
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function formatTime(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleString('ar-EG', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+        
+        // ==========================================
+        // الأقسام الأخرى - Functions
+        // ==========================================
+        
         // قلوب عائمة
         const heartsContainer = document.getElementById('hearts');
         const heartSymbols = ['💕', '💖', '💗', '💓', '💝', '❤️', '🤍'];
@@ -897,16 +1277,22 @@
             heartsContainer.appendChild(heart);
         }
         
-        // التنقل
+        // التنقل بين الأقسام
         function showSection(sectionId) {
+            // إخفاء كل الأقسام
             document.querySelectorAll('#home, .hidden-section').forEach(el => {
                 el.style.display = 'none';
             });
             
+            // إظهار القسم المطلوب
             if (sectionId === 'home') {
                 document.getElementById('home').style.display = 'block';
             } else {
                 document.getElementById(sectionId).style.display = 'block';
+                // تحميل الرسائل لما يفتح القسم
+                if (sectionId === 'messages' && isConnected) {
+                    loadMessages();
+                }
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -924,7 +1310,6 @@
             promiseCount++;
             document.getElementById('promiseCount').textContent = promiseCount;
             
-            // تأثير الجملة الطائرة البطيء
             const flyingText = document.getElementById('flyingText');
             flyingText.classList.remove('animate');
             void flyingText.offsetWidth;
@@ -937,25 +1322,20 @@
             photosCount++;
             document.getElementById('photosCount').textContent = photosCount;
             
-            // احتفال خاص عند 100
             if (photosCount === 100) {
                 document.getElementById('celebration').classList.add('show');
                 setTimeout(() => {
                     alert('🎉 مبروك! وصلنا لـ 100 صورة مع بعض! 📸💕');
                 }, 500);
             }
-      const firebaseConfig = {
-  apiKey: "AIzaSyAklV4_qndb_vTeSXNm0AbgqrdxkYwt7ok",
-  authDomain: "love-for-ever-a3077.firebaseapp.com",
-  databaseURL: "https://love-for-ever-a3077-default-rtdb.firebaseio.com",
-  projectId: "love-for-ever-a3077",
-  storageBucket: "love-for-ever-a3077.firebasestorage.app",
-  messagingSenderId: "265907206498",
-  appId: "1:265907206498:web:27b2f107a3a6c3a9c3943b",
-  measurementId: "G-Y3XEM1KGWC"
-}; const app = initializeApp(firebaseConfig);
-            const database = GetDatabase(app);
- }c
+        }
+        
+        // تحميل الرسائل عند فتح الصفحة (لو في قسم الرسائل)
+        window.addEventListener('load', () => {
+            if (isConnected) {
+                console.log('🚀 جاهز لإرسال واستلام الرسائل!');
+            }
+        });
     </script>
 </body>
 </html>
