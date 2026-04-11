@@ -33,7 +33,7 @@
             overflow-x: hidden;
         }
         
-        /* تأثيرات عائمة */
+        /* قلوب عائمة */
         .floating-hearts {
             position: fixed;
             top: 0;
@@ -57,6 +57,49 @@
             10% { opacity: 0.1; }
             90% { opacity: 0.1; }
             100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+        
+        /* إشعارات العدادات - جديد */
+        .counter-notification {
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-150px);
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
+            z-index: 10000;
+            font-size: 1.1rem;
+            font-weight: 600;
+            opacity: 0;
+            transition: all 0.5s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .counter-notification.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+            animation: notificationPulse 0.5s ease;
+        }
+        
+        @keyframes notificationPulse {
+            0% { transform: translateX(-50%) translateY(0) scale(1); }
+            50% { transform: translateX(-50%) translateY(0) scale(1.05); }
+            100% { transform: translateX(-50%) translateY(0) scale(1); }
+        }
+        
+        .counter-notification.photos {
+            background: linear-gradient(135deg, #51cf66, #2f9e44);
+            box-shadow: 0 10px 30px rgba(81, 207, 102, 0.4);
+        }
+        
+        .counter-notification.promise {
+            background: linear-gradient(135deg, var(--brown), var(--taupe));
+            box-shadow: 0 10px 30px rgba(102, 73, 48, 0.4);
         }
         
         /* الهيدر */
@@ -104,6 +147,7 @@
             flex-direction: column;
             align-items: center;
             gap: 0.2rem;
+            position: relative;
         }
         
         .nav-icons a:hover {
@@ -111,19 +155,25 @@
             transform: translateY(-2px);
         }
         
-        .nav-icons .badge {
+        .badge {
             background: #ff6b6b;
             color: white;
             font-size: 0.7rem;
             padding: 0.2rem 0.5rem;
             border-radius: 10px;
             position: absolute;
-            top: -5px;
-            right: -5px;
+            top: -8px;
+            right: -8px;
             display: none;
+            animation: badgePulse 2s infinite;
         }
         
-        .nav-icons .badge.show {
+        @keyframes badgePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .badge.show {
             display: block;
         }
         
@@ -182,7 +232,7 @@
             transform: translateY(-3px);
         }
         
-        /* ملخص القصة في الرئيسية */
+        /* ملخص القصة */
         .summary-section {
             padding: 4rem 5%;
             background: rgba(255, 248, 240, 0.9);
@@ -270,7 +320,7 @@
             margin-bottom: 3rem;
         }
         
-        /* قسم القصة الكامل */
+        /* قسم القصة */
         .story-full {
             background: rgba(255, 248, 240, 0.9);
             padding: 3rem;
@@ -387,6 +437,16 @@
             color: white;
         }
         
+        .sync-status {
+            font-size: 0.9rem;
+            color: var(--taupe);
+            margin-top: 1rem;
+        }
+        
+        .sync-status.online {
+            color: #51cf66;
+        }
+        
         .reminder-box {
             background: rgba(255, 255, 255, 0.9);
             padding: 2rem;
@@ -441,7 +501,7 @@
             transform: scale(1.05);
         }
         
-        /* تأثير الجملة الطائرة - بطيء جداً */
+        /* تأثير الجملة الطائرة */
         .flying-text {
             position: fixed;
             bottom: -150px;
@@ -463,36 +523,13 @@
         }
         
         @keyframes flyUpSlow {
-            0% {
-                bottom: -150px;
-                opacity: 0;
-                transform: translateX(-50%) scale(0.8);
-            }
-            10% {
-                opacity: 1;
-                bottom: 10%;
-            }
-            30% {
-                bottom: 30%;
-                opacity: 1;
-            }
-            50% {
-                bottom: 50%;
-                opacity: 1;
-            }
-            70% {
-                bottom: 70%;
-                opacity: 0.8;
-            }
-            90% {
-                bottom: 90%;
-                opacity: 0.3;
-            }
-            100% {
-                bottom: 120%;
-                opacity: 0;
-                transform: translateX(-50%) scale(1.1);
-            }
+            0% { bottom: -150px; opacity: 0; transform: translateX(-50%) scale(0.8); }
+            10% { opacity: 1; bottom: 10%; }
+            30% { bottom: 30%; opacity: 1; }
+            50% { bottom: 50%; opacity: 1; }
+            70% { bottom: 70%; opacity: 0.8; }
+            90% { bottom: 90%; opacity: 0.3; }
+            100% { bottom: 120%; opacity: 0; transform: translateX(-50%) scale(1.1); }
         }
         
         /* قسم الصور */
@@ -590,7 +627,7 @@
             border-color: var(--taupe);
         }
         
-        /* قسم الرسائل - Firebase 💌 */
+        /* قسم الرسائل */
         .messages-section {
             background: linear-gradient(135deg, #fff5f5 0%, var(--peach) 100%);
         }
@@ -668,14 +705,8 @@
         }
         
         @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
         }
         
         .message-item.new {
@@ -790,8 +821,9 @@
                 animation: flyUpSlow 10s ease-out forwards;
             }
             
-            .story-full {
-                padding: 2rem;
+            .counter-notification {
+                font-size: 0.9rem;
+                padding: 0.8rem 1.5rem;
             }
         }
     </style>
@@ -803,13 +835,19 @@
     <!-- الجملة الطائرة -->
     <div class="flying-text" id="flyingText">خالد وفاطمة ديما مع بعض ♾️❤️</div>
     
+    <!-- إشعارات العدادات - جديد -->
+    <div class="counter-notification" id="counterNotification">
+        <span id="notificationIcon">🔔</span>
+        <span id="notificationText"></span>
+    </div>
+    
     <!-- الهيدر -->
     <header>
         <nav>
             <a href="#" class="logo" onclick="showSection('home')">وعد الاصابع 💕</a>
             <ul class="nav-icons">
                 <li style="position: relative;">
-                    <a href="#" onclick="showSection('messages')" id="messagesLink">
+                    <a href="#" onclick="showSection('messages')">
                         💌 رسائل
                         <span class="badge" id="messageBadge">0</span>
                     </a>
@@ -827,7 +865,6 @@
     
     <!-- الصفحة الرئيسية -->
     <div id="home">
-        <!-- القسم الرئيسي -->
         <section class="hero">
             <div class="hero-content">
                 <div class="hero-text">
@@ -839,12 +876,11 @@
                         قصة حب مش عادية، بدأت بصدفة وكملت باختيار. 
                         كل يوم بنختار بعض، وكل مشكلة بنتجاوزها مع بعض.
                     </p>
-                    <a href="#" class="cta-button" onclick="showSection('story')">اقرأ القصة الكاملة 📖</a>
+                    <button class="cta-button" onclick="showSection('story')">اقرأ القصة الكاملة 📖</button>
                 </div>
             </div>
         </section>
         
-        <!-- ملخص القصة -->
         <section class="summary-section">
             <div class="summary-box">
                 <h2 class="summary-title">ملخص قصتنا 💝</h2>
@@ -863,7 +899,7 @@
         </section>
     </div>
     
-    <!-- قسم الرسائل - Firebase 💌 -->
+    <!-- قسم الرسائل -->
     <div id="messages" class="hidden-section messages-section">
         <div class="container">
             <button class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</button>
@@ -873,25 +909,17 @@
                 جاري الاتصال بقاعدة البيانات...
             </div>
             
-            <!-- إرسال رسالة -->
             <div class="message-box">
                 <div class="message-input-area">
-                    <textarea 
-                        class="message-textarea" 
-                        id="messageInput"
-                        placeholder="✍️ اكتب رسالتك هنا... كل كلمة هتوصل لقلبها فوراً 💕"
-                    ></textarea>
+                    <textarea class="message-textarea" id="messageInput" placeholder="✍️ اكتب رسالتك هنا... كل كلمة هتوصل لقلبها فوراً 💕"></textarea>
                     <button class="send-btn" id="sendBtn" onclick="sendMessage()">
                         <span>📤</span> إرسال الرسالة
                     </button>
                 </div>
             </div>
             
-            <!-- عرض الرسائل -->
             <div class="message-box">
-                <h3 style="color: var(--taupe); margin-bottom: 1.5rem; text-align: center;">
-                    📬 الرسائل المستلمة
-                </h3>
+                <h3 style="color: var(--taupe); margin-bottom: 1.5rem; text-align: center;">📬 الرسائل المستلمة</h3>
                 <div class="messages-list" id="messagesList">
                     <div class="no-messages">
                         💭 لا توجد رسائل بعد...<br>
@@ -902,7 +930,7 @@
         </div>
     </div>
     
-    <!-- قسم القصة الكامل -->
+    <!-- قسم القصة -->
     <div id="story" class="hidden-section">
         <div class="container">
             <button class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</button>
@@ -910,58 +938,22 @@
             
             <div class="story-full">
                 <h3>🎭 البداية الغريبة</h3>
-                <p>
-                    قصة حبنا دي غريبة شوية بصراحة. من أول ما اتعرفنا على بعض واحنا أصلاً مش عارفين مين اللي بيكلم التاني ولا بعت له ليه. 
-                    اتكلمنا لحد ما أخدتِ أول بلوك في علاقتنا، وبعدها فكيتِ البلوك وابتدينا نتعرف أكتر على بعض ونتكلم أكتر 
-                    بأي حجة على الجروب اللي كان بالصدفة أصلاً. عرفت إن صاحبي عامله وحسيت إن لازم أدخله.
-                </p>
+                <p>قصة حبنا دي غريبة شوية بصراحة. من أول ما اتعرفنا على بعض واحنا أصلاً مش عارفين مين اللي بيكلم التاني ولا بعت له ليه...</p>
                 
                 <h3>🎵 طريق الرجوع</h3>
-                <p>
-                    زي مثلاً لما كنت ببعتلك فيديوهات أغاني لحد ما وصلنا لتاني بلوك بينا، وده كان بسبب طنط. 
-                    وانتِ قولتِلي "متبعتش هنا تاني". بعدين رجعنا أصحاب على الجروب زي الأول وكنا بنتكلم يومياً 
-                    لحد ما خلاص لغينا الجروب وقولتِ إن علاقتنا انتهت.
-                </p>
+                <p>زي مثلاً لما كنت ببعتلك فيديوهات أغاني لحد ما وصلنا لتاني بلوك بينا...</p>
                 
                 <h3>💫 لحظة الاعتراف</h3>
-                <p>
-                    عملنا جروب تاني بينا احنا وكنا بنتكلم أكتر وتعرفنا أكتر. يمكن كنا صغيرين ومش فاهمين يعني إيه نتعرف، 
-                    كل اللي كان هامنا وقتها نكتشف الحياة في الارتباط عاملة إزاي. بس أنا الفترة دي من أحسن فترات حياتي 
-                    وفاكر كل لحظة فيها. وفضلنا نتكلم كتير لحد ما وصلنا لليوم اللي كل واحد فينا قرر إنه يقول اللي جواه. 
-                    كانت تقريباً الساعة ٢ بالليل، واتكرر موقف حصل قبل موقف الاعتراف ده بأسبوع. سألتكِ "أنتِ مسجلاني إيه؟" 
-                    ورديتِ "My All"، وسألتكِ ليه؟ قولتِ "علشان أنتِ فعلاً كل حاجة بالنسبالي". وبعدين اعترفتلكِ بحبي، 
-                    والحمدلله طلع متبادل بينا.
-                </p>
+                <p>عملنا جروب تاني بينا احنا وكنا بنتكلم أكتر وتعرفنا أكتر...</p>
                 
                 <h3>💔 الحفر والفراق</h3>
-                <p>
-                    أيوه كانت فترة قصيرة مكملتش شهر تقريباً، بس كانت فترة حبيتها وفاكر كل لحظة فيها. 
-                    وبعد كل الحب اللي كان في الفترة دي حصلت الحفرة الأولى - سبنا بعض لسبب غبي مني وأنا ندمان عليه لحد النهاردة. 
-                    ومن وقت اليوم ده لحد ما قررتِ ترجعلي تاني، كل يوم في حياتي كان عذاب حرفياً وكل حاجة كنت بعملها كنت بخيلكِ فيها. 
-                    لحد ما قررتِ خلاص إنكِ لازم ترجعي وأصلحي كل حاجة من تاني.
-                </p>
+                <p>أيوه كانت فترة قصيرة مكملتش شهر تقريباً، بس كانت فترة حبيتها وفاكر كل لحظة فيها...</p>
                 
                 <h3>🌅 العودة من جديد</h3>
-                <p>
-                    وفعلاً قررتِ ترجعي ونكمل مع بعض، بس بسبب إننا كنا صغيرين حصلت أول مشكلة. 
-                    ومن بعدها حصلت الحفرة التانية وهي إننا سبنا بعض. المرة دي أنا حاولت أرجعلكِ كتير بس انتِ كنتِ رافضة، 
-                    وأنا كنت مقدر ده منكِ علشان كل الأحداث اللي فاتت دي حصلت في وقت قليل. وبعدها رجعنا أصحاب بس طبعاً مستحيل ده يحصل. 
-                    وحصل الفراق الكبير بينا وهو من شهر ٥/٢٠٢٣ لحد شهر ٨/٢٠٢٤. وقتها صاحبتكِ دخلت كلمتني وحصل اللي احنا عارفينه طبعاً. 
-                    وجات فرصة إننا نتكلم، واتكلمنا وانتِ اعتذرتِلي عن معاملتكِ ليا.
-                </p>
+                <p>وفعلاً قررتِ ترجعي ونكمل مع بعض، بس بسبب إننا كنا صغيرين حصلت أول مشكلة...</p>
                 
                 <h3>✨ التجدد والمستقبل</h3>
-                <p>
-                    بدأت فترة جميلة بينا وهي الاستعباط والتلميح. كل واحد كان بيحاول يلمح ويتأكد من حب التاني 
-                    بكل طريقة ممكنة. وفي ساعات كانت بتكون تلميحات صريحة بس كنا بنكدب نفسنا ونقنع نفسنا إن ده غلط. 
-                    وفترة الاستعباط كانت تقريباً سنة كاملة لحد ما جه يوم ٩/٨/٢٠٢٥ - اليوم اللي اتجدد فيه الاعتراف بالحب مرة تانية. 
-                    ومن وقتها واحنا مع بعض وبنقرب لبعض أكتر. يمكن من الوقت ده لحد دلوقتي مقسومين على فترتين: 
-                    أول فترة وهي البدايات ودي كانت لحد شهر ١٢، وتاني فترة كانت من أول السنة لحد دلوقتي. 
-                    وفي الفترة دي شوفنا فيها كل حاجة تقريباً وعرفنا كل حاجة عن بعض. وعرفنا إننا مهما نبعد عن بعض 
-                    فإحنا في الآخر ملناش غير بعض. ومهما حصلت مشكلة، اختيارنا الأول هو إحنا لو على حساب مين. 
-                    يمكن ده اختصار للقصة علشان نرجع لها بعدين. وفي أحداث كتير متقالتش فيه، بس الأحداث الجاية كلها هتتقال 
-                    وهتتكتب في باقي القصة اللي هنكتبها بأيدينا لحد ما نوصل لأهم فصل في القصة، وهو إننا نكون مع بعض قدام الكل.
-                </p>
+                <p>بدأت فترة جميلة بينا وهي الاستعباط والتلميح. كل واحد كان بيحاول يلمح ويتأكد من حب التاني...</p>
             </div>
         </div>
     </div>
@@ -974,28 +966,19 @@
             
             <div class="feeling-card">
                 <h3>🤗 الأمان</h3>
-                <p class="feeling-text">
-                    معاكِ أحس إني في مكان آمن، زي ماكون في بيتي اللي مهما بعته أرجعله تاني. 
-                    أنتِ الأمان اللي مش بيخلص.
-                </p>
-                <textarea class="feeling-input" placeholder="✍️ اكتبي هنا شعورك بالأمان معايا..."></textarea>
+                <p class="feeling-text">معاكِ أحس إني في مكان آمن، زي ماكون في بيتي اللي مهما بعته أرجعله تاني.</p>
+                <textarea class="feeling-input" placeholder="✍️ اكتبي هنا شعورك بالأمان..."></textarea>
             </div>
             
             <div class="feeling-card">
                 <h3>🤝 الثقة</h3>
-                <p class="feeling-text">
-                    ثقتي فيكِ أكبر من أي شك، وأعرف إن مهما حصل هنفضل جنب بعض. 
-                    أنتِ الشخص اللي أقدر أحكيله كل حاجة.
-                </p>
-                <textarea class="feeling-input" placeholder="✍️ اكتبي هنا عن ثقتك فيا..."></textarea>
+                <p class="feeling-text">ثقتي فيكِ أكبر من أي شك، وأعرف إن مهما حصل هنفضل جنب بعض.</p>
+                <textarea class="feeling-input" placeholder="✍️ اكتبي هنا عن ثقتك..."></textarea>
             </div>
             
             <div class="feeling-card">
                 <h3>❤️ الحب</h3>
-                <p class="feeling-text">
-                    حبنا مش مجرد كلمة، هو اختيار بنعمله كل يوم. 
-                    مهما عدت سنين، هفضل أختاركِ أنا.
-                </p>
+                <p class="feeling-text">حبنا مش مجرد كلمة، هو اختيار بنعمله كل يوم.</p>
                 <textarea class="feeling-input" placeholder="✍️ اكتبي هنا عن حبك..."></textarea>
             </div>
         </div>
@@ -1011,16 +994,15 @@
                 <span class="counter-number" id="problemsCount">0</span>
                 <div class="counter-label">عدد المشاكل اللي عدت بينا</div>
                 <div class="counter-controls">
-                    <button class="counter-btn btn-minus" onclick="updateCounter(-1)">−</button>
-                    <button class="counter-btn btn-plus" onclick="updateCounter(1)">+</button>
+                    <button class="counter-btn btn-minus" onclick="updateProblems(-1)">−</button>
+                    <button class="counter-btn btn-plus" onclick="updateProblems(1)">+</button>
                 </div>
+                <div class="sync-status" id="problemsSync">⚪ جاري التزامن...</div>
             </div>
             
             <div class="reminder-box">
-                💕 <strong>مع كل مشكلة بينا، نفتكر الحب اللي بينا والمجهود اللي اتبذل علشان العلاقة دي تكمل.</strong><br><br>
-                كل مشكلة عدت خلتنا أقوى وأقرب لبعض. 
-                <br><br>
-                <em>احنا مش بنعد المشاكل، احنا بنعد اللحظات اللي قررنا فيها نكمل رغم كل حاجة.</em>
+                💕 <strong>مع كل مشكلة بينا، نفتكر الحب اللي بينا والمجهود اللي اتبذل.</strong><br><br>
+                <em>احنا مش بنعد المشاكل، احنا بنعد اللحظات اللي قررنا فيها نكمل.</em>
             </div>
         </div>
     </div>
@@ -1038,6 +1020,7 @@
                 </p>
                 <div class="promise-counter" id="promiseCount">0</div>
                 <p style="margin-bottom: 1rem;">مرة اخترنا فيها إحنا</p>
+                <div class="sync-status" id="promiseSync" style="color: rgba(255,255,255,0.7);">⚪ جاري التزامن...</div>
                 <button class="promise-btn" onclick="makePromise()">أنا أختار إحنا ❤️</button>
             </div>
         </div>
@@ -1052,9 +1035,8 @@
             <div class="photos-box">
                 <div class="photos-number" id="photosCount">0</div>
                 <div class="photos-label">صورة مع بعض 💕</div>
-                <p style="color: var(--taupe); margin-top: 1rem;">
-                    العد مستمر إلى ما لا نهاية... ♾️
-                </p>
+                <div class="sync-status" id="photosSync">⚪ جاري التزامن...</div>
+                <p style="color: var(--taupe); margin-top: 1rem;">العد مستمر إلى ما لا نهاية... ♾️</p>
             </div>
             
             <div class="celebration" id="celebration">
@@ -1062,9 +1044,7 @@
                 <p>كل صورة كانت ذكرى جميلة جمعتنا، وهناك المزيد قادم! 🌟</p>
             </div>
             
-            <div style="margin-top: 2rem;">
-                <button class="cta-button" onclick="addPhoto()">📷 أضف صورة جديدة</button>
-            </div>
+            <button class="cta-button" onclick="addPhoto()">📷 أضف صورة جديدة</button>
         </div>
     </div>
     
@@ -1077,19 +1057,19 @@
             <div class="date-card">
                 <div class="date-display">📅 1 / 2 / 2023</div>
                 <div class="date-title">🌸 البداية</div>
-                <textarea class="date-input" placeholder="✍️ اكتبي هنا ذكرياتك عن يوم ما اتعرفنا على بعض..."></textarea>
+                <textarea class="date-input" placeholder="✍️ اكتبي هنا ذكرياتك..."></textarea>
             </div>
             
             <div class="date-card" style="border: 3px solid var(--taupe);">
                 <div class="date-display">📅 9 / 8 / 2025</div>
                 <div class="date-title">💫 تجدد الحب</div>
-                <textarea class="date-input" placeholder="✍️ اكتبي هنا ذكرياتك عن يوم تجديد الاعتراف..."></textarea>
+                <textarea class="date-input" placeholder="✍️ اكتبي هنا ذكرياتك..."></textarea>
             </div>
             
             <div class="date-card">
                 <div class="date-display">📅 ❓ / 11 / 2026</div>
                 <div class="date-title">🤝 أول مقابلة</div>
-                <textarea class="date-input" placeholder="✍️ اكتبي هنا توقعاتك وأحلامك عن أول مقابلة..."></textarea>
+                <textarea class="date-input" placeholder="✍️ اكتبي هنا توقعاتك..."></textarea>
             </div>
         </div>
     </div>
@@ -1115,7 +1095,7 @@
     
     <script>
         // ==========================================
-        // Firebase Configuration - ضع بياناتك هنا
+        // Firebase Configuration
         // ==========================================
         const firebaseConfig = {
             apiKey: "AIzaSyAklV4_qndb_vTeSXNm0AbgqrdxkYwt7ok",
@@ -1128,27 +1108,120 @@
             measurementId: "G-Y3XEM1KGWC"
         };
         
-        // Initialize Firebase
-        let database;
-        let messagesRef;
+        let database, countersRef, messagesRef;
         let isConnected = false;
         
         try {
             firebase.initializeApp(firebaseConfig);
             database = firebase.database();
+            countersRef = database.ref('counters');
             messagesRef = database.ref('messages');
             isConnected = true;
-            console.log('✅ Firebase Connected Successfully');
+            console.log('✅ Firebase Connected');
         } catch (error) {
             console.error('❌ Firebase Error:', error);
-            isConnected = false;
         }
         
         // ==========================================
-        // قسم الرسائل - Functions
+        // المتغيرات العامة
         // ==========================================
+        let problemsCount = 0;
+        let promiseCount = 0;
+        let photosCount = 0;
+        let unreadMessages = 0;
+        let lastProblemsCount = 0;
+        let lastPromiseCount = 0;
+        let lastPhotosCount = 0;
         
-        // إرسال رسالة
+        // ==========================================
+        // إشعارات العدادات - جديد
+        // ==========================================
+        function showCounterNotification(type, message) {
+            const notification = document.getElementById('counterNotification');
+            const icon = document.getElementById('notificationIcon');
+            const text = document.getElementById('notificationText');
+            
+            // تحديد الأيقونة واللون
+            if (type === 'photos') {
+                notification.className = 'counter-notification photos';
+                icon.textContent = '📸';
+            } else if (type === 'promise') {
+                notification.className = 'counter-notification promise';
+                icon.textContent = '🤞';
+            } else if (type === 'problems') {
+                notification.className = 'counter-notification';
+                icon.textContent = '💪';
+            } else if (type === 'message') {
+                notification.className = 'counter-notification';
+                icon.textContent = '💌';
+            }
+            
+            text.textContent = message;
+            
+            // إظهار الإشعار
+            notification.classList.add('show');
+            
+            // صوت تنبيه (اختياري)
+            playNotificationSound();
+            
+            // اهتزاز على الموبايل (اختياري)
+            if (navigator.vibrate) {
+                navigator.vibrate([200, 100, 200]);
+            }
+            
+            // إخفاء بعد 3 ثواني
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        function playNotificationSound() {
+            // صوت بسيط باستخدام Web Audio API
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            } catch (e) {
+                console.log('Audio not supported');
+            }
+        }
+        
+        // ==========================================
+        // التنقل بين الأقسام
+        // ==========================================
+        function showSection(sectionId) {
+            document.querySelectorAll('#home, .hidden-section').forEach(el => {
+                el.style.display = 'none';
+            });
+            
+            if (sectionId === 'home') {
+                document.getElementById('home').style.display = 'block';
+            } else {
+                document.getElementById(sectionId).style.display = 'block';
+                
+                if (sectionId === 'messages' && isConnected) loadMessages();
+                else if (sectionId === 'problems' && isConnected) loadProblems();
+                else if (sectionId === 'promise' && isConnected) loadPromise();
+                else if (sectionId === 'photos' && isConnected) loadPhotos();
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // ==========================================
+        // قسم الرسائل
+        // ==========================================
         function sendMessage() {
             const input = document.getElementById('messageInput');
             const btn = document.getElementById('sendBtn');
@@ -1160,7 +1233,7 @@
             }
             
             if (!isConnected) {
-                alert('❌ لا يوجد اتصال بقاعدة البيانات. تحقق من الإنترنت.');
+                alert('❌ لا يوجد اتصال!');
                 return;
             }
             
@@ -1169,7 +1242,7 @@
             
             const message = {
                 content: content,
-                sender: 'خالد', // يمكن تغييره حسب المستخدم
+                sender: 'خالد',
                 timestamp: Date.now(),
                 read: false
             };
@@ -1179,58 +1252,51 @@
                     input.value = '';
                     btn.disabled = false;
                     btn.innerHTML = '<span>📤</span> إرسال الرسالة';
-                    alert('✅ تم إرسال الرسالة بنجاح! 💕');
                 })
                 .catch((error) => {
                     console.error('Error:', error);
                     btn.disabled = false;
                     btn.innerHTML = '<span>❌</span> حاول مرة أخرى';
-                    alert('❌ حدث خطأ. حاول مرة أخرى.');
                 });
         }
         
-        // استلام الرسائل
         function loadMessages() {
-            if (!isConnected) return;
-            
-            const messagesList = document.getElementById('messagesList');
             const statusDiv = document.getElementById('connectionStatus');
-            const badge = document.getElementById('messageBadge');
-            
-            // تحديث حالة الاتصال
             statusDiv.className = 'connection-status online';
-            statusDiv.textContent = '✅ متصل بقاعدة البيانات - الرسائل تصل فوراً';
+            statusDiv.textContent = '✅ متصل - الرسائل تصل فوراً';
             
-            // الاستماع للرسائل الجديدة
             messagesRef.orderByChild('timestamp').on('value', (snapshot) => {
                 const messages = [];
-                let unreadCount = 0;
+                let newUnread = 0;
                 
                 snapshot.forEach((childSnapshot) => {
                     const msg = childSnapshot.val();
                     msg.id = childSnapshot.key;
-                    messages.unshift(msg); // الأحدث أولاً
-                    if (!msg.read) unreadCount++;
+                    messages.unshift(msg);
+                    if (!msg.read) newUnread++;
                 });
                 
-                // تحديث الإشعار
-                if (unreadCount > 0) {
-                    badge.textContent = unreadCount;
+                // إشعار لرسائل جديدة
+                if (newUnread > unreadMessages && unreadMessages > 0) {
+                    showCounterNotification('message', `💌 رسالة جديدة من ${messages[0].sender}!`);
+                }
+                unreadMessages = newUnread;
+                
+                // تحديث الإشارة
+                const badge = document.getElementById('messageBadge');
+                if (unreadMessages > 0) {
+                    badge.textContent = unreadMessages;
                     badge.classList.add('show');
                 } else {
                     badge.classList.remove('show');
                 }
                 
                 // عرض الرسائل
+                const list = document.getElementById('messagesList');
                 if (messages.length === 0) {
-                    messagesList.innerHTML = `
-                        <div class="no-messages">
-                            💭 لا توجد رسائل بعد...<br>
-                            اكتب أول رسالة وابعتها لحبيبتك! 💕
-                        </div>
-                    `;
+                    list.innerHTML = '<div class="no-messages">💭 لا توجد رسائل بعد...</div>';
                 } else {
-                    messagesList.innerHTML = messages.map(msg => `
+                    list.innerHTML = messages.map(msg => `
                         <div class="message-item ${!msg.read ? 'new' : ''}">
                             <div class="message-sender">👤 ${msg.sender}</div>
                             <div class="message-content">${escapeHtml(msg.content)}</div>
@@ -1241,7 +1307,120 @@
             });
         }
         
+        // ==========================================
+        // عداد المشاكل - مع إشعار
+        // ==========================================
+        function loadProblems() {
+            const syncDiv = document.getElementById('problemsSync');
+            
+            countersRef.child('problems').on('value', (snapshot) => {
+                const value = snapshot.val() || 0;
+                
+                // إشعار لو زاد العداد
+                if (value > lastProblemsCount && lastProblemsCount > 0) {
+                    showCounterNotification('problems', `💪 عدد المشاكل زاد! الآن: ${value}`);
+                }
+                
+                lastProblemsCount = value;
+                problemsCount = value;
+                document.getElementById('problemsCount').textContent = value;
+                syncDiv.textContent = '✅ متزامن مع Firebase';
+                syncDiv.className = 'sync-status online';
+            });
+        }
+        
+        function updateProblems(change) {
+            if (!isConnected) {
+                alert('❌ لا يوجد اتصال!');
+                return;
+            }
+            countersRef.child('problems').set(Math.max(0, problemsCount + change));
+        }
+        
+        // ==========================================
+        // عداد الوعد - مع إشعار
+        // ==========================================
+        function loadPromise() {
+            const syncDiv = document.getElementById('promiseSync');
+            
+            countersRef.child('promise').on('value', (snapshot) => {
+                const value = snapshot.val() || 0;
+                
+                // إشعار لو زاد العداد
+                if (value > lastPromiseCount && lastPromiseCount > 0) {
+                    showCounterNotification('promise', `🤞 وعد جديد! إجمالي الوعود: ${value}`);
+                }
+                
+                lastPromiseCount = value;
+                promiseCount = value;
+                document.getElementById('promiseCount').textContent = value;
+                syncDiv.textContent = '✅ متزامن';
+            });
+        }
+        
+        function makePromise() {
+            if (!isConnected) {
+                alert('❌ لا يوجد اتصال!');
+                return;
+            }
+            
+            countersRef.child('promise').set(promiseCount + 1);
+            
+            // تأثير الجملة الطائرة
+            const flyingText = document.getElementById('flyingText');
+            flyingText.classList.remove('animate');
+            void flyingText.offsetWidth;
+            flyingText.classList.add('animate');
+        }
+        
+        // ==========================================
+        // عداد الصور - مع إشعار
+        // ==========================================
+        function loadPhotos() {
+            const syncDiv = document.getElementById('photosSync');
+            
+            countersRef.child('photos').on('value', (snapshot) => {
+                const value = snapshot.val() || 0;
+                
+                // إشعار لو زاد العداد
+                if (value > lastPhotosCount && lastPhotosCount > 0) {
+                    const remaining = 100 - value;
+                    if (remaining > 0) {
+                        showCounterNotification('photos', `📸 صورة جديدة! باقي ${remaining} لـ 100 صورة`);
+                    } else if (value === 100) {
+                        showCounterNotification('photos', '🎉 مبروك! وصلنا 100 صورة!');
+                    }
+                }
+                
+                lastPhotosCount = value;
+                photosCount = value;
+                document.getElementById('photosCount').textContent = value;
+                syncDiv.textContent = '✅ متزامن مع Firebase';
+                syncDiv.className = 'sync-status online';
+                
+                // احتفال عند 100
+                if (value >= 100) {
+                    document.getElementById('celebration').classList.add('show');
+                }
+            });
+        }
+        
+        function addPhoto() {
+            if (!isConnected) {
+                alert('❌ لا يوجد اتصال!');
+                return;
+            }
+            
+            countersRef.child('photos').set(photosCount + 1);
+            
+            if (photosCount + 1 === 100) {
+                setTimeout(() => alert('🎉 مبروك! 100 صورة! 📸💕'), 500);
+            }
+        }
+        
+        // ==========================================
         // مساعدات
+        // ==========================================
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;
@@ -1249,21 +1428,15 @@
         }
         
         function formatTime(timestamp) {
-            const date = new Date(timestamp);
-            return date.toLocaleString('ar-EG', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
+            return new Date(timestamp).toLocaleString('ar-EG', {
+                year: 'numeric', month: 'short', day: 'numeric',
+                hour: '2-digit', minute: '2-digit'
             });
         }
         
         // ==========================================
-        // الأقسام الأخرى - Functions
-        // ==========================================
-        
         // قلوب عائمة
+        // ==========================================
         const heartsContainer = document.getElementById('hearts');
         const heartSymbols = ['💕', '💖', '💗', '💓', '💝', '❤️', '🤍'];
         
@@ -1276,66 +1449,6 @@
             heart.style.animationDuration = (10 + Math.random() * 10) + 's';
             heartsContainer.appendChild(heart);
         }
-        
-        // التنقل بين الأقسام
-        function showSection(sectionId) {
-            // إخفاء كل الأقسام
-            document.querySelectorAll('#home, .hidden-section').forEach(el => {
-                el.style.display = 'none';
-            });
-            
-            // إظهار القسم المطلوب
-            if (sectionId === 'home') {
-                document.getElementById('home').style.display = 'block';
-            } else {
-                document.getElementById(sectionId).style.display = 'block';
-                // تحميل الرسائل لما يفتح القسم
-                if (sectionId === 'messages' && isConnected) {
-                    loadMessages();
-                }
-            }
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-        
-        // عداد المشاكل
-        let problemsCount = 0;
-        function updateCounter(change) {
-            problemsCount = Math.max(0, problemsCount + change);
-            document.getElementById('problemsCount').textContent = problemsCount;
-        }
-        
-        // الوعد مع التأثير البطيء
-        let promiseCount = 0;
-        function makePromise() {
-            promiseCount++;
-            document.getElementById('promiseCount').textContent = promiseCount;
-            
-            const flyingText = document.getElementById('flyingText');
-            flyingText.classList.remove('animate');
-            void flyingText.offsetWidth;
-            flyingText.classList.add('animate');
-        }
-        
-        // عداد الصور
-        let photosCount = 0;
-        function addPhoto() {
-            photosCount++;
-            document.getElementById('photosCount').textContent = photosCount;
-            
-            if (photosCount === 100) {
-                document.getElementById('celebration').classList.add('show');
-                setTimeout(() => {
-                    alert('🎉 مبروك! وصلنا لـ 100 صورة مع بعض! 📸💕');
-                }, 500);
-            }
-        }
-        
-        // تحميل الرسائل عند فتح الصفحة (لو في قسم الرسائل)
-        window.addEventListener('load', () => {
-            if (isConnected) {
-                console.log('🚀 جاهز لإرسال واستلام الرسائل!');
-            }
-        });
     </script>
 </body>
 </html>
