@@ -1,3 +1,189 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حبنا | وعد الاصابع</title>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --peach: #FFDBBB;
+            --beige: #CCBEB1;
+            --taupe: #997E67;
+            --brown: #664930;
+            --cream: #FFF8F0;
+        }
+        
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(135deg, var(--cream) 0%, var(--peach) 100%);
+            min-height: 100vh;
+            color: var(--brown);
+            overflow-x: hidden;
+        }
+        
+        /* صفحة تسجيل الدخول */
+        .login-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--cream) 0%, var(--peach) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        
+        .login-container.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        
+        .login-box {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(102, 73, 48, 0.2);
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+            animation: slideUp 0.5s ease;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .login-box h1 {
+            font-size: 2.5rem;
+            color: var(--brown);
+            margin-bottom: 0.5rem;
+        }
+        
+        .login-box .subtitle {
+            color: var(--taupe);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+        
+        .login-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .input-group {
+            margin-bottom: 1.5rem;
+            text-align: right;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--brown);
+            font-weight: 500;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--beige);
+            border-radius: 10px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--taupe);
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--taupe), var(--brown));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 73, 48, 0.3);
+        }
+        
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .error-message {
+            color: #ff6b6b;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        /* باقي الأنماط الأصلية */
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            opacity: 0.1;
+            animation: float 15s infinite ease-in-out;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.1; }
+            90% { opacity: 0.1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+        
+        .counter-notification {
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-150px);
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
             padding: 1rem 2rem;
             border-radius: 50px;
             box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
@@ -33,7 +219,6 @@
             box-shadow: 0 10px 30px rgba(102, 73, 48, 0.4);
         }
         
-        /* الهيدر */
         header {
             background: rgba(255, 248, 240, 0.95);
             backdrop-filter: blur(10px);
@@ -108,7 +293,6 @@
             display: block;
         }
         
-        /* القسم الرئيسي */
         .hero {
             min-height: 80vh;
             display: flex;
@@ -163,7 +347,6 @@
             transform: translateY(-3px);
         }
         
-        /* ملخص القصة */
         .summary-section {
             padding: 4rem 5%;
             background: rgba(255, 248, 240, 0.9);
@@ -203,7 +386,6 @@
             line-height: 1.8;
         }
         
-        /* الأقسام المخفية */
         .hidden-section {
             display: none;
             padding: 6rem 5% 2rem;
@@ -251,7 +433,6 @@
             margin-bottom: 3rem;
         }
         
-        /* قسم القصة */
         .story-full {
             background: rgba(255, 248, 240, 0.9);
             padding: 3rem;
@@ -270,11 +451,11 @@
         }
         
         .story-full p {
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
             text-align: justify;
+            line-height: 2;
         }
         
-        /* قسم المشاعر */
         .feelings-section {
             background: linear-gradient(135deg, var(--cream) 0%, var(--peach) 100%);
         }
@@ -315,7 +496,6 @@
             border-color: var(--taupe);
         }
         
-        /* قسم المشاكل */
         .problems-section {
             background: linear-gradient(135deg, var(--peach) 0%, var(--beige) 100%);
         }
@@ -388,7 +568,6 @@
             color: var(--brown);
         }
         
-        /* قسم الوعد */
         .promise-section {
             background: linear-gradient(135deg, var(--brown) 0%, var(--taupe) 100%);
             color: white;
@@ -432,7 +611,6 @@
             transform: scale(1.05);
         }
         
-        /* تأثير الجملة الطائرة */
         .flying-text {
             position: fixed;
             bottom: -150px;
@@ -463,7 +641,6 @@
             100% { bottom: 120%; opacity: 0; transform: translateX(-50%) scale(1.1); }
         }
         
-        /* قسم الصور */
         .photos-section {
             background: linear-gradient(135deg, var(--cream) 0%, var(--peach) 100%);
             text-align: center;
@@ -514,7 +691,6 @@
             margin-bottom: 1rem;
         }
         
-        /* قسم التواريخ */
         .dates-section {
             background: linear-gradient(135deg, var(--beige) 0%, var(--peach) 100%);
         }
@@ -558,7 +734,6 @@
             border-color: var(--taupe);
         }
         
-        /* قسم الرسائل */
         .messages-section {
             background: linear-gradient(135deg, #fff5f5 0%, var(--peach) 100%);
         }
@@ -695,7 +870,6 @@
             color: #721c24;
         }
         
-        /* قسم الأغنية */
         .music-section {
             background: var(--cream);
             text-align: center;
@@ -718,7 +892,6 @@
             box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
         }
         
-        /* الفوتر */
         footer {
             background: var(--brown);
             color: var(--peach);
@@ -726,7 +899,32 @@
             text-align: center;
         }
         
-        /* التجاوب */
+        .logout-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--brown);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 600;
+            z-index: 10001;
+            display: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .logout-btn.show {
+            display: block;
+        }
+        
+        .logout-btn:hover {
+            background: var(--brown);
+            color: white;
+        }
+        
         @media (max-width: 768px) {
             .hero-text h1 {
                 font-size: 2.5rem;
@@ -756,24 +954,55 @@
                 font-size: 0.9rem;
                 padding: 0.8rem 1.5rem;
             }
+            
+            .login-box {
+                padding: 2rem;
+            }
+            
+            .login-box h1 {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- صفحة تسجيل الدخول -->
+    <div class="login-container" id="loginContainer">
+        <div class="login-box">
+            <div class="login-icon">💕</div>
+            <h1>وعد الاصابع</h1>
+            <p class="subtitle">أدخل كلمة السر للدخول للعالم الخاص 🤞</p>
+            
+            <div class="input-group">
+                <label for="secretCode">🔑 كلمة السر</label>
+                <input type="password" id="secretCode" placeholder="اكتب كلمة السر هنا" onkeypress="if(event.key==='Enter') checkSecret()">
+            </div>
+            
+            <button class="login-btn" id="loginBtn" onclick="checkSecret()">
+                دخول 💕
+            </button>
+            
+            <div class="error-message" id="errorMessage"></div>
+        </div>
+    </div>
+    
+    <!-- زر تسجيل الخروج -->
+    <button class="logout-btn" id="logoutBtn" onclick="logout()">🚪 خروج</button>
+    
     <!-- قلوب عائمة -->
     <div class="floating-hearts" id="hearts"></div>
     
     <!-- الجملة الطائرة -->
     <div class="flying-text" id="flyingText">خالد وفاطمة ديما مع بعض ♾️❤️</div>
     
-    <!-- إشعارات العدادات - جديد -->
+    <!-- إشعارات العدادات -->
     <div class="counter-notification" id="counterNotification">
         <span id="notificationIcon">🔔</span>
         <span id="notificationText"></span>
     </div>
     
     <!-- الهيدر -->
-    <header>
+    <header id="mainHeader" style="display: none;">
         <nav>
             <a href="#" class="logo" onclick="showSection('home')">وعد الاصابع 💕</a>
             <ul class="nav-icons">
@@ -795,7 +1024,7 @@
     </header>
     
     <!-- الصفحة الرئيسية -->
-    <div id="home">
+    <div id="home" style="display: none;">
         <section class="hero">
             <div class="hero-content">
                 <div class="hero-text">
@@ -830,7 +1059,38 @@
         </section>
     </div>
     
-    <!-- قسم الرسائل -->
+    <!-- قسم القصة الكاملة -->
+    <div id="story" class="hidden-section">
+        <div class="container">
+            <button class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</button>
+            <h2 class="section-title">قصتنا الكاملة 📖</h2>
+            
+            <div class="story-full">
+                <h3>🎭 البداية الغريبة</h3>
+                <p>قصة حبنا دي غريبة شوية بصراحة. من أول ما اتعرفنا على بعض واحنا أصلاً مش عارفين مين اللي بيكلم التاني ولا بعت له ليه. كانت بداية غريبة مليانة صدف ومواقف مش محسوبة، بس في الآخر كل ده كان قدر بيجمعنا مع بعض.</p>
+                
+                <h3>🎵 طريق الرجوع</h3>
+                <p>زي مثلاً لما كنت ببعتلك فيديوهات أغاني لحد ما وصلنا لتاني بلوك بينا. كانت فترة صعبة، بس الأغاني كانت هي السبيل الوحيد اللي بنتواصل من خلاله. كل أغنية كانت بتعبر عن شعور، وكل لحن كان بيوصل رسالة مش معبر عنها.</p>
+                
+                <h3>💫 لحظة الاعتراف</h3>
+                <p>عملنا جروب تاني بينا احنا وكنا بنتكلم أكتر وتعرفنا أكتر. كانت لحظة الاعتراف بالمشاعر يوم ١/٢/٢٠٢٣، يوم مش هننساه أبداً. يوم قررنا نكون صريحين مع بعض ونعترف باللي جوا قلوبنا.</p>
+                
+                <h3>💔 الحفر والفراق</h3>
+                <p>أيوه كانت فترة قصيرة مكملتش شهر تقريباً، بس كانت فترة حبيتها وفاكر كل لحظة فيها. الفراق علمنا قيمة بعض، وخلانا نعرف إن الحب الحقيقي بيستحق التضحية والانتظار.</p>
+                
+                <h3>🌅 العودة من جديد</h3>
+                <p>وفعلاً قررتِ ترجعي ونكمل مع بعض، بس بسبب إننا كنا صغيرين حصلت أول مشكلة. بس إحنا تعلمنا منها، وكل مشكلة عدت بينا خلتنا أقوى وأقرب لبعض.</p>
+                
+                <h3>✨ التجدد والمستقبل</h3>
+                <p>بدأت فترة جميلة بينا وهي الاستعباط والتلميح. كل واحد كان بيحاول يلمح ويتأكد من حب التاني. ورجعنا لبعض يوم ٩/٨/٢٠٢٥، ومن ساعتها واحنا بنختار بعض كل يوم. 💕</p>
+                
+                <h3>🤞 وعد الاصابع</h3>
+                <p>وعد الاصابع ده مش مجرد كلمة، ده عهد بينا. مهما أي حد فينا غلط، احنا مكملين. علشان دايماً اختيارنا هيكون <strong>إحنا</strong>. 💕</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- باقي الأقسام -->
     <div id="messages" class="hidden-section messages-section">
         <div class="container">
             <button class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</button>
@@ -861,35 +1121,6 @@
         </div>
     </div>
     
-    <!-- قسم القصة -->
-    <div id="story" class="hidden-section">
-        <div class="container">
-            <button class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</button>
-            <h2 class="section-title">قصتنا الكاملة 📖</h2>
-            
-            <div class="story-full">
-                <h3>🎭 البداية الغريبة</h3>
-                <p>قصة حبنا دي غريبة شوية بصراحة. من أول ما اتعرفنا على بعض واحنا أصلاً مش عارفين مين اللي بيكلم التاني ولا بعت له ليه...</p>
-                
-                <h3>🎵 طريق الرجوع</h3>
-                <p>زي مثلاً لما كنت ببعتلك فيديوهات أغاني لحد ما وصلنا لتاني بلوك بينا...</p>
-                
-                <h3>💫 لحظة الاعتراف</h3>
-                <p>عملنا جروب تاني بينا احنا وكنا بنتكلم أكتر وتعرفنا أكتر...</p>
-                
-                <h3>💔 الحفر والفراق</h3>
-                <p>أيوه كانت فترة قصيرة مكملتش شهر تقريباً، بس كانت فترة حبيتها وفاكر كل لحظة فيها...</p>
-                
-                <h3>🌅 العودة من جديد</h3>
-                <p>وفعلاً قررتِ ترجعي ونكمل مع بعض، بس بسبب إننا كنا صغيرين حصلت أول مشكلة...</p>
-                
-                <h3>✨ التجدد والمستقبل</h3>
-                <p>بدأت فترة جميلة بينا وهي الاستعباط والتلميح. كل واحد كان بيحاول يلمح ويتأكد من حب التاني...</p>
-            </div>
-        </div>
-    </div>
-    
-    <!-- قسم المشاعر -->
     <div id="feelings" class="hidden-section feelings-section">
         <div class="container">
             <button class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</button>
@@ -897,25 +1128,24 @@
             
             <div class="feeling-card">
                 <h3>🤗 الأمان</h3>
-                <p class="feeling-text">معاكِ أحس إني في مكان آمن، زي ماكون في بيتي اللي مهما بعته أرجعله تاني.</p>
+                <p class="feeling-text">معاكِ أحس إني في مكان آمن، زي ماكون في بيتي اللي مهما بعته أرجعله تاني. أنتِ الأمان اللي مش بيخلص، والحضن اللي بيشفي.</p>
                 <textarea class="feeling-input" placeholder="✍️ اكتبي هنا شعورك بالأمان..."></textarea>
             </div>
             
             <div class="feeling-card">
                 <h3>🤝 الثقة</h3>
-                <p class="feeling-text">ثقتي فيكِ أكبر من أي شك، وأعرف إن مهما حصل هنفضل جنب بعض.</p>
+                <p class="feeling-text">ثقتي فيكِ أكبر من أي شك، وأعرف إن مهما حصل هنفضل جنب بعض. الثقة دي أساس كل حاجة حلوة بينا.</p>
                 <textarea class="feeling-input" placeholder="✍️ اكتبي هنا عن ثقتك..."></textarea>
             </div>
             
             <div class="feeling-card">
                 <h3>❤️ الحب</h3>
-                <p class="feeling-text">حبنا مش مجرد كلمة، هو اختيار بنعمله كل يوم.</p>
+                <p class="feeling-text">حبنا مش مجرد كلمة، هو اختيار بنعمله كل يوم. اختيار نفضل مع بعض مهما كانت الظروف.</p>
                 <textarea class="feeling-input" placeholder="✍️ اكتبي هنا عن حبك..."></textarea>
             </div>
         </div>
     </div>
     
-    <!-- قسم المشاكل -->
     <div id="problems" class="hidden-section problems-section">
         <div class="container">
             <button class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</button>
@@ -938,7 +1168,6 @@
         </div>
     </div>
     
-    <!-- قسم الوعد -->
     <div id="promise" class="hidden-section promise-section">
         <div class="container">
             <button class="back-btn" onclick="showSection('home')" style="background: rgba(255,255,255,0.2); color: white;">← رجوع للرئيسية</button>
@@ -957,7 +1186,6 @@
         </div>
     </div>
     
-    <!-- قسم الصور -->
     <div id="photos" class="hidden-section photos-section">
         <div class="container">
             <button class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</button>
@@ -979,7 +1207,6 @@
         </div>
     </div>
     
-    <!-- قسم التواريخ -->
     <div id="dates" class="hidden-section dates-section">
         <div class="container">
             <button class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</button>
@@ -987,25 +1214,24 @@
             
             <div class="date-card">
                 <div class="date-display">📅 1 / 2 / 2023</div>
-                <div class="date-title">🌸 البداية</div>
-                <textarea class="date-input" placeholder="✍️ اكتبي هنا ذكرياتك..."></textarea>
+                <div class="date-title">🌸 البداية - يوم الاعتراف</div>
+                <textarea class="date-input" placeholder="✍️ اكتبي هنا ذكرياتك عن هذا اليوم المميز..."></textarea>
             </div>
             
             <div class="date-card" style="border: 3px solid var(--taupe);">
                 <div class="date-display">📅 9 / 8 / 2025</div>
-                <div class="date-title">💫 تجدد الحب</div>
-                <textarea class="date-input" placeholder="✍️ اكتبي هنا ذكرياتك..."></textarea>
+                <div class="date-title">💫 تجدد الحب - العودة للبعض</div>
+                <textarea class="date-input" placeholder="✍️ اكتبي هنا ذكرياتك عن يوم رجوعنا لبعض..."></textarea>
             </div>
             
             <div class="date-card">
                 <div class="date-display">📅 ❓ / 11 / 2026</div>
-                <div class="date-title">🤝 أول مقابلة</div>
-                <textarea class="date-input" placeholder="✍️ اكتبي هنا توقعاتك..."></textarea>
+                <div class="date-title">🤝 أول مقابلة - إن شاء الله</div>
+                <textarea class="date-input" placeholder="✍️ اكتبي هنا توقعاتك عن أول مقابلة بينا..."></textarea>
             </div>
         </div>
     </div>
     
-    <!-- قسم الأغنية -->
     <div id="music" class="hidden-section music-section">
         <div class="container">
             <button class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</button>
@@ -1019,8 +1245,7 @@
         </div>
     </div>
     
-    <!-- الفوتر -->
-    <footer>
+    <footer id="mainFooter" style="display: none;">
         <p>وعد الاصابع 🤞 | خالد وفاطمة 💕</p>
     </footer>
     
@@ -1039,18 +1264,81 @@
             measurementId: "G-Y3XEM1KGWC"
         };
         
-        let database, countersRef, messagesRef;
+        let database, countersRef, messagesRef, auth;
         let isConnected = false;
+        let currentUser = null;
         
         try {
             firebase.initializeApp(firebaseConfig);
             database = firebase.database();
+            auth = firebase.auth();
             countersRef = database.ref('counters');
             messagesRef = database.ref('messages');
             isConnected = true;
             console.log('✅ Firebase Connected');
+            
+            // التحقق من حالة الجلسة المحلية
+            checkLocalSession();
         } catch (error) {
             console.error('❌ Firebase Error:', error);
+        }
+        
+        // ==========================================
+        // نظام الدخول البسيط - كلمة سر مخفية
+        // ==========================================
+        
+        // ← كلمة السر المعدلة: 122023 (بدون \)
+        const SECRET_PASSWORD = "122023";
+        
+        function checkSecret() {
+            const input = document.getElementById('secretCode').value;
+            const errorDiv = document.getElementById('errorMessage');
+            
+            if (input === SECRET_PASSWORD) {
+                // كلمة السر صحيحة - دخول مباشر
+                const sessionData = {
+                    name: "فاطمة",
+                    loginTime: Date.now(),
+                    expiresAt: Date.now() + (24 * 60 * 60 * 1000) // 24 ساعة
+                };
+                
+                localStorage.setItem('loveSession', JSON.stringify(sessionData));
+                
+                auth.signInAnonymously()
+                    .then(() => {
+                        showMainContent();
+                    })
+                    .catch(() => {
+                        showMainContent();
+                    });
+            } else {
+                errorDiv.textContent = '❌ كلمة السر غير صحيحة';
+                errorDiv.classList.add('show');
+            }
+        }
+        
+        function logout() {
+            localStorage.removeItem('loveSession');
+            auth.signOut().then(() => {
+                location.reload();
+            }).catch(() => {
+                location.reload();
+            });
+        }
+        
+        // التحقق من الجلسة المحلية
+        function checkLocalSession() {
+            const session = localStorage.getItem('loveSession');
+            
+            if (session) {
+                const sessionData = JSON.parse(session);
+                
+                if (sessionData.expiresAt > Date.now()) {
+                    showMainContent();
+                } else {
+                    localStorage.removeItem('loveSession');
+                }
+            }
         }
         
         // ==========================================
@@ -1065,14 +1353,13 @@
         let lastPhotosCount = 0;
         
         // ==========================================
-        // إشعارات العدادات - جديد
+        // إشعارات العدادات
         // ==========================================
         function showCounterNotification(type, message) {
             const notification = document.getElementById('counterNotification');
             const icon = document.getElementById('notificationIcon');
             const text = document.getElementById('notificationText');
             
-            // تحديد الأيقونة واللون
             if (type === 'photos') {
                 notification.className = 'counter-notification photos';
                 icon.textContent = '📸';
@@ -1088,26 +1375,20 @@
             }
             
             text.textContent = message;
-            
-            // إظهار الإشعار
             notification.classList.add('show');
             
-            // صوت تنبيه (اختياري)
             playNotificationSound();
             
-            // اهتزاز على الموبايل (اختياري)
             if (navigator.vibrate) {
                 navigator.vibrate([200, 100, 200]);
             }
             
-            // إخفاء بعد 3 ثواني
             setTimeout(() => {
                 notification.classList.remove('show');
             }, 3000);
         }
         
         function playNotificationSound() {
-            // صوت بسيط باستخدام Web Audio API
             try {
                 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 const oscillator = audioContext.createOscillator();
@@ -1133,6 +1414,9 @@
         // التنقل بين الأقسام
         // ==========================================
         function showSection(sectionId) {
+            const session = localStorage.getItem('loveSession');
+            if (!session && !currentUser) return;
+            
             document.querySelectorAll('#home, .hidden-section').forEach(el => {
                 el.style.display = 'none';
             });
@@ -1171,9 +1455,11 @@
             btn.disabled = true;
             btn.innerHTML = '<span>⏳</span> جاري الإرسال...';
             
+            const session = JSON.parse(localStorage.getItem('loveSession') || '{}');
+            
             const message = {
                 content: content,
-                sender: 'خالد',
+                sender: session.name || 'فاطمة',
                 timestamp: Date.now(),
                 read: false
             };
@@ -1207,13 +1493,11 @@
                     if (!msg.read) newUnread++;
                 });
                 
-                // إشعار لرسائل جديدة
                 if (newUnread > unreadMessages && unreadMessages > 0) {
                     showCounterNotification('message', `💌 رسالة جديدة من ${messages[0].sender}!`);
                 }
                 unreadMessages = newUnread;
                 
-                // تحديث الإشارة
                 const badge = document.getElementById('messageBadge');
                 if (unreadMessages > 0) {
                     badge.textContent = unreadMessages;
@@ -1222,7 +1506,6 @@
                     badge.classList.remove('show');
                 }
                 
-                // عرض الرسائل
                 const list = document.getElementById('messagesList');
                 if (messages.length === 0) {
                     list.innerHTML = '<div class="no-messages">💭 لا توجد رسائل بعد...</div>';
@@ -1239,7 +1522,7 @@
         }
         
         // ==========================================
-        // عداد المشاكل - مع إشعار
+        // عداد المشاكل
         // ==========================================
         function loadProblems() {
             const syncDiv = document.getElementById('problemsSync');
@@ -1247,7 +1530,6 @@
             countersRef.child('problems').on('value', (snapshot) => {
                 const value = snapshot.val() || 0;
                 
-                // إشعار لو زاد العداد
                 if (value > lastProblemsCount && lastProblemsCount > 0) {
                     showCounterNotification('problems', `💪 عدد المشاكل زاد! الآن: ${value}`);
                 }
@@ -1269,7 +1551,7 @@
         }
         
         // ==========================================
-        // عداد الوعد - مع إشعار
+        // عداد الوعد
         // ==========================================
         function loadPromise() {
             const syncDiv = document.getElementById('promiseSync');
@@ -1277,7 +1559,6 @@
             countersRef.child('promise').on('value', (snapshot) => {
                 const value = snapshot.val() || 0;
                 
-                // إشعار لو زاد العداد
                 if (value > lastPromiseCount && lastPromiseCount > 0) {
                     showCounterNotification('promise', `🤞 وعد جديد! إجمالي الوعود: ${value}`);
                 }
@@ -1297,7 +1578,6 @@
             
             countersRef.child('promise').set(promiseCount + 1);
             
-            // تأثير الجملة الطائرة
             const flyingText = document.getElementById('flyingText');
             flyingText.classList.remove('animate');
             void flyingText.offsetWidth;
@@ -1305,7 +1585,7 @@
         }
         
         // ==========================================
-        // عداد الصور - مع إشعار
+        // عداد الصور
         // ==========================================
         function loadPhotos() {
             const syncDiv = document.getElementById('photosSync');
@@ -1313,7 +1593,6 @@
             countersRef.child('photos').on('value', (snapshot) => {
                 const value = snapshot.val() || 0;
                 
-                // إشعار لو زاد العداد
                 if (value > lastPhotosCount && lastPhotosCount > 0) {
                     const remaining = 100 - value;
                     if (remaining > 0) {
@@ -1329,7 +1608,6 @@
                 syncDiv.textContent = '✅ متزامن مع Firebase';
                 syncDiv.className = 'sync-status online';
                 
-                // احتفال عند 100
                 if (value >= 100) {
                     document.getElementById('celebration').classList.add('show');
                 }
@@ -1363,6 +1641,21 @@
                 year: 'numeric', month: 'short', day: 'numeric',
                 hour: '2-digit', minute: '2-digit'
             });
+        }
+        
+        function showMainContent() {
+            document.getElementById('loginContainer').classList.add('hidden');
+            document.getElementById('mainHeader').style.display = 'block';
+            document.getElementById('home').style.display = 'block';
+            document.getElementById('mainFooter').style.display = 'block';
+            document.getElementById('logoutBtn').classList.add('show');
+            
+            if (isConnected) {
+                loadMessages();
+                loadProblems();
+                loadPromise();
+                loadPhotos();
+            }
         }
         
         // ==========================================
