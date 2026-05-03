@@ -149,64 +149,131 @@
 
         /* ─── Hero Section ─── */
         .hero {
-            min-height: 80vh; display: flex; align-items: center;
-            justify-content: center; padding: 8rem 5% 3rem;
+            min-height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            padding: 8rem 5% 3rem;
             position: relative; z-index: 1;
-            background-image: url('IMG_20260503_233905_996.jpg');
-            background-size: cover; background-position: center;
-            background-repeat: no-repeat; background-attachment: fixed;
         }
-        .hero::before {
-            content: ''; position: absolute; top: 0; left: 0;
+
+        /* Full-screen background image layer */
+        .hero-bg {
+            position: fixed;
+            top: 0; left: 0;
             width: 100%; height: 100%;
-            background: linear-gradient(135deg, rgba(255,248,240,0.75) 0%, rgba(255,219,187,0.65) 100%);
-            z-index: -1;
+            z-index: -10;
+            pointer-events: none;
         }
-        .hero-content { max-width: 800px; text-align: center; position: relative; z-index: 2; }
+        .hero-bg img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            object-position: center top;
+            display: block;
+        }
+        .hero-bg-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(
+                135deg,
+                rgba(255,248,240,0.55) 0%,
+                rgba(255,219,187,0.45) 50%,
+                rgba(255,248,240,0.55) 100%
+            );
+            z-index: -9;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 900px; width: 100%;
+            display: flex; flex-direction: column;
+            align-items: center; gap: 2rem;
+            position: relative; z-index: 2;
+        }
+
+        .hero-text {
+            text-align: center;
+            background: rgba(255,248,240,0.82);
+            backdrop-filter: blur(12px);
+            padding: 2.5rem 3rem;
+            border-radius: 24px;
+            box-shadow: 0 8px 40px rgba(102,73,48,0.15);
+            border: 1px solid rgba(255,219,187,0.6);
+            max-width: 650px;
+        }
         .hero-text h1 {
-            font-size: 4rem; font-weight: 700; color: var(--brown);
-            margin-bottom: 1rem; text-shadow: 0 2px 10px rgba(255,255,255,0.8);
+            font-size: 3rem; font-weight: 700; color: var(--brown);
+            margin-bottom: 0.8rem;
         }
-        .hero-text h1 span { color: var(--taupe); display: block; font-size: 2rem; margin-top: 0.5rem; }
+        .hero-text h1 span { color: var(--taupe); display: block; font-size: 1.5rem; margin-top: 0.4rem; }
         .hero-text p {
-            font-size: 1.3rem; color: var(--brown); margin-bottom: 2rem;
-            line-height: 1.8; text-shadow: 0 1px 5px rgba(255,255,255,0.9); font-weight: 500;
+            font-size: 1.1rem; color: var(--brown); margin-bottom: 1.5rem;
+            line-height: 1.9; font-weight: 500;
         }
 
         .cta-button {
-            display: inline-block; padding: 1rem 2.5rem;
+            display: inline-block; padding: 0.9rem 2rem;
             background: var(--taupe); color: white; text-decoration: none;
             border-radius: 50px; font-weight: 600; transition: all 0.3s ease;
-            border: none; cursor: pointer;
+            border: none; cursor: pointer; font-family: 'Tajawal', sans-serif;
+            font-size: 1rem;
         }
         .cta-button:hover { background: var(--brown); transform: translateY(-3px); }
 
+        /* ─── Days Counter - Compact ─── */
+        .days-counter-hero {
+            background: rgba(102,73,48,0.88);
+            backdrop-filter: blur(12px);
+            color: white; padding: 1.2rem 2.5rem; border-radius: 50px;
+            cursor: pointer; transition: all 0.3s ease;
+            position: relative; overflow: hidden;
+            box-shadow: 0 8px 30px rgba(102,73,48,0.35);
+            display: flex; align-items: center; gap: 1rem;
+            border: 1px solid rgba(255,219,187,0.25);
+            width: fit-content;
+        }
+        .days-counter-hero:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(102,73,48,0.45);
+            background: rgba(102,73,48,0.95);
+        }
+        .days-counter-hero:active { transform: scale(0.97); }
+
+        .days-counter-inner {
+            display: flex; align-items: center; gap: 0.8rem;
+        }
+        .days-icon { font-size: 1.8rem; }
+        .days-info { display: flex; flex-direction: column; }
+        .days-number {
+            font-size: 2.2rem; font-weight: 700;
+            line-height: 1; letter-spacing: -1px;
+        }
+        .days-label { font-size: 0.85rem; opacity: 0.85; white-space: nowrap; }
+        .days-click-hint {
+            font-size: 0.75rem; opacity: 0.6; margin-top: 0.15rem;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0%,100% { opacity: 0.6; } 50% { opacity: 1; } }
+
         /* ─── Summary Section ─── */
         .summary-section {
-            padding: 4rem 5%; background: rgba(255,248,240,0.95);
+            padding: 3rem 5% 4rem;
             position: relative; z-index: 1;
         }
-        .summary-box { max-width: 800px; margin: 0 auto; text-align: center; }
-        .summary-title { font-size: 2rem; color: var(--brown); margin-bottom: 1.5rem; }
-        .summary-text { font-size: 1.1rem; line-height: 2; color: var(--taupe); margin-bottom: 2rem; }
+        .summary-box {
+            max-width: 750px; margin: 0 auto; text-align: center;
+            background: rgba(255,248,240,0.88);
+            backdrop-filter: blur(10px);
+            border-radius: 24px; padding: 2.5rem;
+            box-shadow: 0 8px 40px rgba(102,73,48,0.12);
+            border: 1px solid rgba(255,219,187,0.5);
+        }
+        .summary-title { font-size: 1.8rem; color: var(--brown); margin-bottom: 1.2rem; }
+        .summary-text { font-size: 1.05rem; line-height: 2; color: var(--taupe); margin-bottom: 1.5rem; }
         .summary-highlight {
             background: linear-gradient(135deg, var(--peach), var(--beige));
-            padding: 2rem; border-radius: 20px; margin-top: 2rem;
+            padding: 1.5rem; border-radius: 16px; margin-top: 1.5rem;
         }
-        .summary-highlight p { color: var(--brown); font-size: 1.2rem; line-height: 1.8; }
-
-        .days-counter-hero {
-            background: linear-gradient(135deg, var(--brown), var(--taupe));
-            color: white; padding: 2rem; border-radius: 20px;
-            margin-top: 2rem; cursor: pointer; transition: all 0.3s ease;
-            position: relative; overflow: hidden;
-            box-shadow: 0 10px 30px rgba(102,73,48,0.3);
-        }
-        .days-counter-hero:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(102,73,48,0.4); }
-        .days-counter-hero:active { transform: scale(0.98); }
-        .days-number { font-size: 4rem; font-weight: 700; display: block; margin-bottom: 0.5rem; }
-        .days-label { font-size: 1.2rem; opacity: 0.9; }
-        .days-click-hint { font-size: 0.9rem; opacity: 0.7; margin-top: 0.5rem; }
+        .summary-highlight p { color: var(--brown); font-size: 1.1rem; line-height: 1.8; }
 
         /* ─── Hidden Sections (shared) ─── */
         .hidden-section {
@@ -225,6 +292,7 @@
             color: var(--brown); text-decoration: none;
             border-radius: 25px; font-weight: 500;
             transition: all 0.3s ease; border: none; cursor: pointer;
+            font-family: 'Tajawal', sans-serif;
         }
         .back-btn:hover { background: var(--taupe); color: white; }
 
@@ -236,16 +304,41 @@
         }
 
         /* ─── Story Section ─── */
+        #story {
+            position: relative; overflow: hidden;
+        }
+
+        /* Story background image - always visible */
+        .story-bg {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .story-bg img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+        }
+        .story-bg-overlay {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(255,248,240,0.80) 0%, rgba(204,190,177,0.72) 100%);
+        }
+        #story .container { position: relative; z-index: 1; }
+
         .story-full {
-            background: rgba(255,248,240,0.88); padding: 3rem;
+            background: rgba(255,248,240,0.90); padding: 2.5rem;
             border-radius: 20px; line-height: 2.2;
-            font-size: 1.1rem; color: var(--brown);
-            backdrop-filter: blur(5px);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            font-size: 1.05rem; color: var(--brown);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.12);
+            border: 1px solid rgba(255,219,187,0.4);
         }
         .story-full h3 {
             color: var(--taupe); margin: 2rem 0 1rem;
-            font-size: 1.5rem; border-right: 4px solid var(--taupe);
+            font-size: 1.4rem; border-right: 4px solid var(--taupe);
             padding-right: 1rem;
         }
         .story-full p { margin-bottom: 1.5rem; text-align: justify; line-height: 2; }
@@ -266,31 +359,34 @@
         }
         .feeling-input:focus { outline: none; border-color: var(--taupe); }
 
-        /* ─── Problems Section (dynamic bg) ─── */
-        .problems-section { position: relative; overflow: hidden; transition: all 0.8s ease; }
-        .problems-section::before {
-            content: ''; position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%;
+        /* ─── Problems Section ─── */
+        #problems {
+            position: relative; overflow: hidden;
             background: linear-gradient(135deg, var(--peach) 0%, var(--beige) 100%);
-            z-index: -2; transition: opacity 0.8s ease;
+            transition: all 0.3s ease;
         }
-        .problems-section::after {
-            content: ''; position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%;
-            background-image: url('IMG_20260503_233913_117.jpg');
-            background-size: cover; background-position: center;
-            background-repeat: no-repeat; z-index: -1;
-            opacity: 0; transition: opacity 0.8s ease;
-        }
-        .problems-section.show-bg::after  { opacity: 1; }
-        .problems-section.show-bg::before { opacity: 0; }
-        .problems-section .section-overlay {
+
+        /* Problems background image - hidden by default, shows on button press */
+        .problems-bg {
             position: absolute; top: 0; left: 0;
             width: 100%; height: 100%;
-            background: linear-gradient(135deg, rgba(255,219,187,0.7) 0%, rgba(204,190,177,0.7) 100%);
-            z-index: 0; opacity: 0; transition: opacity 0.8s ease; pointer-events: none;
+            z-index: 0; pointer-events: none;
+            opacity: 0;
+            transition: opacity 1s ease;
         }
-        .problems-section.show-bg .section-overlay { opacity: 1; }
+        .problems-bg img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+        }
+        .problems-bg-overlay {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(255,219,187,0.55) 0%, rgba(204,190,177,0.55) 100%);
+        }
+        #problems.show-bg .problems-bg { opacity: 1; }
+        #problems .container { position: relative; z-index: 1; }
 
         .counter-box {
             background: rgba(255,255,255,0.92); padding: 3rem;
@@ -302,7 +398,8 @@
         .counter-number { font-size: 5rem; font-weight: 700; color: var(--brown); display: block; }
         .counter-label { font-size: 1.2rem; color: var(--taupe); margin: 1rem 0; }
         .counter-controls { display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem; }
-        .counter-btn { padding: 1rem 2rem; border: none; border-radius: 10px; font-size: 1.5rem; cursor: pointer; transition: all 0.3s ease; }
+        .counter-btn { padding: 1rem 2rem; border: none; border-radius: 10px; font-size: 1.5rem; cursor: pointer; transition: all 0.3s ease; font-family: 'Tajawal', sans-serif; }
+        .counter-btn:hover { transform: scale(1.05); }
         .btn-minus { background: #ff6b6b; color: white; }
         .btn-plus  { background: #51cf66; color: white; }
         .sync-status { font-size: 0.9rem; color: var(--taupe); margin-top: 1rem; }
@@ -315,32 +412,43 @@
             position: relative; z-index: 1; backdrop-filter: blur(5px);
         }
 
-        /* ─── Promise Section (dynamic bg) ─── */
-        .promise-section { position: relative; overflow: hidden; transition: all 0.8s ease; }
-        .promise-section::before {
-            content: ''; position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: linear-gradient(135deg, var(--brown) 0%, var(--taupe) 100%);
-            z-index: -2; transition: opacity 0.8s ease;
+        /* ─── Promise Section ─── */
+        #promise {
+            position: relative; overflow: hidden;
         }
-        .promise-section::after {
-            content: ''; position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%;
-            background-image: url('IMG_20260503_233910_826.jpg');
-            background-size: cover; background-position: center;
-            background-repeat: no-repeat; z-index: -1;
-            opacity: 0; transition: opacity 0.8s ease;
-        }
-        .promise-section.show-bg::after  { opacity: 1; }
-        .promise-section.show-bg::before { opacity: 0; }
-        .promise-section .section-overlay {
+
+        /* Promise solid dark background by default */
+        .promise-solid-bg {
             position: absolute; top: 0; left: 0;
             width: 100%; height: 100%;
-            background: linear-gradient(135deg, rgba(102,73,48,0.75) 0%, rgba(153,126,103,0.75) 100%);
-            z-index: 0; opacity: 0; transition: opacity 0.8s ease; pointer-events: none;
+            background: linear-gradient(135deg, var(--brown) 0%, var(--taupe) 100%);
+            z-index: 0;
+            transition: opacity 1s ease;
         }
-        .promise-section.show-bg .section-overlay { opacity: 1; }
-        .promise-section .section-title { color: white; position: relative; z-index: 1; }
+
+        /* Promise image background - hidden by default, shows when counter increases */
+        .promise-bg {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0; pointer-events: none;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+        .promise-bg img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+        }
+        .promise-bg-overlay {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(102,73,48,0.65) 0%, rgba(153,126,103,0.65) 100%);
+        }
+        #promise.show-bg .promise-solid-bg { opacity: 0; }
+        #promise.show-bg .promise-bg { opacity: 1; }
+        #promise .container { position: relative; z-index: 1; }
+        #promise .section-title { color: white; position: relative; z-index: 1; }
 
         .promise-box {
             background: rgba(255,255,255,0.15); backdrop-filter: blur(10px);
@@ -348,11 +456,12 @@
             border: 2px solid rgba(255,255,255,0.2);
             text-align: center; position: relative; z-index: 1;
         }
-        .promise-counter { font-size: 5rem; font-weight: 700; margin: 1rem 0; }
+        .promise-counter { font-size: 5rem; font-weight: 700; margin: 1rem 0; color: white; }
         .promise-btn {
             padding: 1rem 3rem; background: white; color: var(--brown);
             border: none; border-radius: 50px; font-size: 1.2rem;
             font-weight: 600; cursor: pointer; transition: all 0.3s ease; margin-top: 1rem;
+            font-family: 'Tajawal', sans-serif;
         }
         .promise-btn:hover { transform: scale(1.05); }
 
@@ -429,6 +538,7 @@
             font-size: 1.1rem; font-weight: 600; cursor: pointer;
             transition: all 0.3s ease;
             display: flex; align-items: center; gap: 0.5rem; margin: 0 auto;
+            font-family: 'Tajawal', sans-serif;
         }
         .send-btn:hover { transform: translateY(-3px); box-shadow: 0 5px 20px rgba(102,73,48,0.3); }
         .send-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
@@ -471,7 +581,7 @@
         .youtube-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(255,107,107,0.4); }
 
         /* ─── Footer ─── */
-        footer { background: var(--brown); color: var(--peach); padding: 2rem 5%; text-align: center; }
+        footer { background: var(--brown); color: var(--peach); padding: 2rem 5%; text-align: center; position: relative; z-index: 1; }
 
         /* ─── Logout ─── */
         .logout-btn {
@@ -487,8 +597,8 @@
 
         /* ─── Responsive ─── */
         @media (max-width: 768px) {
-            .hero-text h1 { font-size: 2.5rem; }
-            .hero-text h1 span { font-size: 1.5rem; }
+            .hero-text h1 { font-size: 2rem; }
+            .hero-text h1 span { font-size: 1.2rem; }
             .nav-icons { gap: 1rem; }
             .nav-icons a { font-size: 0.75rem; }
             .flying-text { font-size: 1.5rem; }
@@ -496,8 +606,9 @@
             .counter-notification { font-size: 0.9rem; padding: 0.8rem 1.5rem; }
             .login-box { padding: 2rem; }
             .login-box h1 { font-size: 2rem; }
-            .days-number { font-size: 3rem; }
-            .hero { background-attachment: scroll; }
+            .days-number { font-size: 1.8rem; }
+            .days-counter-hero { padding: 1rem 1.8rem; }
+            .hero-text { padding: 1.8rem 1.5rem; }
         }
     </style>
 </head>
@@ -558,6 +669,13 @@
 
     <!-- ═══ الصفحة الرئيسية ═══ -->
     <div id="home" style="display:none;">
+
+        <!-- خلفية الصفحة الرئيسية - صورة الأنيمي -->
+        <div class="hero-bg" id="heroBg">
+            <img src="IMG_20260503_233905_996.jpg" alt="background" />
+        </div>
+        <div class="hero-bg-overlay" id="heroBgOverlay"></div>
+
         <section class="hero">
             <div class="hero-content">
                 <div class="hero-text">
@@ -571,10 +689,17 @@
                     </p>
                     <button class="cta-button" onclick="showSection('story')">اقرأ القصة الكاملة 📖</button>
                 </div>
+
+                <!-- عداد الأيام - مدمج وأصغر -->
                 <div class="days-counter-hero" id="daysCounterHero" onclick="showDayMessage()">
-                    <span class="days-number" id="daysCountDisplay">0</span>
-                    <div class="days-label">يوم منذ بداية قصتنا 💕</div>
-                    <div class="days-click-hint">👆 اضغط هنا للرسالة</div>
+                    <div class="days-counter-inner">
+                        <span class="days-icon">💕</span>
+                        <div class="days-info">
+                            <span class="days-number" id="daysCountDisplay">0</span>
+                            <span class="days-label">يوم منذ بداية قصتنا</span>
+                            <span class="days-click-hint">👆 اضغط للرسالة</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -598,15 +723,13 @@
     </div>
 
     <!-- ═══ قسم القصة الكاملة ═══ -->
-    <div id="story" class="hidden-section"
-         style="background-image: url('IMG_20260503_233908_222.jpg');
-                background-size: cover; background-position: center;
-                background-repeat: no-repeat; background-attachment: fixed;
-                position: relative;">
-        <div style="position:absolute; top:0; left:0; width:100%; height:100%;
-                    background: linear-gradient(135deg, rgba(255,248,240,0.82) 0%, rgba(204,190,177,0.75) 100%);
-                    z-index:0;"></div>
-        <div class="container" style="position:relative; z-index:1;">
+    <div id="story" class="hidden-section">
+        <!-- خلفية القصة - صورة الاتنين بيتكلموا -->
+        <div class="story-bg">
+            <img src="IMG_20260503_233908_222.jpg" alt="story background" />
+            <div class="story-bg-overlay"></div>
+        </div>
+        <div class="container">
             <button class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</button>
             <h2 class="section-title">قصتنا الكاملة 📖</h2>
             <div class="story-full">
@@ -678,10 +801,14 @@
         </div>
     </div>
 
-    <!-- ═══ قسم المشاكل (خلفية ديناميكية - الصورة 4) ═══ -->
-    <div id="problems" class="hidden-section problems-section">
-        <div class="section-overlay"></div>
-        <div class="container" style="position:relative; z-index:1;">
+    <!-- ═══ قسم المشاكل ═══ -->
+    <div id="problems" class="hidden-section">
+        <!-- خلفية المشاكل - صورة اللي بتبان عند الضغط -->
+        <div class="problems-bg">
+            <img src="IMG_20260503_233913_117.jpg" alt="problems background" />
+            <div class="problems-bg-overlay"></div>
+        </div>
+        <div class="container">
             <button class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</button>
             <h2 class="section-title">المشاكل 💪</h2>
             <div class="counter-box">
@@ -700,10 +827,15 @@
         </div>
     </div>
 
-    <!-- ═══ قسم الوعد (خلفية ديناميكية - الصورة 3) ═══ -->
-    <div id="promise" class="hidden-section promise-section">
-        <div class="section-overlay"></div>
-        <div class="container" style="position:relative; z-index:1;">
+    <!-- ═══ قسم الوعد ═══ -->
+    <div id="promise" class="hidden-section">
+        <div class="promise-solid-bg"></div>
+        <!-- خلفية الوعد - تظهر عند زيادة العداد -->
+        <div class="promise-bg">
+            <img src="IMG_20260503_233910_826.jpg" alt="promise background" />
+            <div class="promise-bg-overlay"></div>
+        </div>
+        <div class="container">
             <button class="back-btn" onclick="showSection('home')"
                 style="background:rgba(255,255,255,0.2); color:white;">← رجوع للرئيسية</button>
             <h2 class="section-title">وعدنا 🤞</h2>
@@ -712,7 +844,7 @@
                     مهما أي حد فينا غلط، احنا مكملين.<br>
                     علشان دايماً اختيارنا هيكون <strong>إحنا</strong> 💕
                 </p>
-                <div class="promise-counter" id="promiseCount" style="color:white;">0</div>
+                <div class="promise-counter" id="promiseCount">0</div>
                 <p style="margin-bottom:1rem; color:white;">مرة اخترنا فيها إحنا</p>
                 <div class="sync-status" id="promiseSync" style="color:rgba(255,255,255,0.7);">⚪ جاري التزامن...</div>
                 <button class="promise-btn" onclick="makePromise()">أنا أختار إحنا ❤️</button>
@@ -848,17 +980,21 @@
         }
 
         // ══════════════════════════════════════════════
-        // عداد الأيام
+        // عداد الأيام - يشتغل تلقائي ويزيد يومياً
         // ══════════════════════════════════════════════
         const START_DATE = new Date('2023-02-01T00:00:00');
 
         function calculateDays() {
-            return Math.floor((new Date() - START_DATE) / (1000 * 60 * 60 * 24));
+            const now  = new Date();
+            const diff = now - START_DATE;
+            return Math.floor(diff / (1000 * 60 * 60 * 24));
         }
 
         function updateDaysCounter() {
             const el = document.getElementById('daysCountDisplay');
-            if (el) el.textContent = calculateDays();
+            if (el) {
+                el.textContent = calculateDays();
+            }
         }
 
         function showDayMessage() {
@@ -869,7 +1005,23 @@
             if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
         }
 
+        // تحديث فوري ثم كل دقيقة للتأكد
+        updateDaysCounter();
         setInterval(updateDaysCounter, 60000);
+
+        // تحديث عند منتصف الليل تلقائياً
+        function scheduleNextDayUpdate() {
+            const now       = new Date();
+            const tomorrow  = new Date(now);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            tomorrow.setHours(0, 0, 1, 0); // 12:00:01 AM
+            const msUntilMidnight = tomorrow - now;
+            setTimeout(() => {
+                updateDaysCounter();
+                scheduleNextDayUpdate(); // جدولة اليوم التالي
+            }, msUntilMidnight);
+        }
+        scheduleNextDayUpdate();
 
         // ══════════════════════════════════════════════
         // المتغيرات العامة
@@ -907,8 +1059,8 @@
 
         function playNotificationSound() {
             try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = ctx.createOscillator();
+                const ctx  = new (window.AudioContext || window.webkitAudioContext)();
+                const osc  = ctx.createOscillator();
                 const gain = ctx.createGain();
                 osc.connect(gain);
                 gain.connect(ctx.destination);
@@ -927,9 +1079,16 @@
         function showSection(sectionId) {
             if (!localStorage.getItem('loveSession')) return;
 
+            // إخفاء كل الأقسام
             document.querySelectorAll('#home, .hidden-section').forEach(el => {
                 el.style.display = 'none';
             });
+
+            // إخفاء خلفية الهوم عند الخروج منه
+            const heroBg      = document.getElementById('heroBg');
+            const heroBgOvl   = document.getElementById('heroBgOverlay');
+            if (heroBg)    heroBg.style.display    = (sectionId === 'home') ? 'block' : 'none';
+            if (heroBgOvl) heroBgOvl.style.display = (sectionId === 'home') ? 'block' : 'none';
 
             if (sectionId === 'home') {
                 document.getElementById('home').style.display = 'block';
@@ -1019,10 +1178,9 @@
                 const value = snapshot.val() || 0;
                 if (value > lastProblemsCount && lastProblemsCount > 0) {
                     showCounterNotification('problems', `💪 عدد المشاكل زاد! الآن: ${value}`);
-                    showProblemsBackground();
                 }
                 lastProblemsCount = value;
-                problemsCount = value;
+                problemsCount     = value;
                 document.getElementById('problemsCount').textContent = value;
                 const sync = document.getElementById('problemsSync');
                 sync.textContent = '✅ متزامن مع Firebase';
@@ -1032,17 +1190,20 @@
 
         function updateProblems(change) {
             if (!isConnected) { alert('❌ لا يوجد اتصال!'); return; }
+            // إظهار الخلفية عند الضغط
             showProblemsBackground();
             countersRef.child('problems').set(Math.max(0, problemsCount + change));
         }
 
         function showProblemsBackground() {
             const section = document.getElementById('problems');
-            if (!problemsBgShown) {
-                section.classList.add('show-bg');
-                problemsBgShown = true;
-                setTimeout(() => { section.classList.remove('show-bg'); problemsBgShown = false; }, 5000);
-            }
+            section.classList.add('show-bg');
+            problemsBgShown = true;
+            clearTimeout(window.problemsBgTimer);
+            window.problemsBgTimer = setTimeout(() => {
+                section.classList.remove('show-bg');
+                problemsBgShown = false;
+            }, 5000);
         }
 
         // ══════════════════════════════════════════════
@@ -1053,10 +1214,9 @@
                 const value = snapshot.val() || 0;
                 if (value > lastPromiseCount && lastPromiseCount > 0) {
                     showCounterNotification('promise', `🤞 وعد جديد! إجمالي الوعود: ${value}`);
-                    showPromiseBackground();
                 }
                 lastPromiseCount = value;
-                promiseCount = value;
+                promiseCount     = value;
                 document.getElementById('promiseCount').textContent = value;
                 document.getElementById('promiseSync').textContent  = '✅ متزامن';
             });
@@ -1065,6 +1225,7 @@
         function makePromise() {
             if (!isConnected) { alert('❌ لا يوجد اتصال!'); return; }
             countersRef.child('promise').set(promiseCount + 1);
+            // إظهار الخلفية
             showPromiseBackground();
             const flyingText = document.getElementById('flyingText');
             flyingText.classList.remove('animate');
@@ -1074,11 +1235,13 @@
 
         function showPromiseBackground() {
             const section = document.getElementById('promise');
-            if (!promiseBgShown) {
-                section.classList.add('show-bg');
-                promiseBgShown = true;
-                setTimeout(() => { section.classList.remove('show-bg'); promiseBgShown = false; }, 8000);
-            }
+            section.classList.add('show-bg');
+            promiseBgShown = true;
+            clearTimeout(window.promiseBgTimer);
+            window.promiseBgTimer = setTimeout(() => {
+                section.classList.remove('show-bg');
+                promiseBgShown = false;
+            }, 8000);
         }
 
         // ══════════════════════════════════════════════
@@ -1094,7 +1257,7 @@
                                       : '🎉 مبروك! وصلنا 100 صورة!');
                 }
                 lastPhotosCount = value;
-                photosCount = value;
+                photosCount     = value;
                 document.getElementById('photosCount').textContent = value;
                 const sync = document.getElementById('photosSync');
                 sync.textContent = '✅ متزامن مع Firebase';
@@ -1131,6 +1294,11 @@
             document.getElementById('home').style.display        = 'block';
             document.getElementById('mainFooter').style.display  = 'block';
             document.getElementById('logoutBtn').classList.add('show');
+            // إظهار خلفية الهوم
+            const heroBg    = document.getElementById('heroBg');
+            const heroBgOvl = document.getElementById('heroBgOverlay');
+            if (heroBg)    heroBg.style.display    = 'block';
+            if (heroBgOvl) heroBgOvl.style.display = 'block';
             updateDaysCounter();
             if (isConnected) {
                 loadMessages();
@@ -1150,8 +1318,8 @@
             const heart = document.createElement('div');
             heart.className = 'heart';
             heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
-            heart.style.left            = Math.random() * 100 + '%';
-            heart.style.animationDelay  = Math.random() * 15 + 's';
+            heart.style.left              = Math.random() * 100 + '%';
+            heart.style.animationDelay    = Math.random() * 15 + 's';
             heart.style.animationDuration = (10 + Math.random() * 10) + 's';
             heartsContainer.appendChild(heart);
         }
