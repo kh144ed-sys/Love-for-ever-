@@ -4,20 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>حبنا | وعد الاصابع</title>
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap');
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         :root {
             --peach: #FFDBBB;
             --beige: #CCBEB1;
@@ -25,7 +19,7 @@
             --brown: #664930;
             --cream: #FFF8F0;
         }
-        
+
         body {
             font-family: 'Tajawal', sans-serif;
             background: linear-gradient(135deg, var(--cream) 0%, var(--peach) 100%);
@@ -33,1028 +27,519 @@
             color: var(--brown);
             overflow-x: hidden;
         }
-        
-        /* صفحة تسجيل الدخول */
+
+        /* ─── Login ─── */
         .login-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
             background: linear-gradient(135deg, var(--cream) 0%, var(--peach) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             z-index: 99999;
             transition: opacity 0.5s ease, visibility 0.5s ease;
         }
-        
-        .login-container.hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-        
+        .login-container.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
         .login-box {
-            background: white;
-            padding: 3rem;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(102, 73, 48, 0.2);
-            width: 90%;
-            max-width: 450px;
-            text-align: center;
+            background: white; padding: 3rem; border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(102,73,48,0.2);
+            width: 90%; max-width: 450px; text-align: center;
             animation: slideUp 0.5s ease;
         }
-        
         @keyframes slideUp {
             from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+            to   { opacity: 1; transform: translateY(0); }
         }
-        
-        .login-box h1 {
-            font-size: 2.5rem;
-            color: var(--brown);
-            margin-bottom: 0.5rem;
-        }
-        
-        .login-box .subtitle {
-            color: var(--taupe);
-            margin-bottom: 2rem;
-            font-size: 1.1rem;
-        }
-        
-        .login-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-        }
-        
-        .input-group {
-            margin-bottom: 1.5rem;
-            text-align: right;
-        }
-        
-        .input-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--brown);
-            font-weight: 500;
-        }
-        
+        .login-box h1 { font-size: 2.5rem; color: var(--brown); margin-bottom: 0.5rem; }
+        .login-box .subtitle { color: var(--taupe); margin-bottom: 2rem; font-size: 1.1rem; }
+        .login-icon { font-size: 4rem; margin-bottom: 1rem; }
+
+        .input-group { margin-bottom: 1.5rem; text-align: right; }
+        .input-group label { display: block; margin-bottom: 0.5rem; color: var(--brown); font-weight: 500; }
         .input-group input {
-            width: 100%;
-            padding: 1rem;
-            border: 2px solid var(--beige);
-            border-radius: 10px;
-            font-family: 'Tajawal', sans-serif;
-            font-size: 1rem;
+            width: 100%; padding: 1rem;
+            border: 2px solid var(--beige); border-radius: 10px;
+            font-family: 'Tajawal', sans-serif; font-size: 1rem;
             transition: all 0.3s ease;
         }
-        
-        .input-group input:focus {
-            outline: none;
-            border-color: var(--taupe);
-        }
-        
+        .input-group input:focus { outline: none; border-color: var(--taupe); }
+
         .login-btn {
-            width: 100%;
-            padding: 1rem;
+            width: 100%; padding: 1rem;
             background: linear-gradient(135deg, var(--taupe), var(--brown));
-            color: white;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 1rem;
+            color: white; border: none; border-radius: 50px;
+            font-size: 1.1rem; font-weight: 600; cursor: pointer;
+            transition: all 0.3s ease; margin-top: 1rem;
         }
-        
-        .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(102, 73, 48, 0.3);
-        }
-        
-        .login-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        .error-message {
-            color: #ff6b6b;
-            margin-top: 1rem;
-            font-size: 0.9rem;
-            display: none;
-        }
-        
-        .error-message.show {
-            display: block;
-        }
-        
-        /* باقي الأنماط الأصلية */
+        .login-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(102,73,48,0.3); }
+        .login-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        .error-message { color: #ff6b6b; margin-top: 1rem; font-size: 0.9rem; display: none; }
+        .error-message.show { display: block; }
+
+        /* ─── Floating Hearts ─── */
         .floating-hearts {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-            overflow: hidden;
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none; z-index: 0; overflow: hidden;
         }
-        
         .heart {
-            position: absolute;
-            font-size: 20px;
-            opacity: 0.1;
+            position: absolute; font-size: 20px; opacity: 0.1;
             animation: float 15s infinite ease-in-out;
         }
-        
         @keyframes float {
-            0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.1; }
-            90% { opacity: 0.1; }
-            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+            0%,100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10%      { opacity: 0.1; }
+            90%      { opacity: 0.1; }
+            100%     { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
         }
-        
+
+        /* ─── Counter Notification ─── */
         .counter-notification {
-            position: fixed;
-            top: 100px;
-            left: 50%;
+            position: fixed; top: 100px; left: 50%;
             transform: translateX(-50%) translateY(-150px);
             background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
-            z-index: 10000;
-            font-size: 1.1rem;
-            font-weight: 600;
-            opacity: 0;
-            transition: all 0.5s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            color: white; padding: 1rem 2rem; border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(255,107,107,0.4);
+            z-index: 10000; font-size: 1.1rem; font-weight: 600;
+            opacity: 0; transition: all 0.5s ease;
+            display: flex; align-items: center; gap: 0.5rem;
         }
-        
         .counter-notification.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
+            transform: translateX(-50%) translateY(0); opacity: 1;
             animation: notificationPulse 0.5s ease;
         }
-        
         @keyframes notificationPulse {
-            0% { transform: translateX(-50%) translateY(0) scale(1); }
-            50% { transform: translateX(-50%) translateY(0) scale(1.05); }
+            0%   { transform: translateX(-50%) translateY(0) scale(1); }
+            50%  { transform: translateX(-50%) translateY(0) scale(1.05); }
             100% { transform: translateX(-50%) translateY(0) scale(1); }
         }
-        
-        .counter-notification.photos {
-            background: linear-gradient(135deg, #51cf66, #2f9e44);
-            box-shadow: 0 10px 30px rgba(81, 207, 102, 0.4);
-        }
-        
-        .counter-notification.promise {
-            background: linear-gradient(135deg, var(--brown), var(--taupe));
-            box-shadow: 0 10px 30px rgba(102, 73, 48, 0.4);
-        }
-        
-        .counter-notification.days {
-            background: linear-gradient(135deg, #9b59b6, #8e44ad);
-            box-shadow: 0 10px 30px rgba(155, 89, 182, 0.4);
-        }
-        
+        .counter-notification.photos  { background: linear-gradient(135deg,#51cf66,#2f9e44); box-shadow: 0 10px 30px rgba(81,207,102,0.4); }
+        .counter-notification.promise { background: linear-gradient(135deg, var(--brown), var(--taupe)); box-shadow: 0 10px 30px rgba(102,73,48,0.4); }
+        .counter-notification.days    { background: linear-gradient(135deg,#9b59b6,#8e44ad); box-shadow: 0 10px 30px rgba(155,89,182,0.4); }
+
+        /* ─── Header / Nav ─── */
         header {
-            background: rgba(255, 248, 240, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 1rem 5%;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 1px solid var(--beige);
+            background: rgba(255,248,240,0.95); backdrop-filter: blur(10px);
+            padding: 1rem 5%; position: fixed; width: 100%; top: 0;
+            z-index: 1000; border-bottom: 1px solid var(--beige);
         }
-        
         nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
+            display: flex; justify-content: space-between;
+            align-items: center; max-width: 1200px; margin: 0 auto;
         }
-        
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--brown);
-            text-decoration: none;
-        }
-        
-        .nav-icons {
-            display: flex;
-            gap: 1.5rem;
-            list-style: none;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        
+        .logo { font-size: 1.8rem; font-weight: 700; color: var(--brown); text-decoration: none; }
+
+        .nav-icons { display: flex; gap: 1.5rem; list-style: none; flex-wrap: wrap; justify-content: center; }
         .nav-icons a {
-            color: var(--taupe);
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.2rem;
-            position: relative;
+            color: var(--taupe); text-decoration: none; font-size: 0.85rem;
+            font-weight: 500; transition: all 0.3s ease;
+            display: flex; flex-direction: column; align-items: center;
+            gap: 0.2rem; position: relative;
         }
-        
-        .nav-icons a:hover {
-            color: var(--brown);
-            transform: translateY(-2px);
-        }
-        
+        .nav-icons a:hover { color: var(--brown); transform: translateY(-2px); }
+
         .badge {
-            background: #ff6b6b;
-            color: white;
-            font-size: 0.7rem;
-            padding: 0.2rem 0.5rem;
-            border-radius: 10px;
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            display: none;
-            animation: badgePulse 2s infinite;
+            background: #ff6b6b; color: white; font-size: 0.7rem;
+            padding: 0.2rem 0.5rem; border-radius: 10px;
+            position: absolute; top: -8px; right: -8px;
+            display: none; animation: badgePulse 2s infinite;
         }
-        
-        @keyframes badgePulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-        
-        .badge.show {
-            display: block;
-        }
-        
+        @keyframes badgePulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        .badge.show { display: block; }
+
+        /* ─── Hero Section ─── */
         .hero {
-            min-height: 80vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 8rem 5% 3rem;
-            position: relative;
-            z-index: 1;
+            min-height: 80vh; display: flex; align-items: center;
+            justify-content: center; padding: 8rem 5% 3rem;
+            position: relative; z-index: 1;
+            background-image: url('IMG_20260503_233905_996.jpg');
+            background-size: cover; background-position: center;
+            background-repeat: no-repeat; background-attachment: fixed;
         }
-        
-        .hero-content {
-            max-width: 800px;
-            text-align: center;
+        .hero::before {
+            content: ''; position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(255,248,240,0.75) 0%, rgba(255,219,187,0.65) 100%);
+            z-index: -1;
         }
-        
+        .hero-content { max-width: 800px; text-align: center; position: relative; z-index: 2; }
         .hero-text h1 {
-            font-size: 4rem;
-            font-weight: 700;
-            color: var(--brown);
-            margin-bottom: 1rem;
+            font-size: 4rem; font-weight: 700; color: var(--brown);
+            margin-bottom: 1rem; text-shadow: 0 2px 10px rgba(255,255,255,0.8);
         }
-        
-        .hero-text h1 span {
-            color: var(--taupe);
-            display: block;
-            font-size: 2rem;
-            margin-top: 0.5rem;
-        }
-        
+        .hero-text h1 span { color: var(--taupe); display: block; font-size: 2rem; margin-top: 0.5rem; }
         .hero-text p {
-            font-size: 1.3rem;
-            color: var(--taupe);
-            margin-bottom: 2rem;
-            line-height: 1.8;
+            font-size: 1.3rem; color: var(--brown); margin-bottom: 2rem;
+            line-height: 1.8; text-shadow: 0 1px 5px rgba(255,255,255,0.9); font-weight: 500;
         }
-        
+
         .cta-button {
-            display: inline-block;
-            padding: 1rem 2.5rem;
-            background: var(--taupe);
-            color: white;
-            text-decoration: none;
-            border-radius: 50px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
+            display: inline-block; padding: 1rem 2.5rem;
+            background: var(--taupe); color: white; text-decoration: none;
+            border-radius: 50px; font-weight: 600; transition: all 0.3s ease;
+            border: none; cursor: pointer;
         }
-        
-        .cta-button:hover {
-            background: var(--brown);
-            transform: translateY(-3px);
-        }
-        
+        .cta-button:hover { background: var(--brown); transform: translateY(-3px); }
+
+        /* ─── Summary Section ─── */
         .summary-section {
-            padding: 4rem 5%;
-            background: rgba(255, 248, 240, 0.9);
-            position: relative;
-            z-index: 1;
+            padding: 4rem 5%; background: rgba(255,248,240,0.95);
+            position: relative; z-index: 1;
         }
-        
-        .summary-box {
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: center;
-        }
-        
-        .summary-title {
-            font-size: 2rem;
-            color: var(--brown);
-            margin-bottom: 1.5rem;
-        }
-        
-        .summary-text {
-            font-size: 1.1rem;
-            line-height: 2;
-            color: var(--taupe);
-            margin-bottom: 2rem;
-        }
-        
+        .summary-box { max-width: 800px; margin: 0 auto; text-align: center; }
+        .summary-title { font-size: 2rem; color: var(--brown); margin-bottom: 1.5rem; }
+        .summary-text { font-size: 1.1rem; line-height: 2; color: var(--taupe); margin-bottom: 2rem; }
         .summary-highlight {
             background: linear-gradient(135deg, var(--peach), var(--beige));
-            padding: 2rem;
-            border-radius: 20px;
-            margin-top: 2rem;
+            padding: 2rem; border-radius: 20px; margin-top: 2rem;
         }
-        
-        .summary-highlight p {
-            color: var(--brown);
-            font-size: 1.2rem;
-            line-height: 1.8;
-        }
-        
+        .summary-highlight p { color: var(--brown); font-size: 1.2rem; line-height: 1.8; }
+
         .days-counter-hero {
             background: linear-gradient(135deg, var(--brown), var(--taupe));
-            color: white;
-            padding: 2rem;
-            border-radius: 20px;
-            margin-top: 2rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            color: white; padding: 2rem; border-radius: 20px;
+            margin-top: 2rem; cursor: pointer; transition: all 0.3s ease;
+            position: relative; overflow: hidden;
+            box-shadow: 0 10px 30px rgba(102,73,48,0.3);
         }
-        
-        .days-counter-hero:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(102, 73, 48, 0.3);
-        }
-        
-        .days-counter-hero:active {
-            transform: scale(0.98);
-        }
-        
-        .days-number {
-            font-size: 4rem;
-            font-weight: 700;
-            display: block;
-            margin-bottom: 0.5rem;
-        }
-        
-        .days-label {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-        
-        .days-click-hint {
-            font-size: 0.9rem;
-            opacity: 0.7;
-            margin-top: 0.5rem;
-        }
-        
+        .days-counter-hero:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(102,73,48,0.4); }
+        .days-counter-hero:active { transform: scale(0.98); }
+        .days-number { font-size: 4rem; font-weight: 700; display: block; margin-bottom: 0.5rem; }
+        .days-label { font-size: 1.2rem; opacity: 0.9; }
+        .days-click-hint { font-size: 0.9rem; opacity: 0.7; margin-top: 0.5rem; }
+
+        /* ─── Hidden Sections (shared) ─── */
         .hidden-section {
-            display: none;
-            padding: 6rem 5% 2rem;
-            min-height: 100vh;
-            animation: fadeIn 0.5s ease;
+            display: none; padding: 6rem 5% 2rem;
+            min-height: 100vh; animation: fadeIn 0.5s ease;
         }
-        
-        .hidden-section.active {
-            display: block;
-        }
-        
+        .hidden-section.active { display: block; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            to   { opacity: 1; transform: translateY(0); }
         }
-        
+
         .back-btn {
-            display: inline-block;
-            margin-bottom: 2rem;
-            padding: 0.8rem 1.5rem;
-            background: var(--beige);
-            color: var(--brown);
-            text-decoration: none;
-            border-radius: 25px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
+            display: inline-block; margin-bottom: 2rem;
+            padding: 0.8rem 1.5rem; background: var(--beige);
+            color: var(--brown); text-decoration: none;
+            border-radius: 25px; font-weight: 500;
+            transition: all 0.3s ease; border: none; cursor: pointer;
         }
-        
-        .back-btn:hover {
-            background: var(--taupe);
-            color: white;
-        }
-        
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
+        .back-btn:hover { background: var(--taupe); color: white; }
+
+        .container { max-width: 800px; margin: 0 auto; }
         .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            color: var(--brown);
-            margin-bottom: 3rem;
+            text-align: center; font-size: 2.5rem;
+            color: var(--brown); margin-bottom: 3rem;
+            text-shadow: 0 2px 10px rgba(255,255,255,0.8);
         }
-        
+
+        /* ─── Story Section ─── */
         .story-full {
-            background: rgba(255, 248, 240, 0.9);
-            padding: 3rem;
-            border-radius: 20px;
-            line-height: 2.2;
-            font-size: 1.1rem;
-            color: var(--brown);
+            background: rgba(255,248,240,0.88); padding: 3rem;
+            border-radius: 20px; line-height: 2.2;
+            font-size: 1.1rem; color: var(--brown);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
         }
-        
         .story-full h3 {
-            color: var(--taupe);
-            margin: 2rem 0 1rem;
-            font-size: 1.5rem;
-            border-right: 4px solid var(--taupe);
+            color: var(--taupe); margin: 2rem 0 1rem;
+            font-size: 1.5rem; border-right: 4px solid var(--taupe);
             padding-right: 1rem;
         }
-        
-        .story-full p {
-            margin-bottom: 1.5rem;
-            text-align: justify;
-            line-height: 2;
-        }
-        
-        .feelings-section {
-            background: linear-gradient(135deg, var(--cream) 0%, var(--peach) 100%);
-        }
-        
+        .story-full p { margin-bottom: 1.5rem; text-align: justify; line-height: 2; }
+
+        /* ─── Feelings Section ─── */
+        .feelings-section { background: linear-gradient(135deg, var(--cream) 0%, var(--peach) 100%); }
         .feeling-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 15px;
-            margin-bottom: 2rem;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            background: rgba(255,255,255,0.92); padding: 2rem;
+            border-radius: 15px; margin-bottom: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08); backdrop-filter: blur(5px);
         }
-        
-        .feeling-card h3 {
-            color: var(--taupe);
-            margin-bottom: 1rem;
-            font-size: 1.4rem;
-        }
-        
-        .feeling-text {
-            color: var(--brown);
-            line-height: 1.8;
-            margin-bottom: 1rem;
-        }
-        
+        .feeling-card h3 { color: var(--taupe); margin-bottom: 1rem; font-size: 1.4rem; }
+        .feeling-text { color: var(--brown); line-height: 1.8; margin-bottom: 1rem; }
         .feeling-input {
-            width: 100%;
-            padding: 1rem;
-            border: 2px solid var(--beige);
-            border-radius: 10px;
-            font-family: 'Tajawal', sans-serif;
-            font-size: 1rem;
-            resize: vertical;
-            min-height: 80px;
+            width: 100%; padding: 1rem; border: 2px solid var(--beige);
+            border-radius: 10px; font-family: 'Tajawal', sans-serif;
+            font-size: 1rem; resize: vertical; min-height: 80px;
         }
-        
-        .feeling-input:focus {
-            outline: none;
-            border-color: var(--taupe);
-        }
-        
-        .problems-section {
+        .feeling-input:focus { outline: none; border-color: var(--taupe); }
+
+        /* ─── Problems Section (dynamic bg) ─── */
+        .problems-section { position: relative; overflow: hidden; transition: all 0.8s ease; }
+        .problems-section::before {
+            content: ''; position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
             background: linear-gradient(135deg, var(--peach) 0%, var(--beige) 100%);
+            z-index: -2; transition: opacity 0.8s ease;
         }
-        
+        .problems-section::after {
+            content: ''; position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: url('IMG_20260503_233913_117.jpg');
+            background-size: cover; background-position: center;
+            background-repeat: no-repeat; z-index: -1;
+            opacity: 0; transition: opacity 0.8s ease;
+        }
+        .problems-section.show-bg::after  { opacity: 1; }
+        .problems-section.show-bg::before { opacity: 0; }
+        .problems-section .section-overlay {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(255,219,187,0.7) 0%, rgba(204,190,177,0.7) 100%);
+            z-index: 0; opacity: 0; transition: opacity 0.8s ease; pointer-events: none;
+        }
+        .problems-section.show-bg .section-overlay { opacity: 1; }
+
         .counter-box {
-            background: white;
-            padding: 3rem;
-            border-radius: 20px;
-            text-align: center;
+            background: rgba(255,255,255,0.92); padding: 3rem;
+            border-radius: 20px; text-align: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
+            margin-bottom: 2rem; position: relative;
+            z-index: 1; backdrop-filter: blur(5px);
         }
-        
-        .counter-number {
-            font-size: 5rem;
-            font-weight: 700;
-            color: var(--brown);
-            display: block;
-        }
-        
-        .counter-label {
-            font-size: 1.2rem;
-            color: var(--taupe);
-            margin: 1rem 0;
-        }
-        
-        .counter-controls {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            margin-top: 1.5rem;
-        }
-        
-        .counter-btn {
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-minus {
-            background: #ff6b6b;
-            color: white;
-        }
-        
-        .btn-plus {
-            background: #51cf66;
-            color: white;
-        }
-        
-        .sync-status {
-            font-size: 0.9rem;
-            color: var(--taupe);
-            margin-top: 1rem;
-        }
-        
-        .sync-status.online {
-            color: #51cf66;
-        }
-        
+        .counter-number { font-size: 5rem; font-weight: 700; color: var(--brown); display: block; }
+        .counter-label { font-size: 1.2rem; color: var(--taupe); margin: 1rem 0; }
+        .counter-controls { display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem; }
+        .counter-btn { padding: 1rem 2rem; border: none; border-radius: 10px; font-size: 1.5rem; cursor: pointer; transition: all 0.3s ease; }
+        .btn-minus { background: #ff6b6b; color: white; }
+        .btn-plus  { background: #51cf66; color: white; }
+        .sync-status { font-size: 0.9rem; color: var(--taupe); margin-top: 1rem; }
+        .sync-status.online { color: #51cf66; }
+
         .reminder-box {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 2rem;
-            border-radius: 15px;
-            text-align: center;
-            font-size: 1.1rem;
-            line-height: 1.8;
-            color: var(--brown);
+            background: rgba(255,255,255,0.92); padding: 2rem;
+            border-radius: 15px; text-align: center;
+            font-size: 1.1rem; line-height: 1.8; color: var(--brown);
+            position: relative; z-index: 1; backdrop-filter: blur(5px);
         }
-        
-        .promise-section {
+
+        /* ─── Promise Section (dynamic bg) ─── */
+        .promise-section { position: relative; overflow: hidden; transition: all 0.8s ease; }
+        .promise-section::before {
+            content: ''; position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
             background: linear-gradient(135deg, var(--brown) 0%, var(--taupe) 100%);
-            color: white;
-            position: relative;
-            overflow: hidden;
+            z-index: -2; transition: opacity 0.8s ease;
         }
-        
-        .promise-section .section-title {
-            color: white;
+        .promise-section::after {
+            content: ''; position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: url('IMG_20260503_233910_826.jpg');
+            background-size: cover; background-position: center;
+            background-repeat: no-repeat; z-index: -1;
+            opacity: 0; transition: opacity 0.8s ease;
         }
-        
+        .promise-section.show-bg::after  { opacity: 1; }
+        .promise-section.show-bg::before { opacity: 0; }
+        .promise-section .section-overlay {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(102,73,48,0.75) 0%, rgba(153,126,103,0.75) 100%);
+            z-index: 0; opacity: 0; transition: opacity 0.8s ease; pointer-events: none;
+        }
+        .promise-section.show-bg .section-overlay { opacity: 1; }
+        .promise-section .section-title { color: white; position: relative; z-index: 1; }
+
         .promise-box {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            padding: 3rem;
-            border-radius: 20px;
+            background: rgba(255,255,255,0.15); backdrop-filter: blur(10px);
+            padding: 3rem; border-radius: 20px;
             border: 2px solid rgba(255,255,255,0.2);
-            text-align: center;
+            text-align: center; position: relative; z-index: 1;
         }
-        
-        .promise-counter {
-            font-size: 5rem;
-            font-weight: 700;
-            margin: 1rem 0;
-        }
-        
+        .promise-counter { font-size: 5rem; font-weight: 700; margin: 1rem 0; }
         .promise-btn {
-            padding: 1rem 3rem;
-            background: white;
-            color: var(--brown);
-            border: none;
-            border-radius: 50px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 1rem;
+            padding: 1rem 3rem; background: white; color: var(--brown);
+            border: none; border-radius: 50px; font-size: 1.2rem;
+            font-weight: 600; cursor: pointer; transition: all 0.3s ease; margin-top: 1rem;
         }
-        
-        .promise-btn:hover {
-            transform: scale(1.05);
-        }
-        
+        .promise-btn:hover { transform: scale(1.05); }
+
+        /* ─── Flying Text ─── */
         .flying-text {
-            position: fixed;
-            bottom: -150px;
-            left: 50%;
+            position: fixed; bottom: -150px; left: 50%;
             transform: translateX(-50%);
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: rgba(255, 0, 0, 0.2);
-            text-shadow: 0 0 40px rgba(255, 0, 0, 0.4);
-            pointer-events: none;
-            z-index: 9999;
-            white-space: nowrap;
-            opacity: 0;
-            letter-spacing: 2px;
+            font-size: 2.5rem; font-weight: 700;
+            color: rgba(255,0,0,0.2);
+            text-shadow: 0 0 40px rgba(255,0,0,0.4);
+            pointer-events: none; z-index: 9999;
+            white-space: nowrap; opacity: 0; letter-spacing: 2px;
         }
-        
-        .flying-text.animate {
-            animation: flyUpSlow 8s ease-out forwards;
-        }
-        
+        .flying-text.animate { animation: flyUpSlow 8s ease-out forwards; }
         @keyframes flyUpSlow {
-            0% { bottom: -150px; opacity: 0; transform: translateX(-50%) scale(0.8); }
-            10% { opacity: 1; bottom: 10%; }
-            30% { bottom: 30%; opacity: 1; }
-            50% { bottom: 50%; opacity: 1; }
-            70% { bottom: 70%; opacity: 0.8; }
-            90% { bottom: 90%; opacity: 0.3; }
+            0%   { bottom: -150px; opacity: 0; transform: translateX(-50%) scale(0.8); }
+            10%  { opacity: 1; bottom: 10%; }
+            30%  { bottom: 30%; opacity: 1; }
+            50%  { bottom: 50%; opacity: 1; }
+            70%  { bottom: 70%; opacity: 0.8; }
+            90%  { bottom: 90%; opacity: 0.3; }
             100% { bottom: 120%; opacity: 0; transform: translateX(-50%) scale(1.1); }
         }
-        
-        .photos-section {
-            background: linear-gradient(135deg, var(--cream) 0%, var(--peach) 100%);
-            text-align: center;
-        }
-        
+
+        /* ─── Photos Section ─── */
+        .photos-section { background: linear-gradient(135deg, var(--cream) 0%, var(--peach) 100%); text-align: center; }
         .photos-box {
-            background: white;
-            padding: 3rem;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
+            background: rgba(255,255,255,0.92); padding: 3rem;
+            border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 2rem; backdrop-filter: blur(5px);
         }
-        
-        .photos-number {
-            font-size: 6rem;
-            font-weight: 700;
-            color: var(--brown);
-        }
-        
-        .photos-label {
-            font-size: 1.3rem;
-            color: var(--taupe);
-            margin: 1rem 0;
-        }
-        
-        .celebration {
-            display: none;
-            margin-top: 2rem;
-            padding: 2rem;
-            background: linear-gradient(135deg, #ffd700, #ffed4e);
-            border-radius: 20px;
-            animation: celebrate 1s ease;
-        }
-        
-        .celebration.show {
-            display: block;
-        }
-        
-        @keyframes celebrate {
-            0% { transform: scale(0); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-        
-        .celebration h3 {
-            color: var(--brown);
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-        
-        .dates-section {
-            background: linear-gradient(135deg, var(--beige) 0%, var(--peach) 100%);
-        }
-        
+        .photos-number { font-size: 6rem; font-weight: 700; color: var(--brown); }
+        .photos-label { font-size: 1.3rem; color: var(--taupe); margin: 1rem 0; }
+
+        .celebration { display: none; margin-top: 2rem; padding: 2rem; background: linear-gradient(135deg,#ffd700,#ffed4e); border-radius: 20px; animation: celebrate 1s ease; }
+        .celebration.show { display: block; }
+        @keyframes celebrate { 0% { transform: scale(0); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        .celebration h3 { color: var(--brown); font-size: 2rem; margin-bottom: 1rem; }
+
+        /* ─── Dates Section ─── */
+        .dates-section { background: linear-gradient(135deg, var(--beige) 0%, var(--peach) 100%); }
         .date-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 15px;
-            margin-bottom: 2rem;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            background: rgba(255,255,255,0.92); padding: 2rem;
+            border-radius: 15px; margin-bottom: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08); backdrop-filter: blur(5px);
         }
-        
-        .date-display {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--brown);
-            margin-bottom: 0.5rem;
-            font-family: 'Segoe UI', sans-serif;
-        }
-        
-        .date-title {
-            font-size: 1.3rem;
-            color: var(--taupe);
-            margin-bottom: 1rem;
-            font-weight: 600;
-        }
-        
+        .date-display { font-size: 2.5rem; font-weight: 700; color: var(--brown); margin-bottom: 0.5rem; font-family: 'Segoe UI', sans-serif; }
+        .date-title { font-size: 1.3rem; color: var(--taupe); margin-bottom: 1rem; font-weight: 600; }
         .date-input {
-            width: 100%;
-            padding: 1rem;
-            border: 2px solid var(--beige);
-            border-radius: 10px;
-            font-family: 'Tajawal', sans-serif;
-            font-size: 1rem;
-            min-height: 60px;
-            resize: vertical;
+            width: 100%; padding: 1rem; border: 2px solid var(--beige);
+            border-radius: 10px; font-family: 'Tajawal', sans-serif;
+            font-size: 1rem; min-height: 60px; resize: vertical;
         }
-        
-        .date-input:focus {
-            outline: none;
-            border-color: var(--taupe);
-        }
-        
-        .messages-section {
-            background: linear-gradient(135deg, #fff5f5 0%, var(--peach) 100%);
-        }
-        
+        .date-input:focus { outline: none; border-color: var(--taupe); }
+
+        /* ─── Messages Section ─── */
+        .messages-section { background: linear-gradient(135deg, #fff5f5 0%, var(--peach) 100%); }
         .message-box {
-            background: white;
-            padding: 2rem;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
+            background: rgba(255,255,255,0.92); padding: 2rem;
+            border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 2rem; backdrop-filter: blur(5px);
         }
-        
-        .message-input-area {
-            margin-bottom: 2rem;
-        }
-        
+        .message-input-area { margin-bottom: 2rem; }
         .message-textarea {
-            width: 100%;
-            padding: 1.5rem;
-            border: 2px solid var(--beige);
-            border-radius: 15px;
-            font-family: 'Tajawal', sans-serif;
-            font-size: 1.1rem;
-            resize: vertical;
-            min-height: 120px;
-            margin-bottom: 1rem;
+            width: 100%; padding: 1.5rem; border: 2px solid var(--beige);
+            border-radius: 15px; font-family: 'Tajawal', sans-serif;
+            font-size: 1.1rem; resize: vertical; min-height: 120px; margin-bottom: 1rem;
         }
-        
-        .message-textarea:focus {
-            outline: none;
-            border-color: var(--taupe);
-        }
-        
+        .message-textarea:focus { outline: none; border-color: var(--taupe); }
         .send-btn {
             padding: 1rem 2rem;
             background: linear-gradient(135deg, var(--taupe), var(--brown));
-            color: white;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
+            color: white; border: none; border-radius: 50px;
+            font-size: 1.1rem; font-weight: 600; cursor: pointer;
             transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin: 0 auto;
+            display: flex; align-items: center; gap: 0.5rem; margin: 0 auto;
         }
-        
-        .send-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 20px rgba(102, 73, 48, 0.3);
-        }
-        
-        .send-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        .messages-list {
-            max-height: 500px;
-            overflow-y: auto;
-            padding: 1rem;
-        }
-        
+        .send-btn:hover { transform: translateY(-3px); box-shadow: 0 5px 20px rgba(102,73,48,0.3); }
+        .send-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        .messages-list { max-height: 500px; overflow-y: auto; padding: 1rem; }
         .message-item {
             background: linear-gradient(135deg, var(--cream), white);
-            padding: 1.5rem;
-            border-radius: 15px;
-            margin-bottom: 1rem;
-            border-right: 4px solid var(--taupe);
-            position: relative;
+            padding: 1.5rem; border-radius: 15px; margin-bottom: 1rem;
+            border-right: 4px solid var(--taupe); position: relative;
             animation: slideIn 0.5s ease;
         }
-        
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        
+        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
         .message-item.new {
             border-right-color: #ff6b6b;
             background: linear-gradient(135deg, #fff0f0, white);
             animation: pulseNew 2s infinite;
         }
-        
         @keyframes pulseNew {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.4); }
-            50% { box-shadow: 0 0 0 10px rgba(255, 107, 107, 0); }
+            0%,100% { box-shadow: 0 0 0 0 rgba(255,107,107,0.4); }
+            50%     { box-shadow: 0 0 0 10px rgba(255,107,107,0); }
         }
-        
-        .message-content {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            color: var(--brown);
-            margin-bottom: 0.5rem;
-        }
-        
-        .message-time {
-            font-size: 0.85rem;
-            color: var(--taupe);
-            text-align: left;
-        }
-        
-        .message-sender {
-            font-weight: 700;
-            color: var(--taupe);
-            margin-bottom: 0.5rem;
-        }
-        
-        .no-messages {
-            text-align: center;
-            padding: 3rem;
-            color: var(--taupe);
-            font-size: 1.1rem;
-        }
-        
-        .connection-status {
-            text-align: center;
-            padding: 0.5rem;
-            border-radius: 10px;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-        }
-        
-        .connection-status.online {
-            background: #d4edda;
-            color: #155724;
-        }
-        
-        .connection-status.offline {
-            background: #f8d7da;
-            color: #721c24;
-        }
-        
-        .music-section {
-            background: var(--cream);
-            text-align: center;
-        }
-        
+        .message-content { font-size: 1.1rem; line-height: 1.8; color: var(--brown); margin-bottom: 0.5rem; }
+        .message-time { font-size: 0.85rem; color: var(--taupe); text-align: left; }
+        .message-sender { font-weight: 700; color: var(--taupe); margin-bottom: 0.5rem; }
+        .no-messages { text-align: center; padding: 3rem; color: var(--taupe); font-size: 1.1rem; }
+
+        .connection-status { text-align: center; padding: 0.5rem; border-radius: 10px; margin-bottom: 1rem; font-size: 0.9rem; }
+        .connection-status.online  { background: #d4edda; color: #155724; }
+        .connection-status.offline { background: #f8d7da; color: #721c24; }
+
+        /* ─── Music Section ─── */
+        .music-section { background: var(--cream); text-align: center; }
         .youtube-btn {
-            display: inline-block;
-            padding: 1.2rem 2.5rem;
+            display: inline-block; padding: 1.2rem 2.5rem;
             background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
-            color: white;
-            text-decoration: none;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
+            color: white; text-decoration: none;
+            border-radius: 50px; font-weight: 600;
+            font-size: 1.2rem; transition: all 0.3s ease;
         }
-        
-        .youtube-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
-        }
-        
-        footer {
-            background: var(--brown);
-            color: var(--peach);
-            padding: 2rem 5%;
-            text-align: center;
-        }
-        
+        .youtube-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(255,107,107,0.4); }
+
+        /* ─── Footer ─── */
+        footer { background: var(--brown); color: var(--peach); padding: 2rem 5%; text-align: center; }
+
+        /* ─── Logout ─── */
         .logout-btn {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background: rgba(255, 255, 255, 0.9);
-            color: var(--brown);
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            cursor: pointer;
-            font-family: 'Tajawal', sans-serif;
-            font-weight: 600;
-            z-index: 10001;
-            display: none;
+            position: fixed; top: 20px; left: 20px;
+            background: rgba(255,255,255,0.9); color: var(--brown);
+            border: none; padding: 0.5rem 1rem; border-radius: 20px;
+            cursor: pointer; font-family: 'Tajawal', sans-serif;
+            font-weight: 600; z-index: 10001; display: none;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        
-        .logout-btn.show {
-            display: block;
-        }
-        
-        .logout-btn:hover {
-            background: var(--brown);
-            color: white;
-        }
-        
+        .logout-btn.show { display: block; }
+        .logout-btn:hover { background: var(--brown); color: white; }
+
+        /* ─── Responsive ─── */
         @media (max-width: 768px) {
-            .hero-text h1 {
-                font-size: 2.5rem;
-            }
-            
-            .hero-text h1 span {
-                font-size: 1.5rem;
-            }
-            
-            .nav-icons {
-                gap: 1rem;
-            }
-            
-            .nav-icons a {
-                font-size: 0.75rem;
-            }
-            
-            .flying-text {
-                font-size: 1.5rem;
-            }
-            
-            .flying-text.animate {
-                animation: flyUpSlow 10s ease-out forwards;
-            }
-            
-            .counter-notification {
-                font-size: 0.9rem;
-                padding: 0.8rem 1.5rem;
-            }
-            
-            .login-box {
-                padding: 2rem;
-            }
-            
-            .login-box h1 {
-                font-size: 2rem;
-            }
-            
-            .days-number {
-                font-size: 3rem;
-            }
+            .hero-text h1 { font-size: 2.5rem; }
+            .hero-text h1 span { font-size: 1.5rem; }
+            .nav-icons { gap: 1rem; }
+            .nav-icons a { font-size: 0.75rem; }
+            .flying-text { font-size: 1.5rem; }
+            .flying-text.animate { animation: flyUpSlow 10s ease-out forwards; }
+            .counter-notification { font-size: 0.9rem; padding: 0.8rem 1.5rem; }
+            .login-box { padding: 2rem; }
+            .login-box h1 { font-size: 2rem; }
+            .days-number { font-size: 3rem; }
+            .hero { background-attachment: scroll; }
         }
     </style>
 </head>
 <body>
-    <!-- صفحة تسجيل الدخول -->
+
+    <!-- ═══ صفحة تسجيل الدخول ═══ -->
     <div class="login-container" id="loginContainer">
         <div class="login-box">
             <div class="login-icon">💕</div>
             <h1>وعد الاصابع</h1>
             <p class="subtitle">أدخل كلمة السر للدخول للعالم الخاص 🤞</p>
-            
             <div class="input-group">
                 <label for="secretCode">🔑 كلمة السر</label>
-                <input type="password" id="secretCode" placeholder="اكتب كلمة السر هنا" onkeypress="if(event.key==='Enter') checkSecret()">
+                <input type="password" id="secretCode" placeholder="اكتب كلمة السر هنا"
+                    onkeypress="if(event.key==='Enter') checkSecret()">
             </div>
-            
-            <button class="login-btn" id="loginBtn" onclick="checkSecret()">
-                دخول 💕
-            </button>
-            
+            <button class="login-btn" id="loginBtn" onclick="checkSecret()">دخول 💕</button>
             <div class="error-message" id="errorMessage"></div>
         </div>
     </div>
-    
+
     <!-- زر تسجيل الخروج -->
     <button class="logout-btn" id="logoutBtn" onclick="logout()">🚪 خروج</button>
-    
+
     <!-- قلوب عائمة -->
     <div class="floating-hearts" id="hearts"></div>
-    
+
     <!-- الجملة الطائرة -->
     <div class="flying-text" id="flyingText">خالد وفاطمة ديما مع بعض ♾️❤️</div>
-    
+
     <!-- إشعارات العدادات -->
     <div class="counter-notification" id="counterNotification">
         <span id="notificationIcon">🔔</span>
         <span id="notificationText"></span>
     </div>
-    
-    <!-- الهيدر -->
-    <header id="mainHeader" style="display: none;">
+
+    <!-- ═══ الهيدر ═══ -->
+    <header id="mainHeader" style="display:none;">
         <nav>
             <a href="#" class="logo" onclick="showSection('home')">وعد الاصابع 💕</a>
             <ul class="nav-icons">
-                <li style="position: relative;">
+                <li style="position:relative;">
                     <a href="#" onclick="showSection('messages')">
                         💌 رسائل
                         <span class="badge" id="messageBadge">0</span>
@@ -1070,9 +555,9 @@
             </ul>
         </nav>
     </header>
-    
-    <!-- الصفحة الرئيسية -->
-    <div id="home" style="display: none;">
+
+    <!-- ═══ الصفحة الرئيسية ═══ -->
+    <div id="home" style="display:none;">
         <section class="hero">
             <div class="hero-content">
                 <div class="hero-text">
@@ -1081,13 +566,11 @@
                         <span>مهما حصل، احنا مكملين 💕</span>
                     </h1>
                     <p>
-                        قصة حب مش عادية، بدأت بصدفة وكملت باختيار. 
+                        قصة حب مش عادية، بدأت بصدفة وكملت باختيار.
                         كل يوم بنختار بعض، وكل مشكلة بنتجاوزها مع بعض.
                     </p>
                     <button class="cta-button" onclick="showSection('story')">اقرأ القصة الكاملة 📖</button>
                 </div>
-                
-                <!-- عداد الأيام التفاعلي -->
                 <div class="days-counter-hero" id="daysCounterHero" onclick="showDayMessage()">
                     <span class="days-number" id="daysCountDisplay">0</span>
                     <div class="days-label">يوم منذ بداية قصتنا 💕</div>
@@ -1095,13 +578,13 @@
                 </div>
             </div>
         </section>
-        
+
         <section class="summary-section">
             <div class="summary-box">
                 <h2 class="summary-title">ملخص قصتنا 💝</h2>
                 <p class="summary-text">
-                    اتعرفنا بالصدفة في جروب، وعدنا فترة من البلوك والرجوع. 
-                    اعترفنا بمشاعرنا يوم ١/٢/٢٠٢٣، وعدنا فترة من الفراق والحب. 
+                    اتعرفنا بالصدفة في جروب، وعدنا فترة من البلوك والرجوع.
+                    اعترفنا بمشاعرنا يوم ١/٢/٢٠٢٣، وعدنا فترة من الفراق والحب.
                     رجعنا لبعض يوم ٩/٨/٢٠٢٥، ومن ساعتها واحنا بنختار بعض كل يوم.
                 </p>
                 <div class="summary-highlight">
@@ -1113,59 +596,55 @@
             </div>
         </section>
     </div>
-    
-    <!-- قسم القصة الكاملة -->
-    <div id="story" class="hidden-section">
-        <div class="container">
+
+    <!-- ═══ قسم القصة الكاملة ═══ -->
+    <div id="story" class="hidden-section"
+         style="background-image: url('IMG_20260503_233908_222.jpg');
+                background-size: cover; background-position: center;
+                background-repeat: no-repeat; background-attachment: fixed;
+                position: relative;">
+        <div style="position:absolute; top:0; left:0; width:100%; height:100%;
+                    background: linear-gradient(135deg, rgba(255,248,240,0.82) 0%, rgba(204,190,177,0.75) 100%);
+                    z-index:0;"></div>
+        <div class="container" style="position:relative; z-index:1;">
             <button class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</button>
             <h2 class="section-title">قصتنا الكاملة 📖</h2>
-            
             <div class="story-full">
                 <h3>🎭 البداية الغريبة</h3>
                 <p>قصة حبنا دي غريبة شوية بصراحة. من أول ما اتعرفنا على بعض واحنا أصلاً مش عارفين مين اللي بيكلم التاني ولا بعت له ليه. كانت بداية غريبة مليانة صدف ومواقف مش محسوبة، بس في الآخر كل ده كان قدر بيجمعنا مع بعض.</p>
-                
                 <h3>🎵 طريق الرجوع</h3>
                 <p>زي مثلاً لما كنت ببعتلك فيديوهات أغاني لحد ما وصلنا لتاني بلوك بينا. كانت فترة صعبة، بس الأغاني كانت هي السبيل الوحيد اللي بنتواصل من خلاله. كل أغنية كانت بتعبر عن شعور، وكل لحن كان بيوصل رسالة مش معبر عنها.</p>
-                
                 <h3>💫 لحظة الاعتراف</h3>
                 <p>عملنا جروب تاني بينا احنا وكنا بنتكلم أكتر وتعرفنا أكتر. كانت لحظة الاعتراف بالمشاعر يوم ١/٢/٢٠٢٣، يوم مش هننساه أبداً. يوم قررنا نكون صريحين مع بعض ونعترف باللي جوا قلوبنا.</p>
-                
                 <h3>💔 الحفر والفراق</h3>
                 <p>أيوه كانت فترة قصيرة مكملتش شهر تقريباً، بس كانت فترة حبيتها وفاكر كل لحظة فيها. الفراق علمنا قيمة بعض، وخلانا نعرف إن الحب الحقيقي بيستحق التضحية والانتظار.</p>
-                
                 <h3>🌅 العودة من جديد</h3>
                 <p>وفعلاً قررتِ ترجعي ونكمل مع بعض، بس بسبب إننا كنا صغيرين حصلت أول مشكلة. بس إحنا تعلمنا منها، وكل مشكلة عدت بينا خلتنا أقوى وأقرب لبعض.</p>
-                
                 <h3>✨ التجدد والمستقبل</h3>
                 <p>بدأت فترة جميلة بينا وهي الاستعباط والتلميح. كل واحد كان بيحاول يلمح ويتأكد من حب التاني. ورجعنا لبعض يوم ٩/٨/٢٠٢٥، ومن ساعتها واحنا بنختار بعض كل يوم. 💕</p>
-                
                 <h3>🤞 وعد الاصابع</h3>
                 <p>وعد الاصابع ده مش مجرد كلمة، ده عهد بينا. مهما أي حد فينا غلط، احنا مكملين. علشان دايماً اختيارنا هيكون <strong>إحنا</strong>. 💕</p>
             </div>
         </div>
     </div>
-    
-    <!-- باقي الأقسام -->
+
+    <!-- ═══ قسم الرسائل ═══ -->
     <div id="messages" class="hidden-section messages-section">
         <div class="container">
             <button class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</button>
             <h2 class="section-title">رسائلنا 💌</h2>
-            
-            <div class="connection-status offline" id="connectionStatus">
-                جاري الاتصال بقاعدة البيانات...
-            </div>
-            
+            <div class="connection-status offline" id="connectionStatus">جاري الاتصال بقاعدة البيانات...</div>
             <div class="message-box">
                 <div class="message-input-area">
-                    <textarea class="message-textarea" id="messageInput" placeholder="✍️ اكتب رسالتك هنا... كل كلمة هتوصل لقلبها فوراً 💕"></textarea>
+                    <textarea class="message-textarea" id="messageInput"
+                        placeholder="✍️ اكتب رسالتك هنا... كل كلمة هتوصل لقلبها فوراً 💕"></textarea>
                     <button class="send-btn" id="sendBtn" onclick="sendMessage()">
                         <span>📤</span> إرسال الرسالة
                     </button>
                 </div>
             </div>
-            
             <div class="message-box">
-                <h3 style="color: var(--taupe); margin-bottom: 1.5rem; text-align: center;">📬 الرسائل المستلمة</h3>
+                <h3 style="color:var(--taupe); margin-bottom:1.5rem; text-align:center;">📬 الرسائل المستلمة</h3>
                 <div class="messages-list" id="messagesList">
                     <div class="no-messages">
                         💭 لا توجد رسائل بعد...<br>
@@ -1175,24 +654,22 @@
             </div>
         </div>
     </div>
-    
+
+    <!-- ═══ قسم المشاعر ═══ -->
     <div id="feelings" class="hidden-section feelings-section">
         <div class="container">
             <button class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</button>
             <h2 class="section-title">مشاعرنا 🤍</h2>
-            
             <div class="feeling-card">
                 <h3>🤗 الأمان</h3>
                 <p class="feeling-text">معاكِ أحس إني في مكان آمن، زي ماكون في بيتي اللي مهما بعته أرجعله تاني. أنتِ الأمان اللي مش بيخلص، والحضن اللي بيشفي.</p>
                 <textarea class="feeling-input" placeholder="✍️ اكتبي هنا شعورك بالأمان..."></textarea>
             </div>
-            
             <div class="feeling-card">
                 <h3>🤝 الثقة</h3>
                 <p class="feeling-text">ثقتي فيكِ أكبر من أي شك، وأعرف إن مهما حصل هنفضل جنب بعض. الثقة دي أساس كل حاجة حلوة بينا.</p>
                 <textarea class="feeling-input" placeholder="✍️ اكتبي هنا عن ثقتك..."></textarea>
             </div>
-            
             <div class="feeling-card">
                 <h3>❤️ الحب</h3>
                 <p class="feeling-text">حبنا مش مجرد كلمة، هو اختيار بنعمله كل يوم. اختيار نفضل مع بعض مهما كانت الظروف.</p>
@@ -1200,79 +677,78 @@
             </div>
         </div>
     </div>
-    
+
+    <!-- ═══ قسم المشاكل (خلفية ديناميكية - الصورة 4) ═══ -->
     <div id="problems" class="hidden-section problems-section">
-        <div class="container">
+        <div class="section-overlay"></div>
+        <div class="container" style="position:relative; z-index:1;">
             <button class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</button>
             <h2 class="section-title">المشاكل 💪</h2>
-            
             <div class="counter-box">
                 <span class="counter-number" id="problemsCount">0</span>
                 <div class="counter-label">عدد المشاكل اللي عدت بينا</div>
                 <div class="counter-controls">
                     <button class="counter-btn btn-minus" onclick="updateProblems(-1)">−</button>
-                    <button class="counter-btn btn-plus" onclick="updateProblems(1)">+</button>
+                    <button class="counter-btn btn-plus"  onclick="updateProblems(1)">+</button>
                 </div>
                 <div class="sync-status" id="problemsSync">⚪ جاري التزامن...</div>
             </div>
-            
             <div class="reminder-box">
                 💕 <strong>مع كل مشكلة بينا، نفتكر الحب اللي بينا والمجهود اللي اتبذل.</strong><br><br>
                 <em>احنا مش بنعد المشاكل، احنا بنعد اللحظات اللي قررنا فيها نكمل.</em>
             </div>
         </div>
     </div>
-    
+
+    <!-- ═══ قسم الوعد (خلفية ديناميكية - الصورة 3) ═══ -->
     <div id="promise" class="hidden-section promise-section">
-        <div class="container">
-            <button class="back-btn" onclick="showSection('home')" style="background: rgba(255,255,255,0.2); color: white;">← رجوع للرئيسية</button>
+        <div class="section-overlay"></div>
+        <div class="container" style="position:relative; z-index:1;">
+            <button class="back-btn" onclick="showSection('home')"
+                style="background:rgba(255,255,255,0.2); color:white;">← رجوع للرئيسية</button>
             <h2 class="section-title">وعدنا 🤞</h2>
-            
             <div class="promise-box">
-                <p style="font-size: 1.2rem; margin-bottom: 1rem; opacity: 0.9;">
+                <p style="font-size:1.2rem; margin-bottom:1rem; opacity:0.9; color:white;">
                     مهما أي حد فينا غلط، احنا مكملين.<br>
                     علشان دايماً اختيارنا هيكون <strong>إحنا</strong> 💕
                 </p>
-                <div class="promise-counter" id="promiseCount">0</div>
-                <p style="margin-bottom: 1rem;">مرة اخترنا فيها إحنا</p>
-                <div class="sync-status" id="promiseSync" style="color: rgba(255,255,255,0.7);">⚪ جاري التزامن...</div>
+                <div class="promise-counter" id="promiseCount" style="color:white;">0</div>
+                <p style="margin-bottom:1rem; color:white;">مرة اخترنا فيها إحنا</p>
+                <div class="sync-status" id="promiseSync" style="color:rgba(255,255,255,0.7);">⚪ جاري التزامن...</div>
                 <button class="promise-btn" onclick="makePromise()">أنا أختار إحنا ❤️</button>
             </div>
         </div>
     </div>
-    
+
+    <!-- ═══ قسم الصور ═══ -->
     <div id="photos" class="hidden-section photos-section">
         <div class="container">
             <button class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</button>
             <h2 class="section-title">صورنا 📸</h2>
-            
             <div class="photos-box">
                 <div class="photos-number" id="photosCount">0</div>
                 <div class="photos-label">صورة مع بعض 💕</div>
                 <div class="sync-status" id="photosSync">⚪ جاري التزامن...</div>
-                <p style="color: var(--taupe); margin-top: 1rem;">العد مستمر إلى ما لا نهاية... ♾️</p>
+                <p style="color:var(--taupe); margin-top:1rem;">العد مستمر إلى ما لا نهاية... ♾️</p>
             </div>
-            
             <div class="celebration" id="celebration">
                 <h3>🎉 مبروك! أول 100 صورة! 📸💕</h3>
                 <p>كل صورة كانت ذكرى جميلة جمعتنا، وهناك المزيد قادم! 🌟</p>
             </div>
-            
             <button class="cta-button" onclick="addPhoto()">📷 أضف صورة جديدة</button>
         </div>
     </div>
-    
+
+    <!-- ═══ قسم التواريخ ═══ -->
     <div id="dates" class="hidden-section dates-section">
         <div class="container">
             <button class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</button>
             <h2 class="section-title">تواريخنا المميزة 📅</h2>
-            
             <div class="date-card">
                 <div class="date-display">📅 1 / 2 / 2023</div>
                 <div class="date-title">🌸 البداية - يوم الاعتراف</div>
                 <textarea class="date-input" placeholder="✍️ اكتبي هنا ذكرياتك عن هذا اليوم المميز..."></textarea>
             </div>
-            
             <div class="date-card" style="border: 3px solid var(--taupe);">
                 <div class="date-display">📅 9 / 8 / 2025</div>
                 <div class="date-title">💫 تجدد الحب - العودة للبعض</div>
@@ -1280,12 +756,13 @@
             </div>
         </div>
     </div>
-    
+
+    <!-- ═══ قسم الأغنية ═══ -->
     <div id="music" class="hidden-section music-section">
         <div class="container">
             <button class="back-btn" onclick="showSection('home')">← رجوع للرئيسية</button>
             <h2 class="section-title">أغنيتنا 🎵</h2>
-            <p style="color: var(--taupe); margin-bottom: 2rem; font-size: 1.1rem;">
+            <p style="color:var(--taupe); margin-bottom:2rem; font-size:1.1rem;">
                 الأغنية اللي بتذكرنا بكل لحظة حلوة عدت بينا 💕
             </p>
             <a href="https://youtu.be/XMwey5J6VEs" target="_blank" class="youtube-btn">
@@ -1293,15 +770,16 @@
             </a>
         </div>
     </div>
-    
-    <footer id="mainFooter" style="display: none;">
+
+    <!-- ═══ الفوتر ═══ -->
+    <footer id="mainFooter" style="display:none;">
         <p>وعد الاصابع 🤞 | خالد وفاطمة 💕</p>
     </footer>
-    
+
     <script>
-        // ==========================================
+        // ══════════════════════════════════════════════
         // Firebase Configuration
-        // ==========================================
+        // ══════════════════════════════════════════════
         const firebaseConfig = {
             apiKey: "AIzaSyAklV4_qndb_vTeSXNm0AbgqrdxkYwt7ok",
             authDomain: "love-for-ever-a3077.firebaseapp.com",
@@ -1312,441 +790,348 @@
             appId: "1:265907206498:web:27b2f107a3a6c3a9c3943b",
             measurementId: "G-Y3XEM1KGWC"
         };
-        
+
         let database, countersRef, messagesRef, auth;
         let isConnected = false;
-        let currentUser = null;
-        
+
         try {
             firebase.initializeApp(firebaseConfig);
-            database = firebase.database();
-            auth = firebase.auth();
+            database    = firebase.database();
+            auth        = firebase.auth();
             countersRef = database.ref('counters');
             messagesRef = database.ref('messages');
             isConnected = true;
             console.log('✅ Firebase Connected');
-            
-            // التحقق من حالة الجلسة المحلية
             checkLocalSession();
         } catch (error) {
             console.error('❌ Firebase Error:', error);
         }
-        
-        // ==========================================
-        // نظام الدخول البسيط - كلمة سر مخفية
-        // ==========================================
-        
-        // ← كلمة السر الجديدة: khaled22#$
+
+        // ══════════════════════════════════════════════
+        // نظام الدخول
+        // ══════════════════════════════════════════════
         const SECRET_PASSWORD = "khaled22#$";
-        
+
         function checkSecret() {
-            const input = document.getElementById('secretCode').value;
+            const input    = document.getElementById('secretCode').value;
             const errorDiv = document.getElementById('errorMessage');
-            
             if (input === SECRET_PASSWORD) {
-                // كلمة السر صحيحة - دخول مباشر
                 const sessionData = {
                     name: "فاطمة",
                     loginTime: Date.now(),
-                    expiresAt: Date.now() + (24 * 60 * 60 * 1000) // 24 ساعة
+                    expiresAt: Date.now() + (24 * 60 * 60 * 1000)
                 };
-                
                 localStorage.setItem('loveSession', JSON.stringify(sessionData));
-                
                 auth.signInAnonymously()
-                    .then(() => {
-                        showMainContent();
-                    })
-                    .catch(() => {
-                        showMainContent();
-                    });
+                    .then(() => showMainContent())
+                    .catch(() => showMainContent());
             } else {
                 errorDiv.textContent = '❌ كلمة السر غير صحيحة';
                 errorDiv.classList.add('show');
             }
         }
-        
+
         function logout() {
             localStorage.removeItem('loveSession');
-            auth.signOut().then(() => {
-                location.reload();
-            }).catch(() => {
-                location.reload();
-            });
+            auth.signOut()
+                .then(() => location.reload())
+                .catch(() => location.reload());
         }
-        
-        // التحقق من الجلسة المحلية
+
         function checkLocalSession() {
             const session = localStorage.getItem('loveSession');
-            
             if (session) {
-                const sessionData = JSON.parse(session);
-                
-                if (sessionData.expiresAt > Date.now()) {
-                    showMainContent();
-                } else {
-                    localStorage.removeItem('loveSession');
-                }
+                const data = JSON.parse(session);
+                if (data.expiresAt > Date.now()) showMainContent();
+                else localStorage.removeItem('loveSession');
             }
         }
-        
-        // ==========================================
-        // عداد الأيام التلقائي
-        // ==========================================
+
+        // ══════════════════════════════════════════════
+        // عداد الأيام
+        // ══════════════════════════════════════════════
         const START_DATE = new Date('2023-02-01T00:00:00');
-        
+
         function calculateDays() {
-            const now = new Date();
-            const diffTime = now - START_DATE;
-            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-            return diffDays;
+            return Math.floor((new Date() - START_DATE) / (1000 * 60 * 60 * 24));
         }
-        
+
         function updateDaysCounter() {
-            const days = calculateDays();
-            const display = document.getElementById('daysCountDisplay');
-            if (display) {
-                display.textContent = days;
-            }
+            const el = document.getElementById('daysCountDisplay');
+            if (el) el.textContent = calculateDays();
         }
-        
+
         function showDayMessage() {
-            const days = calculateDays();
-            const message = `يوم جديد في قصتنا اللي مكملة رغم كل الظروف 🌟 يوم جديد احنا اختيارنا فيه نكمل قصتنا سوا 💕 يوم جديد كله حب ❤️`;
-            
-            showCounterNotification('days', message);
-            
-            // تأثير بصري إضافي
+            showCounterNotification('days', 'يوم جديد في قصتنا اللي مكملة رغم كل الظروف 🌟 يوم جديد كله حب ❤️');
             const counter = document.getElementById('daysCounterHero');
             counter.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                counter.style.transform = '';
-            }, 150);
-            
-            if (navigator.vibrate) {
-                navigator.vibrate([100, 50, 100]);
-            }
+            setTimeout(() => { counter.style.transform = ''; }, 150);
+            if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
         }
-        
-        // تحديث العداد كل دقيقة
+
         setInterval(updateDaysCounter, 60000);
-        
-        // ==========================================
+
+        // ══════════════════════════════════════════════
         // المتغيرات العامة
-        // ==========================================
-        let problemsCount = 0;
-        let promiseCount = 0;
-        let photosCount = 0;
-        let unreadMessages = 0;
-        let lastProblemsCount = 0;
-        let lastPromiseCount = 0;
-        let lastPhotosCount = 0;
-        
-        // ==========================================
+        // ══════════════════════════════════════════════
+        let problemsCount    = 0, lastProblemsCount = 0, problemsBgShown = false;
+        let promiseCount     = 0, lastPromiseCount  = 0, promiseBgShown  = false;
+        let photosCount      = 0, lastPhotosCount   = 0;
+        let unreadMessages   = 0;
+
+        // ══════════════════════════════════════════════
         // إشعارات العدادات
-        // ==========================================
+        // ══════════════════════════════════════════════
         function showCounterNotification(type, message) {
             const notification = document.getElementById('counterNotification');
-            const icon = document.getElementById('notificationIcon');
-            const text = document.getElementById('notificationText');
-            
-            if (type === 'photos') {
-                notification.className = 'counter-notification photos';
-                icon.textContent = '📸';
-            } else if (type === 'promise') {
-                notification.className = 'counter-notification promise';
-                icon.textContent = '🤞';
-            } else if (type === 'problems') {
-                notification.className = 'counter-notification';
-                icon.textContent = '💪';
-            } else if (type === 'message') {
-                notification.className = 'counter-notification';
-                icon.textContent = '💌';
-            } else if (type === 'days') {
-                notification.className = 'counter-notification days';
-                icon.textContent = '📅';
-            }
-            
+            const icon         = document.getElementById('notificationIcon');
+            const text         = document.getElementById('notificationText');
+
+            const types = {
+                photos:   { cls: 'counter-notification photos',  icon: '📸' },
+                promise:  { cls: 'counter-notification promise', icon: '🤞' },
+                problems: { cls: 'counter-notification',         icon: '💪' },
+                message:  { cls: 'counter-notification',         icon: '💌' },
+                days:     { cls: 'counter-notification days',    icon: '📅' }
+            };
+
+            const cfg = types[type] || types.message;
+            notification.className = cfg.cls;
+            icon.textContent = cfg.icon;
             text.textContent = message;
             notification.classList.add('show');
-            
             playNotificationSound();
-            
-            if (navigator.vibrate) {
-                navigator.vibrate([200, 100, 200]);
-            }
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 5000);
+            if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+            setTimeout(() => notification.classList.remove('show'), 5000);
         }
-        
+
         function playNotificationSound() {
             try {
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                oscillator.frequency.value = 800;
-                oscillator.type = 'sine';
-                
-                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-                
-                oscillator.start(audioContext.currentTime);
-                oscillator.stop(audioContext.currentTime + 0.5);
-            } catch (e) {
-                console.log('Audio not supported');
-            }
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.frequency.value = 800;
+                osc.type = 'sine';
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + 0.5);
+            } catch (e) { /* audio not supported */ }
         }
-        
-        // ==========================================
+
+        // ══════════════════════════════════════════════
         // التنقل بين الأقسام
-        // ==========================================
+        // ══════════════════════════════════════════════
         function showSection(sectionId) {
-            const session = localStorage.getItem('loveSession');
-            if (!session && !currentUser) return;
-            
+            if (!localStorage.getItem('loveSession')) return;
+
             document.querySelectorAll('#home, .hidden-section').forEach(el => {
                 el.style.display = 'none';
             });
-            
+
             if (sectionId === 'home') {
                 document.getElementById('home').style.display = 'block';
                 updateDaysCounter();
             } else {
                 document.getElementById(sectionId).style.display = 'block';
-                
                 if (sectionId === 'messages' && isConnected) loadMessages();
-                else if (sectionId === 'problems' && isConnected) loadProblems();
-                else if (sectionId === 'promise' && isConnected) loadPromise();
-                else if (sectionId === 'photos' && isConnected) loadPhotos();
+                if (sectionId === 'problems' && isConnected) loadProblems();
+                if (sectionId === 'promise'  && isConnected) loadPromise();
+                if (sectionId === 'photos'   && isConnected) loadPhotos();
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-        
-        // ==========================================
+
+        // ══════════════════════════════════════════════
         // قسم الرسائل
-        // ==========================================
+        // ══════════════════════════════════════════════
         function sendMessage() {
-            const input = document.getElementById('messageInput');
-            const btn = document.getElementById('sendBtn');
+            const input   = document.getElementById('messageInput');
+            const btn     = document.getElementById('sendBtn');
             const content = input.value.trim();
-            
-            if (!content) {
-                alert('✍️ اكتب رسالتك الأول!');
-                return;
-            }
-            
-            if (!isConnected) {
-                alert('❌ لا يوجد اتصال!');
-                return;
-            }
-            
-            btn.disabled = true;
+
+            if (!content)     { alert('✍️ اكتب رسالتك الأول!'); return; }
+            if (!isConnected) { alert('❌ لا يوجد اتصال!');     return; }
+
+            btn.disabled  = true;
             btn.innerHTML = '<span>⏳</span> جاري الإرسال...';
-            
+
             const session = JSON.parse(localStorage.getItem('loveSession') || '{}');
-            
-            const message = {
-                content: content,
-                sender: session.name || 'فاطمة',
+            messagesRef.push({
+                content,
+                sender:    session.name || 'فاطمة',
                 timestamp: Date.now(),
-                read: false
-            };
-            
-            messagesRef.push(message)
-                .then(() => {
-                    input.value = '';
-                    btn.disabled = false;
-                    btn.innerHTML = '<span>📤</span> إرسال الرسالة';
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                    btn.disabled = false;
-                    btn.innerHTML = '<span>❌</span> حاول مرة أخرى';
-                });
+                read:      false
+            }).then(() => {
+                input.value   = '';
+                btn.disabled  = false;
+                btn.innerHTML = '<span>📤</span> إرسال الرسالة';
+            }).catch(() => {
+                btn.disabled  = false;
+                btn.innerHTML = '<span>❌</span> حاول مرة أخرى';
+            });
         }
-        
+
         function loadMessages() {
             const statusDiv = document.getElementById('connectionStatus');
-            statusDiv.className = 'connection-status online';
+            statusDiv.className   = 'connection-status online';
             statusDiv.textContent = '✅ متصل - الرسائل تصل فوراً';
-            
-            messagesRef.orderByChild('timestamp').on('value', (snapshot) => {
+
+            messagesRef.orderByChild('timestamp').on('value', snapshot => {
                 const messages = [];
                 let newUnread = 0;
-                
-                snapshot.forEach((childSnapshot) => {
-                    const msg = childSnapshot.val();
-                    msg.id = childSnapshot.key;
+
+                snapshot.forEach(child => {
+                    const msg = child.val();
+                    msg.id = child.key;
                     messages.unshift(msg);
                     if (!msg.read) newUnread++;
                 });
-                
+
                 if (newUnread > unreadMessages && unreadMessages > 0) {
                     showCounterNotification('message', `💌 رسالة جديدة من ${messages[0].sender}!`);
                 }
                 unreadMessages = newUnread;
-                
+
                 const badge = document.getElementById('messageBadge');
-                if (unreadMessages > 0) {
-                    badge.textContent = unreadMessages;
-                    badge.classList.add('show');
-                } else {
-                    badge.classList.remove('show');
-                }
-                
+                if (unreadMessages > 0) { badge.textContent = unreadMessages; badge.classList.add('show'); }
+                else badge.classList.remove('show');
+
                 const list = document.getElementById('messagesList');
-                if (messages.length === 0) {
-                    list.innerHTML = '<div class="no-messages">💭 لا توجد رسائل بعد...</div>';
-                } else {
-                    list.innerHTML = messages.map(msg => `
+                list.innerHTML = messages.length === 0
+                    ? '<div class="no-messages">💭 لا توجد رسائل بعد...<br>اكتب أول رسالة وابعتها لحبيبتك! 💕</div>'
+                    : messages.map(msg => `
                         <div class="message-item ${!msg.read ? 'new' : ''}">
                             <div class="message-sender">👤 ${msg.sender}</div>
                             <div class="message-content">${escapeHtml(msg.content)}</div>
                             <div class="message-time">🕐 ${formatTime(msg.timestamp)}</div>
-                        </div>
-                    `).join('');
-                }
+                        </div>`).join('');
             });
         }
-        
-        // ==========================================
-        // عداد المشاكل
-        // ==========================================
+
+        // ══════════════════════════════════════════════
+        // عداد المشاكل + خلفية ديناميكية
+        // ══════════════════════════════════════════════
         function loadProblems() {
-            const syncDiv = document.getElementById('problemsSync');
-            
-            countersRef.child('problems').on('value', (snapshot) => {
+            countersRef.child('problems').on('value', snapshot => {
                 const value = snapshot.val() || 0;
-                
                 if (value > lastProblemsCount && lastProblemsCount > 0) {
                     showCounterNotification('problems', `💪 عدد المشاكل زاد! الآن: ${value}`);
+                    showProblemsBackground();
                 }
-                
                 lastProblemsCount = value;
                 problemsCount = value;
                 document.getElementById('problemsCount').textContent = value;
-                syncDiv.textContent = '✅ متزامن مع Firebase';
-                syncDiv.className = 'sync-status online';
+                const sync = document.getElementById('problemsSync');
+                sync.textContent = '✅ متزامن مع Firebase';
+                sync.className   = 'sync-status online';
             });
         }
-        
+
         function updateProblems(change) {
-            if (!isConnected) {
-                alert('❌ لا يوجد اتصال!');
-                return;
-            }
+            if (!isConnected) { alert('❌ لا يوجد اتصال!'); return; }
+            showProblemsBackground();
             countersRef.child('problems').set(Math.max(0, problemsCount + change));
         }
-        
-        // ==========================================
-        // عداد الوعد
-        // ==========================================
+
+        function showProblemsBackground() {
+            const section = document.getElementById('problems');
+            if (!problemsBgShown) {
+                section.classList.add('show-bg');
+                problemsBgShown = true;
+                setTimeout(() => { section.classList.remove('show-bg'); problemsBgShown = false; }, 5000);
+            }
+        }
+
+        // ══════════════════════════════════════════════
+        // عداد الوعد + خلفية ديناميكية
+        // ══════════════════════════════════════════════
         function loadPromise() {
-            const syncDiv = document.getElementById('promiseSync');
-            
-            countersRef.child('promise').on('value', (snapshot) => {
+            countersRef.child('promise').on('value', snapshot => {
                 const value = snapshot.val() || 0;
-                
                 if (value > lastPromiseCount && lastPromiseCount > 0) {
                     showCounterNotification('promise', `🤞 وعد جديد! إجمالي الوعود: ${value}`);
+                    showPromiseBackground();
                 }
-                
                 lastPromiseCount = value;
                 promiseCount = value;
                 document.getElementById('promiseCount').textContent = value;
-                syncDiv.textContent = '✅ متزامن';
+                document.getElementById('promiseSync').textContent  = '✅ متزامن';
             });
         }
-        
+
         function makePromise() {
-            if (!isConnected) {
-                alert('❌ لا يوجد اتصال!');
-                return;
-            }
-            
+            if (!isConnected) { alert('❌ لا يوجد اتصال!'); return; }
             countersRef.child('promise').set(promiseCount + 1);
-            
+            showPromiseBackground();
             const flyingText = document.getElementById('flyingText');
             flyingText.classList.remove('animate');
             void flyingText.offsetWidth;
             flyingText.classList.add('animate');
         }
-        
-        // ==========================================
+
+        function showPromiseBackground() {
+            const section = document.getElementById('promise');
+            if (!promiseBgShown) {
+                section.classList.add('show-bg');
+                promiseBgShown = true;
+                setTimeout(() => { section.classList.remove('show-bg'); promiseBgShown = false; }, 8000);
+            }
+        }
+
+        // ══════════════════════════════════════════════
         // عداد الصور
-        // ==========================================
+        // ══════════════════════════════════════════════
         function loadPhotos() {
-            const syncDiv = document.getElementById('photosSync');
-            
-            countersRef.child('photos').on('value', (snapshot) => {
+            countersRef.child('photos').on('value', snapshot => {
                 const value = snapshot.val() || 0;
-                
                 if (value > lastPhotosCount && lastPhotosCount > 0) {
                     const remaining = 100 - value;
-                    if (remaining > 0) {
-                        showCounterNotification('photos', `📸 صورة جديدة! باقي ${remaining} لـ 100 صورة`);
-                    } else if (value === 100) {
-                        showCounterNotification('photos', '🎉 مبروك! وصلنا 100 صورة!');
-                    }
+                    showCounterNotification('photos',
+                        remaining > 0 ? `📸 صورة جديدة! باقي ${remaining} لـ 100 صورة`
+                                      : '🎉 مبروك! وصلنا 100 صورة!');
                 }
-                
                 lastPhotosCount = value;
                 photosCount = value;
                 document.getElementById('photosCount').textContent = value;
-                syncDiv.textContent = '✅ متزامن مع Firebase';
-                syncDiv.className = 'sync-status online';
-                
-                if (value >= 100) {
-                    document.getElementById('celebration').classList.add('show');
-                }
+                const sync = document.getElementById('photosSync');
+                sync.textContent = '✅ متزامن مع Firebase';
+                sync.className   = 'sync-status online';
+                if (value >= 100) document.getElementById('celebration').classList.add('show');
             });
         }
-        
+
         function addPhoto() {
-            if (!isConnected) {
-                alert('❌ لا يوجد اتصال!');
-                return;
-            }
-            
+            if (!isConnected) { alert('❌ لا يوجد اتصال!'); return; }
             countersRef.child('photos').set(photosCount + 1);
-            
-            if (photosCount + 1 === 100) {
-                setTimeout(() => alert('🎉 مبروك! 100 صورة! 📸💕'), 500);
-            }
+            if (photosCount + 1 === 100) setTimeout(() => alert('🎉 مبروك! 100 صورة! 📸💕'), 500);
         }
-        
-        // ==========================================
+
+        // ══════════════════════════════════════════════
         // مساعدات
-        // ==========================================
+        // ══════════════════════════════════════════════
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
-        
+
         function formatTime(timestamp) {
             return new Date(timestamp).toLocaleString('ar-EG', {
                 year: 'numeric', month: 'short', day: 'numeric',
                 hour: '2-digit', minute: '2-digit'
             });
         }
-        
+
         function showMainContent() {
             document.getElementById('loginContainer').classList.add('hidden');
-            document.getElementById('mainHeader').style.display = 'block';
-            document.getElementById('home').style.display = 'block';
-            document.getElementById('mainFooter').style.display = 'block';
+            document.getElementById('mainHeader').style.display  = 'block';
+            document.getElementById('home').style.display        = 'block';
+            document.getElementById('mainFooter').style.display  = 'block';
             document.getElementById('logoutBtn').classList.add('show');
-            
-            // تحديث عداد الأيام عند الدخول
             updateDaysCounter();
-            
             if (isConnected) {
                 loadMessages();
                 loadProblems();
@@ -1754,19 +1139,19 @@
                 loadPhotos();
             }
         }
-        
-        // ==========================================
+
+        // ══════════════════════════════════════════════
         // قلوب عائمة
-        // ==========================================
+        // ══════════════════════════════════════════════
         const heartsContainer = document.getElementById('hearts');
-        const heartSymbols = ['💕', '💖', '💗', '💓', '💝', '❤️', '🤍'];
-        
+        const heartSymbols    = ['💕','💖','💗','💓','💝','❤️','🤍'];
+
         for (let i = 0; i < 15; i++) {
             const heart = document.createElement('div');
             heart.className = 'heart';
             heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
-            heart.style.left = Math.random() * 100 + '%';
-            heart.style.animationDelay = Math.random() * 15 + 's';
+            heart.style.left            = Math.random() * 100 + '%';
+            heart.style.animationDelay  = Math.random() * 15 + 's';
             heart.style.animationDuration = (10 + Math.random() * 10) + 's';
             heartsContainer.appendChild(heart);
         }
