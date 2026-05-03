@@ -219,6 +219,11 @@
             box-shadow: 0 10px 30px rgba(102, 73, 48, 0.4);
         }
         
+        .counter-notification.days {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            box-shadow: 0 10px 30px rgba(155, 89, 182, 0.4);
+        }
+        
         header {
             background: rgba(255, 248, 240, 0.95);
             backdrop-filter: blur(10px);
@@ -384,6 +389,45 @@
             color: var(--brown);
             font-size: 1.2rem;
             line-height: 1.8;
+        }
+        
+        .days-counter-hero {
+            background: linear-gradient(135deg, var(--brown), var(--taupe));
+            color: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-top: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .days-counter-hero:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(102, 73, 48, 0.3);
+        }
+        
+        .days-counter-hero:active {
+            transform: scale(0.98);
+        }
+        
+        .days-number {
+            font-size: 4rem;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .days-label {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .days-click-hint {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-top: 0.5rem;
         }
         
         .hidden-section {
@@ -962,6 +1006,10 @@
             .login-box h1 {
                 font-size: 2rem;
             }
+            
+            .days-number {
+                font-size: 3rem;
+            }
         }
     </style>
 </head>
@@ -1037,6 +1085,13 @@
                         كل يوم بنختار بعض، وكل مشكلة بنتجاوزها مع بعض.
                     </p>
                     <button class="cta-button" onclick="showSection('story')">اقرأ القصة الكاملة 📖</button>
+                </div>
+                
+                <!-- عداد الأيام التفاعلي -->
+                <div class="days-counter-hero" id="daysCounterHero" onclick="showDayMessage()">
+                    <span class="days-number" id="daysCountDisplay">0</span>
+                    <div class="days-label">يوم منذ بداية قصتنا 💕</div>
+                    <div class="days-click-hint">👆 اضغط هنا للرسالة</div>
                 </div>
             </div>
         </section>
@@ -1223,12 +1278,6 @@
                 <div class="date-title">💫 تجدد الحب - العودة للبعض</div>
                 <textarea class="date-input" placeholder="✍️ اكتبي هنا ذكرياتك عن يوم رجوعنا لبعض..."></textarea>
             </div>
-            
-            <div class="date-card">
-                <div class="date-display">📅 ❓ / 11 / 2026</div>
-                <div class="date-title">🤝 أول مقابلة - إن شاء الله</div>
-                <textarea class="date-input" placeholder="✍️ اكتبي هنا توقعاتك عن أول مقابلة بينا..."></textarea>
-            </div>
         </div>
     </div>
     
@@ -1287,8 +1336,8 @@
         // نظام الدخول البسيط - كلمة سر مخفية
         // ==========================================
         
-        // ← كلمة السر المعدلة: 122023 (بدون \)
-        const SECRET_PASSWORD = "122023";
+        // ← كلمة السر الجديدة: khaled22#$
+        const SECRET_PASSWORD = "khaled22#$";
         
         function checkSecret() {
             const input = document.getElementById('secretCode').value;
@@ -1342,6 +1391,47 @@
         }
         
         // ==========================================
+        // عداد الأيام التلقائي
+        // ==========================================
+        const START_DATE = new Date('2023-02-01T00:00:00');
+        
+        function calculateDays() {
+            const now = new Date();
+            const diffTime = now - START_DATE;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            return diffDays;
+        }
+        
+        function updateDaysCounter() {
+            const days = calculateDays();
+            const display = document.getElementById('daysCountDisplay');
+            if (display) {
+                display.textContent = days;
+            }
+        }
+        
+        function showDayMessage() {
+            const days = calculateDays();
+            const message = `يوم جديد في قصتنا اللي مكملة رغم كل الظروف 🌟 يوم جديد احنا اختيارنا فيه نكمل قصتنا سوا 💕 يوم جديد كله حب ❤️`;
+            
+            showCounterNotification('days', message);
+            
+            // تأثير بصري إضافي
+            const counter = document.getElementById('daysCounterHero');
+            counter.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                counter.style.transform = '';
+            }, 150);
+            
+            if (navigator.vibrate) {
+                navigator.vibrate([100, 50, 100]);
+            }
+        }
+        
+        // تحديث العداد كل دقيقة
+        setInterval(updateDaysCounter, 60000);
+        
+        // ==========================================
         // المتغيرات العامة
         // ==========================================
         let problemsCount = 0;
@@ -1372,6 +1462,9 @@
             } else if (type === 'message') {
                 notification.className = 'counter-notification';
                 icon.textContent = '💌';
+            } else if (type === 'days') {
+                notification.className = 'counter-notification days';
+                icon.textContent = '📅';
             }
             
             text.textContent = message;
@@ -1385,7 +1478,7 @@
             
             setTimeout(() => {
                 notification.classList.remove('show');
-            }, 3000);
+            }, 5000);
         }
         
         function playNotificationSound() {
@@ -1423,6 +1516,7 @@
             
             if (sectionId === 'home') {
                 document.getElementById('home').style.display = 'block';
+                updateDaysCounter();
             } else {
                 document.getElementById(sectionId).style.display = 'block';
                 
@@ -1649,6 +1743,9 @@
             document.getElementById('home').style.display = 'block';
             document.getElementById('mainFooter').style.display = 'block';
             document.getElementById('logoutBtn').classList.add('show');
+            
+            // تحديث عداد الأيام عند الدخول
+            updateDaysCounter();
             
             if (isConnected) {
                 loadMessages();
