@@ -4,13 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>وعد الاصابع | خالد وفاطمة</title>
+    <!-- Firebase config (مش مرفوع على GitHub - ارجع README) -->
+    <script src="firebase-config.js" onerror="console.warn('firebase-config.js not found')"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     <style>
         /* ══════════════════════════════════════════
-           CSS VARIABLES - Vintage Rose Palette
+           CSS VARIABLES
         ══════════════════════════════════════════ */
         :root {
             --cream:      #F5ECD7;
@@ -26,15 +28,8 @@
             --text:       #3D1F10;
             --text-light: #6B4A3A;
             --white:      #FFFDF7;
-
-            /* Dark mode */
-            --dm-bg:      #1A0F08;
-            --dm-surface: #2A1A0E;
-            --dm-card:    #3A2515;
-            --dm-text:    #EDD9B8;
-            --dm-text2:   #B8946E;
+            --sidebar-w:  280px;
         }
-
         [data-theme="dark"] {
             --cream:      #1A0F08;
             --cream-dark: #2A1A0E;
@@ -59,32 +54,14 @@
             color: var(--text);
             overflow-x: hidden;
             transition: background 0.4s, color 0.4s;
-            cursor: none;
+            cursor: default;
         }
 
-        /* ══════════════════════════════════════════
-           CUSTOM CURSOR
-        ══════════════════════════════════════════ */
-        .cursor-dot {
-            width: 8px; height: 8px;
-            background: var(--rose);
-            border-radius: 50%;
-            position: fixed; pointer-events: none;
-            z-index: 99999; transform: translate(-50%,-50%);
-            transition: transform 0.1s;
-        }
-        .cursor-ring {
-            width: 30px; height: 30px;
-            border: 2px solid var(--rose);
-            border-radius: 50%;
-            position: fixed; pointer-events: none;
-            z-index: 99998; transform: translate(-50%,-50%);
-            transition: all 0.15s ease-out;
-            opacity: 0.6;
-        }
+        /* Cursor: using default browser cursor for better performance */
+        .cursor-dot, .cursor-ring { display: none; }
 
         /* ══════════════════════════════════════════
-           PARTICLES CANVAS
+           PARTICLES
         ══════════════════════════════════════════ */
         #particlesCanvas {
             position: fixed; top: 0; left: 0;
@@ -93,134 +70,291 @@
         }
 
         /* ══════════════════════════════════════════
-           DARK MODE TOGGLE
+           LAYOUT SHELL
         ══════════════════════════════════════════ */
-        .dark-toggle {
-            position: fixed; bottom: 30px; left: 30px;
-            width: 54px; height: 28px;
-            background: var(--beige);
-            border-radius: 14px; border: none; cursor: pointer;
-            z-index: 10002; transition: background 0.3s;
-            display: none; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        .app-shell {
+            display: flex;
+            min-height: 100vh;
         }
-        .dark-toggle.show { display: block; }
-        .dark-toggle::before {
-            content: '☀️';
-            position: absolute; top: 50%; left: 4px;
+
+        /* ══════════════════════════════════════════
+           SIDEBAR
+        ══════════════════════════════════════════ */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: rgba(255,253,247,0.97);
+            backdrop-filter: blur(20px);
+            border-left: 1px solid rgba(212,184,150,0.4);
+            position: fixed;
+            top: 0; right: 0;
+            height: 100vh;
+            z-index: 5000;
+            display: flex;
+            flex-direction: column;
+            transform: translateX(0);
+            transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s;
+            box-shadow: -4px 0 30px rgba(107,58,42,0.12);
+            overflow: hidden;
+        }
+        [data-theme="dark"] .sidebar {
+            background: rgba(26,15,8,0.97);
+            border-left-color: rgba(90,58,37,0.4);
+        }
+        .sidebar.collapsed {
+            transform: translateX(calc(var(--sidebar-w) - 56px));
+        }
+
+        /* Sidebar toggle handle */
+        .sidebar-toggle {
+            position: absolute;
+            left: -20px; top: 50%;
             transform: translateY(-50%);
-            font-size: 16px; transition: all 0.3s;
-        }
-        [data-theme="dark"] .dark-toggle::before { content: '🌙'; left: 26px; }
-        .dark-toggle-track {
-            width: 22px; height: 22px;
+            width: 20px; height: 56px;
             background: var(--rose);
-            border-radius: 50%;
-            position: absolute; top: 3px; left: 3px;
-            transition: left 0.3s;
-        }
-        [data-theme="dark"] .dark-toggle-track { left: 29px; }
-
-        /* ══════════════════════════════════════════
-           LOGIN
-        ══════════════════════════════════════════ */
-        .login-container {
-            position: fixed; inset: 0;
-            background: linear-gradient(135deg, var(--cream) 0%, var(--cream-dark) 100%);
+            border-radius: 8px 0 0 8px;
+            cursor: pointer;
             display: flex; align-items: center; justify-content: center;
-            z-index: 99999;
-            transition: opacity 0.6s ease, visibility 0.6s ease;
+            z-index: 10;
+            transition: background 0.2s;
+            border: none;
         }
-        .login-container.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        .sidebar-toggle:hover { background: var(--brown); }
+        .sidebar-toggle-icon {
+            font-size: 0.75rem;
+            color: white;
+            transition: transform 0.4s;
+            line-height: 1;
+        }
+        .sidebar.collapsed .sidebar-toggle-icon { transform: rotate(180deg); }
 
-        .login-box {
-            background: var(--white);
-            padding: 3rem; border-radius: 24px;
-            box-shadow: 0 30px 80px rgba(107,58,42,0.25), 0 0 0 1px var(--beige);
-            width: 90%; max-width: 440px; text-align: center;
-            animation: slideUp 0.6s cubic-bezier(0.16,1,0.3,1);
-            position: relative; overflow: hidden;
+        /* Sidebar header */
+        .sidebar-header {
+            padding: 1.5rem 1.2rem 1rem;
+            border-bottom: 1px solid rgba(212,184,150,0.3);
+            flex-shrink: 0;
         }
-        .login-box::before {
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; height: 4px;
-            background: linear-gradient(90deg, var(--rose), var(--gold), var(--rose));
+        .sidebar-logo {
+            font-family: 'Amiri', serif;
+            font-size: 1.4rem; color: var(--rose);
+            cursor: pointer; display: block;
+            margin-bottom: 0.8rem;
+            white-space: nowrap; overflow: hidden;
         }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(40px) scale(0.96); }
-            to   { opacity: 1; transform: translateY(0) scale(1); }
+        .sidebar-logo span { color: var(--gold); }
+        .sidebar-meta {
+            display: flex; align-items: center; gap: 0.6rem;
+            font-size: 0.8rem; color: var(--text-light);
         }
-        .login-icon { font-size: 3.5rem; margin-bottom: 1rem; }
-        .login-box h1 { font-family: 'Amiri', serif; font-size: 2.2rem; color: var(--rose); margin-bottom: 0.3rem; }
-        .login-box .subtitle { color: var(--text-light); margin-bottom: 2rem; font-size: 1rem; }
-
-        .input-group { margin-bottom: 1.5rem; text-align: right; }
-        .input-group label { display: block; margin-bottom: 0.5rem; color: var(--brown); font-weight: 600; font-size: 0.9rem; }
-        .input-group input {
-            width: 100%; padding: 0.9rem 1rem;
-            border: 2px solid var(--beige); border-radius: 12px;
-            font-family: 'Tajawal', sans-serif; font-size: 1rem;
-            background: var(--cream); color: var(--text);
-            transition: all 0.3s;
-        }
-        .input-group input:focus { outline: none; border-color: var(--rose); background: var(--white); }
-        .login-btn {
-            width: 100%; padding: 1rem;
+        .sidebar-days-pill {
             background: linear-gradient(135deg, var(--rose), var(--brown));
-            color: var(--cream); border: none; border-radius: 50px;
-            font-size: 1.1rem; font-weight: 700; cursor: pointer;
-            transition: all 0.3s; margin-top: 0.5rem;
-            font-family: 'Tajawal', sans-serif;
-            letter-spacing: 0.5px;
+            color: white; padding: 0.2rem 0.7rem;
+            border-radius: 8px; font-size: 0.75rem;
+            font-weight: 700; white-space: nowrap;
         }
-        .login-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(139,26,60,0.4); }
-        .error-message { color: #c0392b; margin-top: 1rem; font-size: 0.9rem; display: none; }
-        .error-message.show { display: block; }
+
+        /* Sidebar nav grid */
+        .sidebar-nav {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem 0.8rem;
+            scrollbar-width: thin;
+            scrollbar-color: var(--beige) transparent;
+        }
+        .sidebar-nav::-webkit-scrollbar { width: 4px; }
+        .sidebar-nav::-webkit-scrollbar-thumb { background: var(--beige); border-radius: 2px; }
+
+        .nav-section-title {
+            font-size: 0.68rem;
+            letter-spacing: 1px;
+            color: var(--gold);
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 0.8rem 0.4rem 0.4rem;
+            opacity: 0.8;
+        }
+
+        /* Nav grid — 2-column inside sidebar */
+        .nav-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.75rem 0.4rem;
+            border-radius: 10px;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            color: var(--text-light);
+            font-family: 'Tajawal', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            transition: all 0.25s;
+            position: relative;
+            text-align: center;
+            line-height: 1.2;
+            width: 100%;
+        }
+        .nav-item:hover {
+            background: rgba(139,26,60,0.08);
+            color: var(--rose);
+            transform: translateY(-2px);
+        }
+        .nav-item.active {
+            background: linear-gradient(135deg, rgba(139,26,60,0.12), rgba(200,150,62,0.1));
+            color: var(--rose);
+            border: 1px solid rgba(139,26,60,0.2);
+        }
+        .nav-item .nav-emoji { font-size: 1.4rem; }
+        .nav-badge {
+            position: absolute; top: 4px; right: 4px;
+            background: var(--rose); color: white;
+            font-size: 0.6rem; padding: 0.1rem 0.35rem;
+            border-radius: 8px; display: none; font-weight: 700;
+        }
+        .nav-badge.show { display: block; animation: badgePulse 2s infinite; }
+        @keyframes badgePulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+
+        /* Sidebar footer */
+        .sidebar-footer {
+            padding: 0.8rem 1rem;
+            border-top: 1px solid rgba(212,184,150,0.3);
+            display: flex; gap: 0.5rem; align-items: center;
+            flex-shrink: 0;
+        }
+        .sidebar-footer-btn {
+            flex: 1; padding: 0.55rem 0.6rem;
+            border-radius: 10px; border: none; cursor: pointer;
+            font-family: 'Tajawal', sans-serif; font-size: 0.82rem;
+            font-weight: 700; transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 0.3rem;
+        }
+        .btn-dark-toggle {
+            background: var(--beige); color: var(--brown);
+        }
+        .btn-dark-toggle:hover { background: var(--gold); color: white; }
+        .btn-logout {
+            background: rgba(139,26,60,0.1); color: var(--rose);
+        }
+        .btn-logout:hover { background: var(--rose); color: white; }
+
+        /* Sidebar overlay (mobile) */
+        .sidebar-overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 4999;
+            backdrop-filter: blur(2px);
+        }
+        .sidebar-overlay.show { display: block; }
 
         /* ══════════════════════════════════════════
-           HEADER
+           MAIN CONTENT
         ══════════════════════════════════════════ */
-        header {
-            background: rgba(245,236,215,0.96);
-            backdrop-filter: blur(16px);
-            padding: 0.8rem 5%;
-            position: fixed; width: 100%; top: 0;
-            z-index: 1000;
-            border-bottom: 1px solid rgba(212,184,150,0.5);
-            box-shadow: 0 2px 20px rgba(107,58,42,0.1);
-            transition: background 0.4s;
+        .main-content {
+            flex: 1;
+            margin-right: var(--sidebar-w);
+            transition: margin-right 0.4s cubic-bezier(0.16,1,0.3,1);
+            min-height: 100vh;
+            position: relative; z-index: 1;
         }
-        [data-theme="dark"] header {
-            background: rgba(26,15,8,0.96);
-            border-bottom-color: rgba(90,58,37,0.5);
+        .sidebar.collapsed ~ .main-content,
+        .sidebar-collapsed .main-content {
+            margin-right: 56px;
         }
-        nav { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; gap: 1rem; }
 
-        .logo {
-            font-family: 'Amiri', serif;
-            font-size: 1.6rem; color: var(--rose);
-            text-decoration: none; white-space: nowrap;
-            letter-spacing: 0.5px;
-        }
-        .logo span { color: var(--gold); }
-
-        .nav-icons { display: flex; gap: 1rem; list-style: none; flex-wrap: wrap; justify-content: flex-end; }
-        .nav-icons a {
-            color: var(--text-light); text-decoration: none; font-size: 0.8rem;
-            font-weight: 600; transition: all 0.3s;
-            display: flex; flex-direction: column; align-items: center;
-            gap: 0.15rem; position: relative; padding: 0.3rem;
-        }
-        .nav-icons a:hover { color: var(--rose); transform: translateY(-2px); }
-        .nav-icons a .nav-icon { font-size: 1.1rem; }
-
-        .badge {
-            background: var(--rose); color: white; font-size: 0.65rem;
-            padding: 0.15rem 0.4rem; border-radius: 8px;
-            position: absolute; top: -4px; right: -4px;
+        /* ══════════════════════════════════════════
+           BOTTOM BAR (Mobile)
+        ══════════════════════════════════════════ */
+        .bottom-bar {
             display: none;
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: rgba(255,253,247,0.97);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(212,184,150,0.4);
+            z-index: 5000;
+            padding: 0.4rem 0.3rem calc(0.4rem + env(safe-area-inset-bottom));
         }
-        .badge.show { display: block; animation: badgePulse 2s infinite; }
-        @keyframes badgePulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+        [data-theme="dark"] .bottom-bar {
+            background: rgba(26,15,8,0.97);
+            border-top-color: rgba(90,58,37,0.4);
+        }
+
+        .bottom-bar-scroll {
+            display: flex;
+            gap: 0;
+            scrollbar-width: none;
+            padding: 0;
+        }
+        .bottom-bar-scroll::-webkit-scrollbar { display: none; }
+
+        .bottom-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.15rem;
+            padding: 0.4rem 0.2rem;
+            border-radius: 8px;
+            cursor: pointer; border: none;
+            background: transparent;
+            color: var(--text-light);
+            font-family: 'Tajawal', sans-serif;
+            font-size: 0.65rem; font-weight: 600;
+            transition: all 0.2s;
+            flex: 1;
+            position: relative;
+            white-space: nowrap;
+        }
+        .bottom-item .bottom-emoji { font-size: 1.25rem; }
+        .bottom-item:hover, .bottom-item.active {
+            color: var(--rose);
+            background: rgba(139,26,60,0.08);
+        }
+        .bottom-item.active .bottom-emoji { animation: bounceIcon 0.4s ease; }
+        @keyframes bounceIcon { 0%,100% { transform: scale(1); } 50% { transform: scale(1.3); } }
+
+        .bottom-badge {
+            position: absolute; top: 2px; right: 2px;
+            background: var(--rose); color: white;
+            font-size: 0.55rem; padding: 0.1rem 0.3rem;
+            border-radius: 6px; display: none; font-weight: 700;
+        }
+        .bottom-badge.show { display: block; }
+
+        /* ══════════════════════════════════════════
+           TOP BAR (Mobile only)
+        ══════════════════════════════════════════ */
+        .top-bar {
+            display: none;
+            position: fixed; top: 0; left: 0; right: 0;
+            background: rgba(255,253,247,0.96);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(212,184,150,0.4);
+            padding: 0.7rem 1rem;
+            z-index: 4998;
+            align-items: center; justify-content: space-between;
+        }
+        [data-theme="dark"] .top-bar {
+            background: rgba(26,15,8,0.96);
+        }
+        .top-bar-logo {
+            font-family: 'Amiri', serif;
+            font-size: 1.2rem; color: var(--rose);
+            cursor: pointer;
+        }
+        .top-bar-logo span { color: var(--gold); }
+        .top-bar-right { display: flex; gap: 0.5rem; align-items: center; }
+        .top-bar-btn {
+            background: none; border: none; cursor: pointer;
+            font-size: 1.1rem; padding: 0.3rem;
+            color: var(--text-light); transition: color 0.2s;
+        }
+        .top-bar-btn:hover { color: var(--rose); }
 
         /* ══════════════════════════════════════════
            NOTIFICATION
@@ -234,6 +368,7 @@
             z-index: 10000; font-size: 1rem; font-weight: 600;
             opacity: 0; transition: all 0.5s cubic-bezier(0.34,1.56,0.64,1);
             display: flex; align-items: center; gap: 0.5rem;
+            white-space: nowrap;
         }
         .counter-notification.show { transform: translateX(-50%) translateY(0); opacity: 1; }
         .counter-notification.photos  { background: linear-gradient(135deg, #2d8a4e, #1a5c32); }
@@ -241,13 +376,12 @@
         .counter-notification.days    { background: linear-gradient(135deg, #7b4fa6, #5a3080); }
 
         /* ══════════════════════════════════════════
-           PAGES SYSTEM
+           PAGES
         ══════════════════════════════════════════ */
-        .page { display: none; min-height: 100vh; position: relative; z-index: 1; }
+        .page { display: none; min-height: 100vh; }
         .page.active { display: block; animation: pageIn 0.5s cubic-bezier(0.16,1,0.3,1); }
         @keyframes pageIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Ornamental divider */
         .ornament {
             text-align: center; color: var(--gold); font-size: 1.2rem;
             letter-spacing: 0.3rem; margin: 1.5rem 0; opacity: 0.7;
@@ -256,21 +390,17 @@
             content: ''; display: inline-block; width: 60px; height: 1px;
             background: var(--gold); vertical-align: middle; margin: 0 0.8rem; opacity: 0.5;
         }
-
         .section-title {
-            font-family: 'Amiri', serif;
-            text-align: center; font-size: 2.4rem;
-            color: var(--rose); margin-bottom: 0.5rem;
+            font-family: 'Amiri', serif; text-align: center;
+            font-size: 2.4rem; color: var(--rose); margin-bottom: 0.5rem;
         }
         .section-subtitle { text-align: center; color: var(--text-light); margin-bottom: 2.5rem; }
-
         .container { max-width: 820px; margin: 0 auto; padding: 0 1.5rem; }
-
         .back-btn {
             display: inline-flex; align-items: center; gap: 0.4rem;
             margin-bottom: 2rem; padding: 0.7rem 1.4rem;
             background: var(--beige); color: var(--brown);
-            text-decoration: none; border-radius: 50px;
+            text-decoration: none; border-radius: 8px;
             font-weight: 600; font-size: 0.9rem;
             transition: all 0.3s; border: none; cursor: pointer;
             font-family: 'Tajawal', sans-serif;
@@ -283,7 +413,6 @@
         #page-home {
             background: linear-gradient(160deg, var(--cream) 0%, var(--cream-dark) 100%);
         }
-
         .hero-bg {
             position: fixed; inset: 0; z-index: -10; pointer-events: none;
         }
@@ -295,55 +424,35 @@
         [data-theme="dark"] .hero-bg-overlay {
             background: linear-gradient(135deg, rgba(26,15,8,0.85) 0%, rgba(42,26,14,0.8) 100%);
         }
-
         .hero {
             min-height: 100vh;
             display: flex; align-items: center; justify-content: center;
             padding: 7rem 5% 3rem;
         }
-
         .hero-content {
             max-width: 680px; width: 100%;
             display: flex; flex-direction: column; align-items: center; gap: 2rem;
         }
-
         .hero-text {
             text-align: center;
-            background: rgba(255,253,247,0.88);
-            backdrop-filter: blur(20px);
-            padding: 2.5rem 2.8rem;
-            border-radius: 28px;
+            background: rgba(255,253,247,0.88); backdrop-filter: blur(20px);
+            padding: 2.5rem 2.8rem; border-radius: 16px;
             box-shadow: 0 20px 60px rgba(107,58,42,0.2), 0 0 0 1px rgba(200,150,62,0.3);
         }
         [data-theme="dark"] .hero-text {
             background: rgba(42,26,14,0.9);
             box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(200,150,62,0.2);
         }
-
-        /* TYPING EFFECT */
         .hero-title {
-            font-family: 'Amiri', serif;
-            font-size: 2.8rem; color: var(--rose);
-            margin-bottom: 0.5rem; line-height: 1.3;
-            min-height: 3.5rem;
+            font-family: 'Amiri', serif; font-size: 2.8rem; color: var(--rose);
+            margin-bottom: 0.5rem; line-height: 1.3; min-height: 3.5rem;
         }
-        .hero-subtitle {
-            color: var(--gold); font-size: 1.2rem; font-weight: 500;
-            margin-bottom: 1.2rem;
-        }
-        .hero-p {
-            font-size: 1rem; color: var(--text-light);
-            line-height: 2; margin-bottom: 1.5rem;
-        }
-
-        /* GLITCH EFFECT */
-        .glitch {
-            position: relative; display: inline-block;
-        }
+        .hero-subtitle { color: var(--gold); font-size: 1.2rem; font-weight: 500; margin-bottom: 1.2rem; }
+        .hero-p { font-size: 1rem; color: var(--text-light); line-height: 2; margin-bottom: 1.5rem; }
+        .glitch { position: relative; display: inline-block; }
         .glitch::before, .glitch::after {
-            content: attr(data-text);
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            font-family: 'Amiri', serif;
+            content: attr(data-text); position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%; font-family: 'Amiri', serif;
         }
         .glitch::before {
             color: var(--gold); animation: glitch1 3s infinite;
@@ -353,69 +462,36 @@
             color: var(--rose-light); animation: glitch2 3s infinite;
             clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%);
         }
-        @keyframes glitch1 {
-            0%,90%,100% { transform: none; opacity: 0; }
-            92% { transform: translateX(-3px); opacity: 0.7; }
-            94% { transform: translateX(3px); opacity: 0.7; }
-            96% { transform: translateX(-2px); opacity: 0; }
-        }
-        @keyframes glitch2 {
-            0%,88%,100% { transform: none; opacity: 0; }
-            90% { transform: translateX(3px); opacity: 0.6; }
-            92% { transform: translateX(-3px); opacity: 0.6; }
-            94% { transform: none; opacity: 0; }
-        }
-
+        @keyframes glitch1 { 0%,90%,100% { transform: none; opacity: 0; } 92% { transform: translateX(-3px); opacity: 0.7; } 94% { transform: translateX(3px); opacity: 0.7; } 96% { transform: translateX(-2px); opacity: 0; } }
+        @keyframes glitch2 { 0%,88%,100% { transform: none; opacity: 0; } 90% { transform: translateX(3px); opacity: 0.6; } 92% { transform: translateX(-3px); opacity: 0.6; } 94% { transform: none; opacity: 0; } }
         .cta-button {
             display: inline-block; padding: 0.85rem 2rem;
             background: linear-gradient(135deg, var(--rose), var(--brown));
             color: var(--cream); text-decoration: none;
-            border-radius: 50px; font-weight: 700;
+            border-radius: 8px; font-weight: 700;
             transition: all 0.3s; border: none; cursor: pointer;
             font-family: 'Tajawal', sans-serif; font-size: 0.95rem;
         }
         .cta-button:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(139,26,60,0.4); }
-
-        /* HEARTBEAT COUNTER (replaces days counter) */
         .heartbeat-counter {
-            background: rgba(255,253,247,0.9);
-            backdrop-filter: blur(20px);
-            border-radius: 28px;
-            padding: 1.8rem 2.5rem;
-            text-align: center;
+            background: rgba(255,253,247,0.9); backdrop-filter: blur(20px);
+            border-radius: 16px; padding: 1.8rem 2.5rem; text-align: center;
             box-shadow: 0 12px 40px rgba(107,58,42,0.2), 0 0 0 1px rgba(200,150,62,0.2);
-            cursor: pointer;
-            transition: all 0.3s;
-            width: 100%; max-width: 420px;
+            cursor: pointer; transition: all 0.3s; width: 100%; max-width: 420px;
         }
-        [data-theme="dark"] .heartbeat-counter {
-            background: rgba(42,26,14,0.9);
-        }
+        [data-theme="dark"] .heartbeat-counter { background: rgba(42,26,14,0.9); }
         .heartbeat-counter:hover { transform: translateY(-3px); box-shadow: 0 18px 50px rgba(107,58,42,0.3); }
-
-        .heart-svg {
-            display: block; margin: 0 auto 1rem;
-            animation: heartbeat 1.2s ease-in-out infinite;
-        }
-        @keyframes heartbeat {
-            0%   { transform: scale(1); }
-            14%  { transform: scale(1.18); }
-            28%  { transform: scale(1); }
-            42%  { transform: scale(1.12); }
-            70%  { transform: scale(1); }
-        }
-
+        .heart-svg { display: block; margin: 0 auto 1rem; animation: heartbeat 1.2s ease-in-out infinite; }
+        @keyframes heartbeat { 0% { transform: scale(1); } 14% { transform: scale(1.18); } 28% { transform: scale(1); } 42% { transform: scale(1.12); } 70% { transform: scale(1); } }
         .hb-days { font-family: 'Amiri', serif; font-size: 3.5rem; color: var(--rose); font-weight: 700; line-height: 1; }
         .hb-label { color: var(--text-light); font-size: 0.95rem; margin-top: 0.3rem; }
         .hb-hint { color: var(--gold); font-size: 0.8rem; margin-top: 0.5rem; animation: pulse 2s infinite; }
         @keyframes pulse { 0%,100% { opacity: 0.6; } 50% { opacity: 1; } }
-
-        /* Summary */
         .summary-section { padding: 2rem 5% 5rem; position: relative; z-index: 1; }
         .summary-box {
             max-width: 720px; margin: 0 auto; text-align: center;
             background: rgba(255,253,247,0.88); backdrop-filter: blur(12px);
-            border-radius: 24px; padding: 2.5rem;
+            border-radius: 12px; padding: 2.5rem;
             box-shadow: 0 8px 40px rgba(107,58,42,0.12), 0 0 0 1px rgba(200,150,62,0.2);
         }
         [data-theme="dark"] .summary-box { background: rgba(42,26,14,0.88); }
@@ -423,421 +499,187 @@
         .summary-text { font-size: 1rem; line-height: 2.2; color: var(--text-light); margin-bottom: 1.5rem; }
         .summary-highlight {
             background: linear-gradient(135deg, rgba(200,150,62,0.15), rgba(212,184,150,0.2));
-            padding: 1.5rem; border-radius: 16px;
-            border: 1px solid rgba(200,150,62,0.3);
+            padding: 1.5rem; border-radius: 16px; border: 1px solid rgba(200,150,62,0.3);
         }
         .summary-highlight p { color: var(--text); font-size: 1rem; line-height: 1.9; }
 
         /* ══════════════════════════════════════════
-           COUNTDOWN TIMERS PAGE
+           COUNTDOWN
         ══════════════════════════════════════════ */
-        #page-countdown {
-            padding: 7rem 5% 4rem;
-            background: linear-gradient(160deg, var(--cream) 0%, var(--cream-dark) 100%);
-        }
+        #page-countdown { padding: 7rem 5% 4rem; background: linear-gradient(160deg, var(--cream) 0%, var(--cream-dark) 100%); }
         .countdown-grid { display: flex; flex-direction: column; gap: 2rem; }
-
         .countdown-card {
-            background: var(--white);
-            border-radius: 24px;
-            padding: 2rem;
+            background: var(--white); border-radius: 12px; padding: 2rem;
             box-shadow: 0 8px 30px rgba(107,58,42,0.12), 0 0 0 1px rgba(200,150,62,0.2);
-            text-align: center;
-            position: relative; overflow: hidden;
+            text-align: center; position: relative; overflow: hidden;
         }
-        [data-theme="dark"] .countdown-card { background: var(--dm-card); }
-
-        .countdown-card::before {
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; height: 4px;
-        }
+        [data-theme="dark"] .countdown-card { background: #3A2515; }
+        .countdown-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; }
         .countdown-card.occasion-1::before { background: linear-gradient(90deg, var(--rose), var(--gold)); }
         .countdown-card.occasion-2::before { background: linear-gradient(90deg, var(--gold), #e8a0b0); }
         .countdown-card.occasion-3::before { background: linear-gradient(90deg, #7b4fa6, var(--rose)); }
-
         .occ-emoji { font-size: 2.5rem; margin-bottom: 0.5rem; }
-        .occ-name {
-            font-family: 'Amiri', serif;
-            font-size: 1.5rem; color: var(--rose); margin-bottom: 0.3rem;
-        }
+        .occ-name { font-family: 'Amiri', serif; font-size: 1.5rem; color: var(--rose); margin-bottom: 0.3rem; }
         .occ-date { color: var(--text-light); font-size: 0.9rem; margin-bottom: 1.5rem; }
-
         .cd-boxes { display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap; }
         .cd-box {
             background: linear-gradient(135deg, var(--cream), var(--cream-dark));
-            border-radius: 14px; padding: 1rem 1.2rem; min-width: 70px;
+            border-radius: 8px; padding: 1rem 1.2rem; min-width: 70px;
             border: 1px solid rgba(200,150,62,0.3);
         }
-        [data-theme="dark"] .cd-box { background: linear-gradient(135deg, var(--dm-surface), var(--dm-bg)); }
-        .cd-num {
-            font-family: 'Amiri', serif;
-            font-size: 2.8rem; color: var(--rose); font-weight: 700; line-height: 1;
-            display: block;
-        }
+        [data-theme="dark"] .cd-box { background: linear-gradient(135deg, #2A1A0E, #1A0F08); }
+        .cd-num { font-family: 'Amiri', serif; font-size: 2.8rem; color: var(--rose); font-weight: 700; line-height: 1; display: block; }
         .cd-label { font-size: 0.75rem; color: var(--text-light); margin-top: 0.3rem; }
-
-        .occ-arrived {
-            background: linear-gradient(135deg, rgba(200,150,62,0.2), rgba(212,184,150,0.2));
-            border-radius: 12px; padding: 1.2rem;
-            color: var(--rose); font-weight: 700; font-size: 1.1rem;
-        }
+        .occ-arrived { background: linear-gradient(135deg, rgba(200,150,62,0.2), rgba(212,184,150,0.2)); border-radius: 12px; padding: 1.2rem; color: var(--rose); font-weight: 700; font-size: 1.1rem; }
 
         /* ══════════════════════════════════════════
-           MEMORY TIMELINE PAGE
+           TIMELINE
         ══════════════════════════════════════════ */
-        #page-timeline {
-            padding: 7rem 5% 4rem;
-            background: linear-gradient(160deg, var(--cream) 0%, var(--cream-dark) 100%);
-        }
-
+        #page-timeline { padding: 7rem 5% 4rem; background: linear-gradient(160deg, var(--cream) 0%, var(--cream-dark) 100%); }
         .timeline { position: relative; padding: 2rem 0; }
         .timeline::before {
-            content: '';
-            position: absolute; right: 50%; top: 0; bottom: 0;
-            width: 2px;
+            content: ''; position: absolute; right: 50%; top: 0; bottom: 0; width: 2px;
             background: linear-gradient(to bottom, transparent, var(--gold), var(--rose), var(--gold), transparent);
             transform: translateX(50%);
         }
-
-        .timeline-item {
-            display: flex; gap: 2rem; margin-bottom: 3rem;
-            position: relative; align-items: flex-start;
-        }
+        .timeline-item { display: flex; gap: 2rem; margin-bottom: 3rem; position: relative; align-items: flex-start; }
         .timeline-item:nth-child(even) { flex-direction: row-reverse; }
-
         .timeline-content {
-            flex: 1;
-            background: var(--white);
-            border-radius: 20px; padding: 1.5rem;
+            flex: 1; background: var(--white); border-radius: 12px; padding: 1.5rem;
             box-shadow: 0 5px 20px rgba(107,58,42,0.1), 0 0 0 1px rgba(200,150,62,0.15);
-            position: relative; transition: transform 0.3s;
-            max-width: calc(50% - 2rem);
+            position: relative; transition: transform 0.3s; max-width: calc(50% - 2rem);
         }
-        [data-theme="dark"] .timeline-content { background: var(--dm-card); }
+        [data-theme="dark"] .timeline-content { background: #3A2515; }
         .timeline-content:hover { transform: translateY(-4px); }
-
         .timeline-dot {
-            width: 14px; height: 14px;
-            background: var(--rose); border-radius: 50%;
+            width: 14px; height: 14px; background: var(--rose); border-radius: 50%;
             position: absolute; right: 50%; top: 1.5rem;
             transform: translate(50%, 0);
-            box-shadow: 0 0 0 4px var(--cream), 0 0 0 6px var(--rose);
-            z-index: 2; flex-shrink: 0;
+            box-shadow: 0 0 0 4px var(--cream), 0 0 0 6px var(--rose); z-index: 2;
         }
-
         .tl-date { font-size: 0.8rem; color: var(--gold); font-weight: 700; margin-bottom: 0.4rem; letter-spacing: 0.5px; }
         .tl-title { font-family: 'Amiri', serif; font-size: 1.3rem; color: var(--rose); margin-bottom: 0.5rem; }
         .tl-text { font-size: 0.95rem; color: var(--text-light); line-height: 1.8; }
         .tl-emoji { font-size: 2rem; margin-bottom: 0.5rem; display: block; }
 
-        /* Mobile timeline */
-        @media (max-width: 600px) {
-            .timeline::before { right: 16px; transform: none; }
-            .timeline-item { flex-direction: column !important; padding-right: 40px; }
-            .timeline-content { max-width: 100%; }
-            .timeline-dot { right: 10px; top: 0; transform: none; }
-        }
-
         /* ══════════════════════════════════════════
-           SHARED PLAYLIST PAGE
+           PLAYLIST
         ══════════════════════════════════════════ */
-        #page-playlist {
-            padding: 7rem 5% 4rem;
-            background: linear-gradient(160deg, var(--cream) 0%, var(--cream-dark) 100%);
-        }
-
-        .playlist-add-box {
-            background: var(--white);
-            border-radius: 20px; padding: 2rem;
-            box-shadow: 0 8px 30px rgba(107,58,42,0.1), 0 0 0 1px rgba(200,150,62,0.2);
-            margin-bottom: 2rem;
-        }
-        [data-theme="dark"] .playlist-add-box { background: var(--dm-card); }
-
-        .playlist-input-row {
-            display: flex; gap: 0.8rem; flex-wrap: wrap;
-        }
-        .playlist-input {
-            flex: 1; min-width: 200px;
-            padding: 0.9rem 1rem; border: 2px solid var(--beige);
-            border-radius: 12px; font-family: 'Tajawal', sans-serif;
-            font-size: 1rem; background: var(--cream); color: var(--text);
-            transition: all 0.3s;
-        }
+        #page-playlist { padding: 7rem 5% 4rem; background: linear-gradient(160deg, var(--cream) 0%, var(--cream-dark) 100%); }
+        .playlist-add-box { background: var(--white); border-radius: 12px; padding: 2rem; box-shadow: 0 8px 30px rgba(107,58,42,0.1), 0 0 0 1px rgba(200,150,62,0.2); margin-bottom: 2rem; }
+        [data-theme="dark"] .playlist-add-box { background: #3A2515; }
+        .playlist-input-row { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+        .playlist-input { flex: 1; min-width: 200px; padding: 0.9rem 1rem; border: 2px solid var(--beige); border-radius: 8px; font-family: 'Tajawal', sans-serif; font-size: 1rem; background: var(--cream); color: var(--text); transition: all 0.3s; }
         .playlist-input:focus { outline: none; border-color: var(--rose); }
-        [data-theme="dark"] .playlist-input { background: var(--dm-surface); border-color: var(--dm-card); color: var(--dm-text); }
-
-        .add-song-btn {
-            padding: 0.9rem 1.8rem;
-            background: linear-gradient(135deg, var(--rose), var(--brown));
-            color: var(--cream); border: none; border-radius: 12px;
-            font-size: 1rem; font-weight: 700; cursor: pointer;
-            transition: all 0.3s; font-family: 'Tajawal', sans-serif;
-            white-space: nowrap;
-        }
+        [data-theme="dark"] .playlist-input { background: #2A1A0E; border-color: #3A2515; color: var(--text); }
+        .add-song-btn { padding: 0.9rem 1.8rem; background: linear-gradient(135deg, var(--rose), var(--brown)); color: var(--cream); border: none; border-radius: 8px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.3s; font-family: 'Tajawal', sans-serif; white-space: nowrap; }
         .add-song-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(139,26,60,0.3); }
-
         .songs-list { display: flex; flex-direction: column; gap: 1rem; }
-        .song-item {
-            background: var(--white);
-            border-radius: 16px; padding: 1.2rem 1.5rem;
-            box-shadow: 0 3px 15px rgba(107,58,42,0.08), 0 0 0 1px rgba(200,150,62,0.15);
-            display: flex; align-items: center; gap: 1rem;
-            animation: slideIn 0.4s ease; transition: transform 0.2s;
-        }
-        [data-theme="dark"] .song-item { background: var(--dm-card); }
+        .song-item { background: var(--white); border-radius: 10px; padding: 1.2rem 1.5rem; box-shadow: 0 3px 15px rgba(107,58,42,0.08), 0 0 0 1px rgba(200,150,62,0.15); display: flex; align-items: center; gap: 1rem; animation: slideIn 0.4s ease; transition: transform 0.2s; }
+        [data-theme="dark"] .song-item { background: #3A2515; }
         .song-item:hover { transform: translateX(-4px); }
-
-        .song-thumb {
-            width: 60px; height: 60px; border-radius: 10px;
-            object-fit: cover; background: var(--cream-dark);
-            flex-shrink: 0; display: flex; align-items: center; justify-content: center;
-            font-size: 1.8rem; overflow: hidden;
-        }
-        .song-thumb img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
-
+        .song-thumb { width: 60px; height: 60px; border-radius: 8px; background: var(--cream-dark); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; overflow: hidden; }
+        .song-thumb img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
         .song-info { flex: 1; }
         .song-title { font-weight: 700; color: var(--text); margin-bottom: 0.2rem; }
         .song-url { font-size: 0.8rem; color: var(--text-light); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 300px; }
         .song-added { font-size: 0.75rem; color: var(--gold); }
-
-        .song-play-btn {
-            background: var(--rose); color: white; border: none;
-            width: 40px; height: 40px; border-radius: 50%;
-            font-size: 1rem; cursor: pointer; transition: all 0.3s;
-            display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0; text-decoration: none;
-        }
+        .song-play-btn { background: var(--rose); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 1rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; flex-shrink: 0; text-decoration: none; }
         .song-play-btn:hover { background: var(--brown); transform: scale(1.1); }
-
-        .song-delete-btn {
-            background: none; border: none; color: var(--beige-dark);
-            cursor: pointer; font-size: 1rem; padding: 0.3rem;
-            transition: color 0.2s;
-        }
+        .song-delete-btn { background: none; border: none; color: var(--beige-dark); cursor: pointer; font-size: 1rem; padding: 0.3rem; transition: color 0.2s; }
         .song-delete-btn:hover { color: var(--rose); }
-
-        .no-songs {
-            text-align: center; padding: 3rem; color: var(--text-light);
-            font-size: 1.05rem;
-        }
+        .no-songs { text-align: center; padding: 3rem; color: var(--text-light); font-size: 1.05rem; }
 
         /* ══════════════════════════════════════════
-           SHARED CANVAS PAGE
+           CANVAS
         ══════════════════════════════════════════ */
-        #page-canvas {
-            padding: 7rem 5% 4rem;
-            background: linear-gradient(160deg, var(--cream) 0%, var(--cream-dark) 100%);
-        }
-
-        .canvas-wrapper {
-            background: var(--white);
-            border-radius: 24px;
-            padding: 1.5rem;
-            box-shadow: 0 12px 40px rgba(107,58,42,0.15), 0 0 0 1px rgba(200,150,62,0.2);
-        }
-        [data-theme="dark"] .canvas-wrapper { background: var(--dm-card); }
-
-        .canvas-tools {
-            display: flex; gap: 0.8rem; flex-wrap: wrap; margin-bottom: 1rem;
-            align-items: center;
-        }
-        .canvas-tool-btn {
-            padding: 0.5rem 1rem; border-radius: 8px; border: 2px solid var(--beige);
-            background: var(--cream); color: var(--text); cursor: pointer;
-            font-family: 'Tajawal', sans-serif; font-size: 0.85rem;
-            transition: all 0.2s;
-        }
-        .canvas-tool-btn:hover, .canvas-tool-btn.active {
-            background: var(--rose); color: white; border-color: var(--rose);
-        }
-        [data-theme="dark"] .canvas-tool-btn { background: var(--dm-surface); border-color: var(--dm-card); color: var(--dm-text); }
-
+        #page-canvas { padding: 7rem 5% 4rem; background: linear-gradient(160deg, var(--cream) 0%, var(--cream-dark) 100%); }
+        .canvas-wrapper { background: var(--white); border-radius: 12px; padding: 1.5rem; box-shadow: 0 12px 40px rgba(107,58,42,0.15), 0 0 0 1px rgba(200,150,62,0.2); }
+        [data-theme="dark"] .canvas-wrapper { background: #3A2515; }
+        .canvas-tools { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-bottom: 1rem; align-items: center; }
+        .canvas-tool-btn { padding: 0.5rem 1rem; border-radius: 8px; border: 2px solid var(--beige); background: var(--cream); color: var(--text); cursor: pointer; font-family: 'Tajawal', sans-serif; font-size: 0.85rem; transition: all 0.2s; }
+        .canvas-tool-btn:hover, .canvas-tool-btn.active { background: var(--rose); color: white; border-color: var(--rose); }
+        [data-theme="dark"] .canvas-tool-btn { background: #2A1A0E; border-color: #3A2515; color: var(--text); }
         .color-picker-row { display: flex; gap: 0.5rem; align-items: center; }
-        .color-swatch {
-            width: 28px; height: 28px; border-radius: 50%; cursor: pointer;
-            border: 3px solid transparent; transition: all 0.2s;
-        }
+        .color-swatch { width: 28px; height: 28px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: all 0.2s; }
         .color-swatch:hover, .color-swatch.active { border-color: var(--gold); transform: scale(1.2); }
-
         .size-slider { width: 80px; accent-color: var(--rose); }
-
-        #loveCanvas {
-            width: 100%; border-radius: 16px;
-            border: 2px solid rgba(200,150,62,0.3);
-            cursor: crosshair; display: block; touch-action: none;
-            background: white;
-        }
-
-        .canvas-actions {
-            display: flex; gap: 0.8rem; margin-top: 1rem; flex-wrap: wrap;
-        }
-        .canvas-action-btn {
-            padding: 0.6rem 1.2rem; border-radius: 8px;
-            background: var(--beige); color: var(--brown);
-            border: none; cursor: pointer;
-            font-family: 'Tajawal', sans-serif; font-size: 0.9rem;
-            transition: all 0.2s;
-        }
+        #loveCanvas { width: 100%; border-radius: 16px; border: 2px solid rgba(200,150,62,0.3); cursor: crosshair; display: block; touch-action: none; background: white; }
+        .canvas-actions { display: flex; gap: 0.8rem; margin-top: 1rem; flex-wrap: wrap; }
+        .canvas-action-btn { padding: 0.6rem 1.2rem; border-radius: 8px; background: var(--beige); color: var(--brown); border: none; cursor: pointer; font-family: 'Tajawal', sans-serif; font-size: 0.9rem; transition: all 0.2s; }
         .canvas-action-btn:hover { background: var(--rose); color: white; }
 
         /* ══════════════════════════════════════════
-           STORY PAGE
+           STORY
         ══════════════════════════════════════════ */
-        #page-story {
-            padding: 7rem 5% 4rem;
-            position: relative; overflow: hidden;
-        }
-        .story-bg-layer {
-            position: absolute; inset: 0; z-index: 0;
-        }
+        #page-story { padding: 7rem 5% 4rem; position: relative; overflow: hidden; }
+        .story-bg-layer { position: absolute; inset: 0; z-index: 0; }
         .story-bg-layer img { width: 100%; height: 100%; object-fit: cover; }
-        .story-bg-layer-overlay {
-            position: absolute; inset: 0;
-            background: linear-gradient(135deg, rgba(245,236,215,0.88) 0%, rgba(212,184,150,0.78) 100%);
-        }
-        [data-theme="dark"] .story-bg-layer-overlay {
-            background: linear-gradient(135deg, rgba(26,15,8,0.92) 0%, rgba(42,26,14,0.88) 100%);
-        }
+        .story-bg-layer-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(245,236,215,0.88) 0%, rgba(212,184,150,0.78) 100%); }
+        [data-theme="dark"] .story-bg-layer-overlay { background: linear-gradient(135deg, rgba(26,15,8,0.92) 0%, rgba(42,26,14,0.88) 100%); }
         #page-story .container { position: relative; z-index: 1; }
-
-        .story-full {
-            background: rgba(255,253,247,0.92); padding: 2.5rem;
-            border-radius: 24px; line-height: 2.2; font-size: 1rem;
-            color: var(--text); backdrop-filter: blur(10px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.1);
-            border: 1px solid rgba(200,150,62,0.2);
-        }
+        .story-full { background: rgba(255,253,247,0.92); padding: 2.5rem; border-radius: 12px; line-height: 2.2; font-size: 1rem; color: var(--text); backdrop-filter: blur(10px); box-shadow: 0 12px 40px rgba(0,0,0,0.1); border: 1px solid rgba(200,150,62,0.2); }
         [data-theme="dark"] .story-full { background: rgba(42,26,14,0.92); }
-        .story-full h3 {
-            color: var(--rose); margin: 2rem 0 1rem;
-            font-family: 'Amiri', serif; font-size: 1.4rem;
-            border-right: 4px solid var(--gold); padding-right: 1rem;
-        }
+        .story-full h3 { color: var(--rose); margin: 2rem 0 1rem; font-family: 'Amiri', serif; font-size: 1.4rem; border-right: 4px solid var(--gold); padding-right: 1rem; }
         .story-full p { margin-bottom: 1.5rem; text-align: justify; line-height: 2; color: var(--text-light); }
 
         /* ══════════════════════════════════════════
-           FEELINGS PAGE
+           FEELINGS
         ══════════════════════════════════════════ */
-        #page-feelings {
-            padding: 7rem 5% 4rem;
-            background: linear-gradient(160deg, var(--cream) 0%, var(--cream-dark) 100%);
-        }
-        .feeling-card {
-            background: var(--white); padding: 2rem;
-            border-radius: 20px; margin-bottom: 1.5rem;
-            box-shadow: 0 5px 20px rgba(107,58,42,0.08), 0 0 0 1px rgba(200,150,62,0.15);
-        }
-        [data-theme="dark"] .feeling-card { background: var(--dm-card); }
+        #page-feelings { padding: 7rem 5% 4rem; background: linear-gradient(160deg, var(--cream) 0%, var(--cream-dark) 100%); }
+        .feeling-card { background: var(--white); padding: 2rem; border-radius: 12px; margin-bottom: 1.5rem; box-shadow: 0 5px 20px rgba(107,58,42,0.08), 0 0 0 1px rgba(200,150,62,0.15); }
+        [data-theme="dark"] .feeling-card { background: #3A2515; }
         .feeling-card h3 { color: var(--rose); margin-bottom: 1rem; font-family: 'Amiri', serif; font-size: 1.4rem; }
         .feeling-text { color: var(--text-light); line-height: 1.9; margin-bottom: 1rem; font-size: 0.95rem; }
-        .feeling-input {
-            width: 100%; padding: 1rem; border: 2px solid var(--beige);
-            border-radius: 12px; font-family: 'Tajawal', sans-serif;
-            font-size: 0.95rem; resize: vertical; min-height: 80px;
-            background: var(--cream); color: var(--text); transition: all 0.3s;
-        }
+        .feeling-input { width: 100%; padding: 1rem; border: 2px solid var(--beige); border-radius: 8px; font-family: 'Tajawal', sans-serif; font-size: 0.95rem; resize: vertical; min-height: 80px; background: var(--cream); color: var(--text); transition: all 0.3s; }
         .feeling-input:focus { outline: none; border-color: var(--rose); }
-        [data-theme="dark"] .feeling-input { background: var(--dm-surface); border-color: var(--dm-card); color: var(--dm-text); }
+        [data-theme="dark"] .feeling-input { background: #2A1A0E; border-color: #3A2515; color: var(--text); }
 
         /* ══════════════════════════════════════════
-           PROBLEMS PAGE
+           PROBLEMS
         ══════════════════════════════════════════ */
-        #page-problems {
-            padding: 7rem 5% 4rem;
-            position: relative; overflow: hidden;
-            background: linear-gradient(160deg, var(--cream) 0%, var(--cream-dark) 100%);
-            transition: all 0.3s;
-        }
+        #page-problems { padding: 7rem 5% 4rem; position: relative; overflow: hidden; background: linear-gradient(160deg, var(--cream) 0%, var(--cream-dark) 100%); transition: all 0.3s; }
         .problems-bg-layer { position: absolute; inset: 0; z-index: 0; opacity: 0; transition: opacity 1s; pointer-events: none; }
         .problems-bg-layer img { width: 100%; height: 100%; object-fit: cover; }
-        .problems-bg-layer-ov {
-            position: absolute; inset: 0;
-            background: linear-gradient(135deg, rgba(245,236,215,0.65) 0%, rgba(212,184,150,0.6) 100%);
-        }
+        .problems-bg-layer-ov { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(245,236,215,0.65) 0%, rgba(212,184,150,0.6) 100%); }
         #page-problems.show-bg .problems-bg-layer { opacity: 1; }
         #page-problems .container { position: relative; z-index: 1; }
-
-        .counter-box {
-            background: rgba(255,253,247,0.95); padding: 2.5rem;
-            border-radius: 24px; text-align: center;
-            box-shadow: 0 10px 30px rgba(107,58,42,0.12), 0 0 0 1px rgba(200,150,62,0.2);
-            margin-bottom: 1.5rem; backdrop-filter: blur(8px);
-        }
+        .counter-box { background: rgba(255,253,247,0.95); padding: 2.5rem; border-radius: 12px; text-align: center; box-shadow: 0 10px 30px rgba(107,58,42,0.12), 0 0 0 1px rgba(200,150,62,0.2); margin-bottom: 1.5rem; backdrop-filter: blur(8px); }
         [data-theme="dark"] .counter-box { background: rgba(42,26,14,0.95); }
-        .counter-number {
-            font-family: 'Amiri', serif;
-            font-size: 5rem; font-weight: 700; color: var(--rose); display: block; line-height: 1;
-        }
+        .counter-number { font-family: 'Amiri', serif; font-size: 5rem; font-weight: 700; color: var(--rose); display: block; line-height: 1; }
         .counter-label { font-size: 1.1rem; color: var(--text-light); margin: 1rem 0; }
         .counter-controls { display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem; }
-        .counter-btn {
-            padding: 0.9rem 2rem; border: none; border-radius: 12px;
-            font-size: 1.5rem; cursor: pointer; transition: all 0.3s;
-            font-family: 'Tajawal', sans-serif;
-        }
+        .counter-btn { padding: 0.9rem 2rem; border: none; border-radius: 8px; font-size: 1.5rem; cursor: pointer; transition: all 0.3s; font-family: 'Tajawal', sans-serif; }
         .counter-btn:hover { transform: scale(1.08); }
         .btn-minus { background: linear-gradient(135deg, #c0392b, #922b21); color: white; }
         .btn-plus  { background: linear-gradient(135deg, #27ae60, #1e8449); color: white; }
         .sync-status { font-size: 0.85rem; color: var(--text-light); margin-top: 0.8rem; }
         .sync-status.online { color: #27ae60; }
-
-        .reminder-box {
-            background: rgba(255,253,247,0.95); padding: 1.8rem;
-            border-radius: 20px; text-align: center;
-            font-size: 1rem; line-height: 1.9; color: var(--text);
-            backdrop-filter: blur(6px);
-            box-shadow: 0 5px 20px rgba(107,58,42,0.08);
-        }
+        .reminder-box { background: rgba(255,253,247,0.95); padding: 1.8rem; border-radius: 20px; text-align: center; font-size: 1rem; line-height: 1.9; color: var(--text); backdrop-filter: blur(6px); box-shadow: 0 5px 20px rgba(107,58,42,0.08); }
         [data-theme="dark"] .reminder-box { background: rgba(42,26,14,0.95); }
 
         /* ══════════════════════════════════════════
-           PROMISE PAGE
+           PROMISE
         ══════════════════════════════════════════ */
-        #page-promise {
-            padding: 7rem 5% 4rem;
-            position: relative; overflow: hidden;
-        }
+        #page-promise { padding: 7rem 5% 4rem; position: relative; overflow: hidden; }
         .promise-solid-bg { position: absolute; inset: 0; background: linear-gradient(135deg, var(--brown-dark), var(--rose)); }
         .promise-bg-layer { position: absolute; inset: 0; z-index: 0; opacity: 0; transition: opacity 1s; pointer-events: none; }
         .promise-bg-layer img { width: 100%; height: 100%; object-fit: cover; }
         .promise-bg-layer-ov { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(74,37,24,0.7), rgba(139,26,60,0.6)); }
-        #page-promise.show-bg .promise-solid-bg { opacity: 0; }
         #page-promise.show-bg .promise-bg-layer { opacity: 1; }
         #page-promise .container { position: relative; z-index: 1; }
         #page-promise .section-title { color: var(--cream); text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
-
-        .promise-box {
-            background: rgba(255,255,255,0.12); backdrop-filter: blur(14px);
-            padding: 2.5rem; border-radius: 24px;
-            border: 1px solid rgba(255,255,255,0.2); text-align: center;
-        }
-        .promise-counter {
-            font-family: 'Amiri', serif;
-            font-size: 5rem; font-weight: 700; color: white; margin: 1rem 0; line-height: 1;
-        }
-        .promise-btn {
-            padding: 1rem 2.5rem; background: white; color: var(--rose);
-            border: none; border-radius: 50px; font-size: 1.1rem;
-            font-weight: 700; cursor: pointer; transition: all 0.3s; margin-top: 1rem;
-            font-family: 'Tajawal', sans-serif;
-        }
+        .promise-box { background: rgba(255,255,255,0.12); backdrop-filter: blur(14px); padding: 2.5rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); text-align: center; }
+        .promise-counter { font-family: 'Amiri', serif; font-size: 5rem; font-weight: 700; color: white; margin: 1rem 0; line-height: 1; }
+        .promise-btn { padding: 1rem 2.5rem; background: white; color: var(--rose); border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: all 0.3s; margin-top: 1rem; font-family: 'Tajawal', sans-serif; }
         .promise-btn:hover { transform: scale(1.05); box-shadow: 0 8px 25px rgba(0,0,0,0.2); }
 
         /* ══════════════════════════════════════════
-           PHOTOS PAGE
+           PHOTOS
         ══════════════════════════════════════════ */
-        #page-photos {
-            padding: 7rem 5% 4rem;
-            background: linear-gradient(160deg, var(--cream) 0%, var(--cream-dark) 100%);
-        }
-        .photos-box {
-            background: var(--white); padding: 2.5rem;
-            border-radius: 24px; text-align: center;
-            box-shadow: 0 10px 30px rgba(107,58,42,0.1), 0 0 0 1px rgba(200,150,62,0.2);
-            margin-bottom: 1.5rem;
-        }
-        [data-theme="dark"] .photos-box { background: var(--dm-card); }
+        #page-photos { padding: 7rem 5% 4rem; background: linear-gradient(160deg, var(--cream) 0%, var(--cream-dark) 100%); }
+        .photos-box { background: var(--white); padding: 2.5rem; border-radius: 12px; text-align: center; box-shadow: 0 10px 30px rgba(107,58,42,0.1), 0 0 0 1px rgba(200,150,62,0.2); margin-bottom: 1.5rem; }
+        [data-theme="dark"] .photos-box { background: #3A2515; }
         .photos-number { font-family: 'Amiri', serif; font-size: 5.5rem; font-weight: 700; color: var(--rose); }
         .photos-label { font-size: 1.2rem; color: var(--text-light); margin: 0.8rem 0; }
         .celebration { display: none; margin-top: 1.5rem; padding: 1.5rem; background: linear-gradient(135deg, #ffd700, #ffed4e); border-radius: 16px; }
@@ -846,67 +688,32 @@
         .celebration h3 { color: var(--brown); font-size: 1.6rem; margin-bottom: 0.5rem; }
 
         /* ══════════════════════════════════════════
-           DATES PAGE
+           DATES
         ══════════════════════════════════════════ */
-        #page-dates {
-            padding: 7rem 5% 4rem;
-            background: linear-gradient(160deg, var(--cream) 0%, var(--cream-dark) 100%);
-        }
-        .date-card {
-            background: var(--white); padding: 2rem;
-            border-radius: 20px; margin-bottom: 1.5rem;
-            box-shadow: 0 5px 20px rgba(107,58,42,0.08), 0 0 0 1px rgba(200,150,62,0.15);
-        }
-        [data-theme="dark"] .date-card { background: var(--dm-card); }
+        #page-dates { padding: 7rem 5% 4rem; background: linear-gradient(160deg, var(--cream) 0%, var(--cream-dark) 100%); }
+        .date-card { background: var(--white); padding: 2rem; border-radius: 12px; margin-bottom: 1.5rem; box-shadow: 0 5px 20px rgba(107,58,42,0.08), 0 0 0 1px rgba(200,150,62,0.15); }
+        [data-theme="dark"] .date-card { background: #3A2515; }
         .date-display { font-family: 'Amiri', serif; font-size: 2.2rem; font-weight: 700; color: var(--rose); margin-bottom: 0.3rem; }
         .date-title { font-size: 1.2rem; color: var(--gold); margin-bottom: 1rem; font-weight: 600; }
-        .date-input {
-            width: 100%; padding: 0.9rem; border: 2px solid var(--beige);
-            border-radius: 12px; font-family: 'Tajawal', sans-serif;
-            font-size: 0.95rem; min-height: 60px; resize: vertical;
-            background: var(--cream); color: var(--text); transition: all 0.3s;
-        }
+        .date-input { width: 100%; padding: 0.9rem; border: 2px solid var(--beige); border-radius: 8px; font-family: 'Tajawal', sans-serif; font-size: 0.95rem; min-height: 60px; resize: vertical; background: var(--cream); color: var(--text); transition: all 0.3s; }
         .date-input:focus { outline: none; border-color: var(--rose); }
-        [data-theme="dark"] .date-input { background: var(--dm-surface); border-color: var(--dm-card); color: var(--dm-text); }
+        [data-theme="dark"] .date-input { background: #2A1A0E; border-color: #3A2515; color: var(--text); }
 
         /* ══════════════════════════════════════════
-           MESSAGES PAGE
+           MESSAGES
         ══════════════════════════════════════════ */
-        #page-messages {
-            padding: 7rem 5% 4rem;
-            background: linear-gradient(160deg, var(--cream) 0%, var(--cream-dark) 100%);
-        }
-        .message-box {
-            background: var(--white); padding: 2rem;
-            border-radius: 24px; box-shadow: 0 10px 30px rgba(107,58,42,0.1), 0 0 0 1px rgba(200,150,62,0.15);
-            margin-bottom: 1.5rem;
-        }
-        [data-theme="dark"] .message-box { background: var(--dm-card); }
-        .message-textarea {
-            width: 100%; padding: 1.2rem; border: 2px solid var(--beige);
-            border-radius: 16px; font-family: 'Tajawal', sans-serif;
-            font-size: 1rem; resize: vertical; min-height: 110px; margin-bottom: 1rem;
-            background: var(--cream); color: var(--text); transition: all 0.3s;
-        }
+        #page-messages { padding: 7rem 5% 4rem; background: linear-gradient(160deg, var(--cream) 0%, var(--cream-dark) 100%); }
+        .message-box { background: var(--white); padding: 2rem; border-radius: 12px; box-shadow: 0 10px 30px rgba(107,58,42,0.1), 0 0 0 1px rgba(200,150,62,0.15); margin-bottom: 1.5rem; }
+        [data-theme="dark"] .message-box { background: #3A2515; }
+        .message-textarea { width: 100%; padding: 1.2rem; border: 2px solid var(--beige); border-radius: 8px; font-family: 'Tajawal', sans-serif; font-size: 1rem; resize: vertical; min-height: 110px; margin-bottom: 1rem; background: var(--cream); color: var(--text); transition: all 0.3s; }
         .message-textarea:focus { outline: none; border-color: var(--rose); }
-        [data-theme="dark"] .message-textarea { background: var(--dm-surface); border-color: var(--dm-card); color: var(--dm-text); }
-        .send-btn {
-            padding: 0.9rem 2rem;
-            background: linear-gradient(135deg, var(--rose), var(--brown));
-            color: var(--cream); border: none; border-radius: 50px;
-            font-size: 1rem; font-weight: 700; cursor: pointer;
-            transition: all 0.3s; display: flex; align-items: center;
-            gap: 0.5rem; margin: 0 auto; font-family: 'Tajawal', sans-serif;
-        }
+        [data-theme="dark"] .message-textarea { background: #2A1A0E; border-color: #3A2515; color: var(--text); }
+        .send-btn { padding: 0.9rem 2rem; background: linear-gradient(135deg, var(--rose), var(--brown)); color: var(--cream); border: none; border-radius: 8px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 0.5rem; margin: 0 auto; font-family: 'Tajawal', sans-serif; }
         .send-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(139,26,60,0.3); }
         .send-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
         .messages-list { max-height: 500px; overflow-y: auto; padding: 0.5rem; }
-        .message-item {
-            background: linear-gradient(135deg, var(--cream), var(--white));
-            padding: 1.3rem; border-radius: 16px; margin-bottom: 0.8rem;
-            border-right: 4px solid var(--gold); animation: slideIn 0.4s ease;
-        }
-        [data-theme="dark"] .message-item { background: linear-gradient(135deg, var(--dm-surface), var(--dm-card)); }
+        .message-item { background: linear-gradient(135deg, var(--cream), var(--white)); padding: 1.3rem; border-radius: 8px; margin-bottom: 0.8rem; border-right: 4px solid var(--gold); animation: slideIn 0.4s ease; }
+        [data-theme="dark"] .message-item { background: linear-gradient(135deg, #2A1A0E, #3A2515); }
         .message-item.new { border-right-color: var(--rose); animation: pulseNew 2s infinite; }
         @keyframes pulseNew { 0%,100% { box-shadow: 0 0 0 0 rgba(139,26,60,0.4); } 50% { box-shadow: 0 0 0 8px rgba(139,26,60,0); } }
         @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
@@ -914,18 +721,10 @@
         .message-content { font-size: 1rem; line-height: 1.8; color: var(--text); margin-bottom: 0.4rem; }
         .message-time { font-size: 0.8rem; color: var(--text-light); text-align: left; }
         .no-messages { text-align: center; padding: 2.5rem; color: var(--text-light); font-size: 1rem; }
-        .connection-status {
-            text-align: center; padding: 0.6rem; border-radius: 10px;
-            margin-bottom: 1rem; font-size: 0.85rem;
-        }
+        .connection-status { text-align: center; padding: 0.6rem; border-radius: 10px; margin-bottom: 1rem; font-size: 0.85rem; }
         .connection-status.online { background: #d4edda; color: #155724; }
         .connection-status.offline { background: #fce8e8; color: #721c24; }
         [data-theme="dark"] .connection-status.online { background: #1a3d28; color: #7ed99a; }
-
-        /* ══════════════════════════════════════════
-           PARALLAX HELPER
-        ══════════════════════════════════════════ */
-        .parallax-layer { will-change: transform; transition: transform 0.05s linear; }
 
         /* ══════════════════════════════════════════
            FLYING TEXT
@@ -940,74 +739,109 @@
             white-space: nowrap; opacity: 0;
         }
         .flying-text.animate { animation: flyUp 8s ease-out forwards; }
-        @keyframes flyUp {
-            0%   { bottom: -150px; opacity: 0; }
-            10%  { opacity: 1; bottom: 10%; }
-            80%  { opacity: 0.8; bottom: 85%; }
-            100% { bottom: 110%; opacity: 0; }
-        }
+        @keyframes flyUp { 0% { bottom: -150px; opacity: 0; } 10% { opacity: 1; bottom: 10%; } 80% { opacity: 0.8; bottom: 85%; } 100% { bottom: 110%; opacity: 0; } }
 
         /* ══════════════════════════════════════════
-           LOGOUT
+           LOGIN
         ══════════════════════════════════════════ */
-        .logout-btn {
-            position: fixed; top: 14px; left: 20px;
-            background: rgba(255,253,247,0.95); color: var(--rose);
-            border: 1px solid var(--beige); padding: 0.45rem 1rem; border-radius: 20px;
-            cursor: pointer; font-family: 'Tajawal', sans-serif;
-            font-weight: 700; z-index: 10001; display: none; font-size: 0.85rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-            transition: all 0.2s;
+        .login-container {
+            position: fixed; inset: 0;
+            background: linear-gradient(135deg, var(--cream) 0%, var(--cream-dark) 100%);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 99999; transition: opacity 0.6s ease, visibility 0.6s ease;
         }
-        .logout-btn.show { display: block; }
-        .logout-btn:hover { background: var(--rose); color: white; }
-        [data-theme="dark"] .logout-btn { background: rgba(42,26,14,0.95); }
+        .login-container.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        .login-box {
+            background: var(--white); padding: 3rem; border-radius: 16px;
+            box-shadow: 0 30px 80px rgba(107,58,42,0.25), 0 0 0 1px var(--beige);
+            width: 90%; max-width: 440px; text-align: center;
+            animation: slideUp 0.6s cubic-bezier(0.16,1,0.3,1);
+            position: relative; overflow: hidden;
+        }
+        .login-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--rose), var(--gold), var(--rose)); }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(40px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        .login-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+        .login-box h1 { font-family: 'Amiri', serif; font-size: 2.2rem; color: var(--rose); margin-bottom: 0.3rem; }
+        .login-box .subtitle { color: var(--text-light); margin-bottom: 2rem; font-size: 1rem; }
+        .input-group { margin-bottom: 1.5rem; text-align: right; }
+        .input-group label { display: block; margin-bottom: 0.5rem; color: var(--brown); font-weight: 600; font-size: 0.9rem; }
+        .input-group input { width: 100%; padding: 0.9rem 1rem; border: 2px solid var(--beige); border-radius: 8px; font-family: 'Tajawal', sans-serif; font-size: 1rem; background: var(--cream); color: var(--text); transition: all 0.3s; }
+        .input-group input:focus { outline: none; border-color: var(--rose); background: var(--white); }
+        .login-btn { width: 100%; padding: 1rem; background: linear-gradient(135deg, var(--rose), var(--brown)); color: var(--cream); border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: all 0.3s; margin-top: 0.5rem; font-family: 'Tajawal', sans-serif; letter-spacing: 0.5px; }
+        .login-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(139,26,60,0.4); }
+        .error-message { color: #c0392b; margin-top: 1rem; font-size: 0.9rem; display: none; }
+        .error-message.show { display: block; }
 
         /* ══════════════════════════════════════════
-           RESPONSIVE
+           RESPONSIVE - MOBILE
         ══════════════════════════════════════════ */
         @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .bottom-bar { display: block; }
+            .top-bar { display: flex; }
+            .main-content { margin-right: 0; padding-bottom: 80px; padding-top: 60px; }
+            .hero { padding-top: 5rem; }
             .hero-title { font-size: 2rem; }
-            .nav-icons { gap: 0.6rem; }
-            .nav-icons a { font-size: 0.7rem; }
-            .nav-icons a .nav-icon { font-size: 0.95rem; }
             .hb-days { font-size: 2.8rem; }
-            .counter-notification { font-size: 0.85rem; padding: 0.7rem 1.3rem; }
-            .login-box { padding: 2rem 1.5rem; }
+            #page-countdown, #page-timeline, #page-playlist, #page-canvas,
+            #page-story, #page-feelings, #page-problems, #page-promise,
+            #page-photos, #page-dates, #page-messages { padding-top: 1.5rem; }
+            .back-btn { display: none; }
+            .counter-notification { font-size: 0.85rem; padding: 0.7rem 1.3rem; max-width: 90vw; }
+            .timeline::before { right: 16px; transform: none; }
+            .timeline-item { flex-direction: column !important; padding-right: 40px; }
+            .timeline-content { max-width: 100%; }
+            .timeline-dot { right: 10px; top: 0; transform: none; }
             .cd-num { font-size: 2.2rem; }
-            .dark-toggle { bottom: 15px; left: 15px; }
         }
+
+        @media (min-width: 769px) {
+            .top-bar { display: none; }
+        }
+
+        /* Sidebar collapsed → narrow */
+        /* ══════════════════════════════════════════
+           SKELETON SCREENS
+        ══════════════════════════════════════════ */
+        .skeleton {
+            background: linear-gradient(90deg, var(--cream-dark) 25%, var(--beige) 50%, var(--cream-dark) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 6px;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        .skeleton-line { height: 14px; margin-bottom: 10px; }
+        .skeleton-line.short { width: 40%; }
+        .skeleton-line.medium { width: 70%; }
+        .skeleton-line.full { width: 100%; }
+        .skeleton-block { height: 60px; width: 100%; margin-bottom: 12px; }
+        .skeleton-card { background: var(--white); border-radius: 10px; padding: 1.2rem 1.5rem; margin-bottom: 0.8rem; box-shadow: 0 2px 8px rgba(107,58,42,0.05); }
+        [data-theme="dark"] .skeleton { background: linear-gradient(90deg, #2A1A0E 25%, #3A2515 50%, #2A1A0E 75%); background-size: 200% 100%; }
+        [data-theme="dark"] .skeleton-card { background: #3A2515; }
+
+        /* More menu overlay */
+        #moreMenuOverlay { display:none; position:fixed; inset:0; z-index:5000; }
+        #moreMenuOverlay.show { display:block; }
+        #moreMenu { display:none; }
+        #moreMenu.show { display:block !important; }
+
     </style>
 </head>
 <body>
 
-<!-- Custom Cursor -->
 <div class="cursor-dot" id="cursorDot"></div>
 <div class="cursor-ring" id="cursorRing"></div>
-
-<!-- Particles Canvas -->
 <canvas id="particlesCanvas"></canvas>
-
-<!-- Dark Mode Toggle -->
-<button class="dark-toggle" id="darkToggle" onclick="toggleDarkMode()">
-    <div class="dark-toggle-track"></div>
-</button>
-
-<!-- Logout -->
-<button class="logout-btn" id="logoutBtn" onclick="logout()">🚪 خروج</button>
-
-<!-- Flying Text -->
 <div class="flying-text" id="flyingText">خالد وفاطمة ديما مع بعض ♾️❤️</div>
-
-<!-- Notification -->
 <div class="counter-notification" id="counterNotification">
     <span id="notificationIcon">🔔</span>
     <span id="notificationText"></span>
 </div>
 
-<!-- ═══════════════════════════════════════════
-     LOGIN PAGE
-═══════════════════════════════════════════ -->
+<!-- LOGIN -->
 <div class="login-container" id="loginContainer">
     <div class="login-box">
         <div class="login-icon">💕</div>
@@ -1023,358 +857,508 @@
     </div>
 </div>
 
-<!-- ═══════════════════════════════════════════
-     HEADER
-═══════════════════════════════════════════ -->
-<header id="mainHeader" style="display:none;">
-    <nav>
-        <a href="#" class="logo" onclick="showPage('home')">وعد الاصابع <span>🤞</span></a>
-        <ul class="nav-icons">
-            <li style="position:relative;">
-                <a href="#" onclick="showPage('messages')">
-                    <span class="nav-icon">💌</span> رسائل
-                    <span class="badge" id="messageBadge">0</span>
-                </a>
-            </li>
-            <li><a href="#" onclick="showPage('story')"><span class="nav-icon">📖</span> قصتنا</a></li>
-            <li><a href="#" onclick="showPage('feelings')"><span class="nav-icon">🤍</span> المشاعر</a></li>
-            <li><a href="#" onclick="showPage('problems')"><span class="nav-icon">💪</span> المشاكل</a></li>
-            <li><a href="#" onclick="showPage('promise')"><span class="nav-icon">🤞</span> الوعد</a></li>
-            <li><a href="#" onclick="showPage('photos')"><span class="nav-icon">📸</span> الصور</a></li>
-            <li><a href="#" onclick="showPage('dates')"><span class="nav-icon">📅</span> التواريخ</a></li>
-            <li><a href="#" onclick="showPage('countdown')"><span class="nav-icon">⏳</span> المناسبات</a></li>
-            <li><a href="#" onclick="showPage('timeline')"><span class="nav-icon">🗓️</span> خط زمني</a></li>
-            <li><a href="#" onclick="showPage('playlist')"><span class="nav-icon">🎵</span> بلايليست</a></li>
-            <li><a href="#" onclick="showPage('canvas')"><span class="nav-icon">🎨</span> اللوحة</a></li>
-        </ul>
-    </nav>
-</header>
+<!-- More menu overlay -->
+<div id="moreMenuOverlay" onclick="closeMoreMenu()"></div>
 
-<!-- ═══════════════════════════════════════════
-     HOME PAGE
-═══════════════════════════════════════════ -->
-<div id="page-home" class="page">
-    <div class="hero-bg" id="heroBg" style="display:none;">
-        <img src="IMG_20260503_233905_996.jpg" alt="background" class="parallax-layer" data-speed="0.3" />
-    </div>
-    <div class="hero-bg-overlay" id="heroBgOverlay" style="display:none;"></div>
+<!-- APP SHELL -->
+<div class="app-shell" id="appShell" style="display:none;">
 
-    <section class="hero">
-        <div class="hero-content">
-            <div class="hero-text">
-                <h1 class="hero-title">
-                    <span class="glitch" id="typingTitle" data-text="وعد الاصابع 🤞"></span>
-                </h1>
-                <p class="hero-subtitle" id="typingSubtitle"></p>
-                <p class="hero-p">
-                    قصة حب مش عادية، بدأت بصدفة وكملت باختيار.<br>
-                    كل يوم بنختار بعض، وكل مشكلة بنتجاوزها مع بعض.
-                </p>
-                <button class="cta-button" onclick="showPage('story')">اقرأ القصة الكاملة 📖</button>
-            </div>
+    <!-- ══════ SIDEBAR ══════ -->
+    <aside class="sidebar" id="sidebar">
+        <button class="sidebar-toggle" onclick="toggleSidebar()" title="تصغير/توسيع">
+            <span class="sidebar-toggle-icon">◀</span>
+        </button>
 
-            <!-- HEARTBEAT COUNTER -->
-            <div class="heartbeat-counter" onclick="showDayMessage()">
-                <svg class="heart-svg" width="60" height="55" viewBox="0 0 60 55">
-                    <path d="M30 50 C30 50 5 33 5 18 C5 10 11 4 18.5 4 C23 4 27 6.5 30 10 C33 6.5 37 4 41.5 4 C49 4 55 10 55 18 C55 33 30 50 30 50Z"
-                          fill="var(--rose)" opacity="0.9"/>
-                </svg>
-                <div class="hb-days" id="daysCountDisplay">0</div>
-                <div class="hb-label">يوم من قصتنا الجميلة 💕</div>
-                <div class="hb-hint">👆 اضغط للرسالة</div>
+        <div class="sidebar-header">
+            <a class="sidebar-logo" onclick="showPage('home')">وعد الاصابع <span>🤞</span></a>
+            <div class="sidebar-meta">
+                <span>💕 خالد وفاطمة</span>
+                <span class="sidebar-days-pill" id="sidebarDays">0 يوم</span>
             </div>
         </div>
-    </section>
 
-    <section class="summary-section">
-        <div class="summary-box">
-            <h2 class="summary-title">ملخص قصتنا 💝</h2>
-            <div class="ornament">❧</div>
-            <p class="summary-text">
-                اتعرفنا بالصدفة في جروب، وعدنا فترة من البلوك والرجوع.
-                اعترفنا بمشاعرنا يوم ١/٢/٢٠٢٣، وعدنا فترة من الفراق والحب.
-                رجعنا لبعض يوم ٩/٨/٢٠٢٥، ومن ساعتها واحنا بنختار بعض كل يوم.
-            </p>
-            <div class="summary-highlight">
-                <p>
-                    💕 <strong>مهما حصل من مشاكل أو فراق، في الآخر اختيارنا الأول هو إحنا.</strong> 💕<br><br>
-                    🤞 وعد الاصابع ده وعد على الحب والاستمرار مهما كانت الظروف.
-                </p>
+        <nav class="sidebar-nav">
+            <div class="nav-section-title">الرئيسية</div>
+            <div class="nav-grid">
+                <button class="nav-item active" id="nav-home" onclick="showPage('home')">
+                    <span class="nav-emoji">🏠</span>الرئيسية
+                </button>
+                <button class="nav-item" id="nav-messages" onclick="showPage('messages')" style="position:relative;">
+                    <span class="nav-emoji">💌</span>رسائل
+                    <span class="nav-badge" id="messageBadge">0</span>
+                </button>
             </div>
-        </div>
-    </section>
-</div>
 
-<!-- ═══════════════════════════════════════════
-     COUNTDOWN PAGE
-═══════════════════════════════════════════ -->
-<div id="page-countdown" class="page">
-    <div class="container">
-        <button class="back-btn" onclick="showPage('home')">← رجوع</button>
-        <h2 class="section-title">مناسباتنا القادمة ⏳</h2>
-        <div class="ornament">❧</div>
-        <div class="countdown-grid" id="countdownGrid"></div>
-    </div>
-</div>
-
-<!-- ═══════════════════════════════════════════
-     TIMELINE PAGE
-═══════════════════════════════════════════ -->
-<div id="page-timeline" class="page">
-    <div class="container">
-        <button class="back-btn" onclick="showPage('home')">← رجوع</button>
-        <h2 class="section-title">خط زمني لقصتنا 🗓️</h2>
-        <div class="ornament">❧</div>
-        <div class="timeline" id="timelineContainer"></div>
-    </div>
-</div>
-
-<!-- ═══════════════════════════════════════════
-     PLAYLIST PAGE
-═══════════════════════════════════════════ -->
-<div id="page-playlist" class="page">
-    <div class="container">
-        <button class="back-btn" onclick="showPage('home')">← رجوع</button>
-        <h2 class="section-title">بلايليستنا المشتركة 🎵</h2>
-        <div class="ornament">❧</div>
-        <div class="connection-status offline" id="playlistStatus">جاري الاتصال...</div>
-        <div class="playlist-add-box">
-            <h3 style="color:var(--rose); margin-bottom:1rem; font-family:'Amiri',serif;">➕ أضف أغنية جديدة</h3>
-            <div class="playlist-input-row">
-                <input class="playlist-input" id="songTitle" type="text" placeholder="اسم الأغنية (اختياري)" />
-                <input class="playlist-input" id="songUrl" type="url" placeholder="رابط اليوتيوب..." />
-                <button class="add-song-btn" onclick="addSong()">▶ أضف</button>
+            <div class="nav-section-title">قصتنا</div>
+            <div class="nav-grid">
+                <button class="nav-item" id="nav-story" onclick="showPage('story')">
+                    <span class="nav-emoji">📖</span>قصتنا
+                </button>
+                <button class="nav-item" id="nav-timeline" onclick="showPage('timeline')">
+                    <span class="nav-emoji">🗓️</span>خط زمني
+                </button>
+                <button class="nav-item" id="nav-dates" onclick="showPage('dates')">
+                    <span class="nav-emoji">📅</span>التواريخ
+                </button>
+                <button class="nav-item" id="nav-countdown" onclick="showPage('countdown')">
+                    <span class="nav-emoji">⏳</span>المناسبات
+                </button>
             </div>
-        </div>
-        <div class="songs-list" id="songsList">
-            <div class="no-songs">🎵 لا توجد أغاني بعد... أضف أول أغنية!</div>
-        </div>
-    </div>
-</div>
 
-<!-- ═══════════════════════════════════════════
-     CANVAS PAGE
-═══════════════════════════════════════════ -->
-<div id="page-canvas" class="page">
-    <div class="container">
-        <button class="back-btn" onclick="showPage('home')">← رجوع</button>
-        <h2 class="section-title">لوحتنا المشتركة 🎨</h2>
-        <div class="ornament">❧</div>
-        <div class="connection-status offline" id="canvasStatus">جاري الاتصال...</div>
-        <div class="canvas-wrapper">
-            <div class="canvas-tools">
-                <button class="canvas-tool-btn active" id="tool-pen" onclick="setTool('pen')">✏️ قلم</button>
-                <button class="canvas-tool-btn" id="tool-eraser" onclick="setTool('eraser')">⬜ ممحاة</button>
-                <button class="canvas-tool-btn" id="tool-heart" onclick="addHeart()">❤️ قلب</button>
-                <div class="color-picker-row">
-                    <div class="color-swatch active" style="background:#8B1A3C;" onclick="setColor('#8B1A3C', this)"></div>
-                    <div class="color-swatch" style="background:#C8963E;" onclick="setColor('#C8963E', this)"></div>
-                    <div class="color-swatch" style="background:#6B3A2A;" onclick="setColor('#6B3A2A', this)"></div>
-                    <div class="color-swatch" style="background:#D4B896;" onclick="setColor('#D4B896', this)"></div>
-                    <div class="color-swatch" style="background:#2d8a4e;" onclick="setColor('#2d8a4e', this)"></div>
-                    <div class="color-swatch" style="background:#1a1a2e;" onclick="setColor('#1a1a2e', this)"></div>
-                    <input type="color" style="width:28px;height:28px;border-radius:50%;border:none;cursor:pointer;padding:0;" onchange="setColor(this.value, null)">
-                </div>
-                <label style="font-size:0.85rem;color:var(--text-light);">حجم: <input type="range" class="size-slider" id="brushSize" min="1" max="40" value="6"></label>
+            <div class="nav-section-title">مشاعرنا</div>
+            <div class="nav-grid">
+                <button class="nav-item" id="nav-feelings" onclick="showPage('feelings')">
+                    <span class="nav-emoji">🤍</span>المشاعر
+                </button>
+                <button class="nav-item" id="nav-promise" onclick="showPage('promise')">
+                    <span class="nav-emoji">🤞</span>الوعد
+                </button>
+                <button class="nav-item" id="nav-problems" onclick="showPage('problems')">
+                    <span class="nav-emoji">💪</span>المشاكل
+                </button>
+                <button class="nav-item" id="nav-photos" onclick="showPage('photos')">
+                    <span class="nav-emoji">📸</span>الصور
+                </button>
             </div>
-            <canvas id="loveCanvas" width="760" height="420"></canvas>
-            <div class="canvas-actions">
-                <button class="canvas-action-btn" onclick="clearCanvas()">🗑️ مسح الكل</button>
-                <button class="canvas-action-btn" onclick="saveCanvas()">💾 حفظ صورة</button>
-                <button class="canvas-action-btn" onclick="loadCanvasFromDB()">🔄 تحديث</button>
+
+            <div class="nav-section-title">الإبداع</div>
+            <div class="nav-grid">
+                <button class="nav-item" id="nav-playlist" onclick="showPage('playlist')">
+                    <span class="nav-emoji">🎵</span>بلايليست
+                </button>
+                <button class="nav-item" id="nav-canvas" onclick="showPage('canvas')">
+                    <span class="nav-emoji">🎨</span>اللوحة
+                </button>
             </div>
-        </div>
-        <p style="color:var(--text-light); font-size:0.85rem; margin-top:1rem; text-align:center;">
-            ⚠️ الرسومات تتزامن مع الطرف الآخر - كل 10 ثواني
-        </p>
-    </div>
-</div>
+        </nav>
 
-<!-- ═══════════════════════════════════════════
-     STORY PAGE
-═══════════════════════════════════════════ -->
-<div id="page-story" class="page">
-    <div class="story-bg-layer">
-        <img src="IMG_20260503_233912_546.jpg" alt="story background" />
-        <div class="story-bg-layer-overlay"></div>
-    </div>
-    <div class="container">
-        <button class="back-btn" onclick="showPage('home')">← رجوع</button>
-        <h2 class="section-title">قصتنا الكاملة 📖</h2>
-        <div class="ornament">❧</div>
-        <div class="story-full">
-            <h3>🎭 البداية الغريبة</h3>
-            <p>قصة حبنا دي غريبة شوية بصراحة. من أول ما اتعرفنا على بعض واحنا أصلاً مش عارفين مين اللي بيكلم التاني ولا بعت له ليه. كانت بداية غريبة مليانة صدف ومواقف مش محسوبة، بس في الآخر كل ده كان قدر بيجمعنا مع بعض.</p>
-            <h3>🎵 طريق الرجوع</h3>
-            <p>زي مثلاً لما كنت ببعتلك فيديوهات أغاني لحد ما وصلنا لتاني بلوك بينا. كانت فترة صعبة، بس الأغاني كانت هي السبيل الوحيد اللي بنتواصل من خلاله. كل أغنية كانت بتعبر عن شعور، وكل لحن كان بيوصل رسالة مش معبر عنها.</p>
-            <h3>💫 لحظة الاعتراف</h3>
-            <p>عملنا جروب تاني بينا احنا وكنا بنتكلم أكتر وتعرفنا أكتر. كانت لحظة الاعتراف بالمشاعر يوم ١/٢/٢٠٢٣، يوم مش هننساه أبداً. يوم قررنا نكون صريحين مع بعض ونعترف باللي جوا قلوبنا.</p>
-            <h3>💔 الفراق</h3>
-            <p>أيوه كانت فترة قصيرة مكملتش شهر تقريباً، بس كانت فترة حبيتها وفاكر كل لحظة فيها. الفراق علمنا قيمة بعض، وخلانا نعرف إن الحب الحقيقي بيستحق التضحية والانتظار.</p>
-            <h3>🌅 العودة من جديد</h3>
-            <p>وفعلاً قررتِ ترجعي ونكمل مع بعض، بس بسبب إننا كنا صغيرين حصلت أول مشكلة. بس إحنا تعلمنا منها، وكل مشكلة عدت بينا خلتنا أقوى وأقرب لبعض.</p>
-            <h3>✨ التجدد والمستقبل</h3>
-            <p>بدأت فترة جميلة بينا وهي الاستعباط والتلميح. كل واحد كان بيحاول يلمح ويتأكد من حب التاني. ورجعنا لبعض يوم ٩/٨/٢٠٢٥، ومن ساعتها واحنا بنختار بعض كل يوم. 💕</p>
-            <h3>🤞 وعد الاصابع</h3>
-            <p>وعد الاصابع ده مش مجرد كلمة، ده عهد بينا. مهما أي حد فينا غلط، احنا مكملين. علشان دايماً اختيارنا هيكون <strong>إحنا</strong>. 💕</p>
-        </div>
-    </div>
-</div>
-
-<!-- ═══════════════════════════════════════════
-     FEELINGS PAGE
-═══════════════════════════════════════════ -->
-<div id="page-feelings" class="page">
-    <div class="container" style="padding-top:2rem;">
-        <button class="back-btn" onclick="showPage('home')">← رجوع</button>
-        <h2 class="section-title">مشاعرنا 🤍</h2>
-        <div class="ornament">❧</div>
-        <div class="feeling-card">
-            <h3>🤗 الأمان</h3>
-            <p class="feeling-text">معاكِ أحس إني في مكان آمن، زي ماكون في بيتي اللي مهما بعته أرجعله تاني.</p>
-            <textarea class="feeling-input" placeholder="✍️ اكتبي هنا شعورك..."></textarea>
-        </div>
-        <div class="feeling-card">
-            <h3>🤝 الثقة</h3>
-            <p class="feeling-text">ثقتي فيكِ أكبر من أي شك، وأعرف إن مهما حصل هنفضل جنب بعض.</p>
-            <textarea class="feeling-input" placeholder="✍️ اكتبي هنا عن ثقتك..."></textarea>
-        </div>
-        <div class="feeling-card">
-            <h3>❤️ الحب</h3>
-            <p class="feeling-text">حبنا مش مجرد كلمة، هو اختيار بنعمله كل يوم.</p>
-            <textarea class="feeling-input" placeholder="✍️ اكتبي هنا عن حبك..."></textarea>
-        </div>
-    </div>
-</div>
-
-<!-- ═══════════════════════════════════════════
-     PROBLEMS PAGE
-═══════════════════════════════════════════ -->
-<div id="page-problems" class="page">
-    <div class="problems-bg-layer">
-        <img src="IMG_20260503_233924_634.jpg" alt="problems" />
-        <div class="problems-bg-layer-ov"></div>
-    </div>
-    <div class="container">
-        <button class="back-btn" onclick="showPage('home')">← رجوع</button>
-        <h2 class="section-title">المشاكل 💪</h2>
-        <div class="ornament">❧</div>
-        <div class="counter-box">
-            <span class="counter-number" id="problemsCount">0</span>
-            <div class="counter-label">عدد المشاكل اللي عدت بينا</div>
-            <div class="counter-controls">
-                <button class="counter-btn btn-minus" onclick="updateProblems(-1)">−</button>
-                <button class="counter-btn btn-plus"  onclick="updateProblems(1)">+</button>
-            </div>
-            <div class="sync-status" id="problemsSync">⚪ جاري التزامن...</div>
-        </div>
-        <div class="reminder-box">
-            💕 <strong>مع كل مشكلة بينا، نفتكر الحب اللي بينا والمجهود اللي اتبذل.</strong><br><br>
-            <em>احنا مش بنعد المشاكل، احنا بنعد اللحظات اللي قررنا فيها نكمل.</em>
-        </div>
-    </div>
-</div>
-
-<!-- ═══════════════════════════════════════════
-     PROMISE PAGE
-═══════════════════════════════════════════ -->
-<div id="page-promise" class="page">
-    <div class="promise-solid-bg"></div>
-    <div class="promise-bg-layer">
-        <img src="IMG_20260503_233915_616.jpg" alt="promise" />
-        <div class="promise-bg-layer-ov"></div>
-    </div>
-    <div class="container">
-        <button class="back-btn" onclick="showPage('home')" style="background:rgba(255,255,255,0.2);color:white;">← رجوع</button>
-        <h2 class="section-title">وعدنا 🤞</h2>
-        <div class="ornament" style="color:rgba(245,236,215,0.6);">❧</div>
-        <div class="promise-box">
-            <p style="font-size:1.1rem; color:rgba(245,236,215,0.9); margin-bottom:1rem; line-height:1.8;">
-                مهما أي حد فينا غلط، احنا مكملين.<br>
-                علشان دايماً اختيارنا هيكون <strong>إحنا</strong> 💕
-            </p>
-            <div class="promise-counter" id="promiseCount">0</div>
-            <p style="color:rgba(245,236,215,0.8); margin-bottom:0.5rem;">مرة اخترنا فيها إحنا</p>
-            <div class="sync-status" id="promiseSync" style="color:rgba(245,236,215,0.6);">⚪ جاري التزامن...</div>
-            <button class="promise-btn" onclick="makePromise()">أنا أختار إحنا ❤️</button>
-        </div>
-    </div>
-</div>
-
-<!-- ═══════════════════════════════════════════
-     PHOTOS PAGE
-═══════════════════════════════════════════ -->
-<div id="page-photos" class="page">
-    <div class="container" style="padding-top:2rem;">
-        <button class="back-btn" onclick="showPage('home')">← رجوع</button>
-        <h2 class="section-title">صورنا 📸</h2>
-        <div class="ornament">❧</div>
-        <div class="photos-box">
-            <div class="photos-number" id="photosCount">0</div>
-            <div class="photos-label">صورة مع بعض 💕</div>
-            <div class="sync-status" id="photosSync">⚪ جاري التزامن...</div>
-            <p style="color:var(--text-light); margin-top:0.8rem; font-size:0.9rem;">العد مستمر إلى ما لا نهاية... ♾️</p>
-        </div>
-        <div class="celebration" id="celebration">
-            <h3>🎉 مبروك! أول 100 صورة! 📸💕</h3>
-            <p>كل صورة كانت ذكرى جميلة!</p>
-        </div>
-        <div style="text-align:center; margin-top:1rem;">
-            <button class="cta-button" onclick="addPhoto()">📷 أضف صورة جديدة</button>
-        </div>
-    </div>
-</div>
-
-<!-- ═══════════════════════════════════════════
-     DATES PAGE
-═══════════════════════════════════════════ -->
-<div id="page-dates" class="page">
-    <div class="container" style="padding-top:2rem;">
-        <button class="back-btn" onclick="showPage('home')">← رجوع</button>
-        <h2 class="section-title">تواريخنا المميزة 📅</h2>
-        <div class="ornament">❧</div>
-        <div class="date-card">
-            <div class="date-display">📅 1 / 2 / 2023</div>
-            <div class="date-title">🌸 البداية - يوم الاعتراف</div>
-            <textarea class="date-input" placeholder="✍️ اكتبي هنا ذكرياتك..."></textarea>
-        </div>
-        <div class="date-card" style="border: 2px solid var(--gold);">
-            <div class="date-display">📅 9 / 8 / 2025</div>
-            <div class="date-title">💫 تجدد الحب - العودة للبعض</div>
-            <textarea class="date-input" placeholder="✍️ اكتبي هنا ذكرياتك..."></textarea>
-        </div>
-    </div>
-</div>
-
-<!-- ═══════════════════════════════════════════
-     MESSAGES PAGE
-═══════════════════════════════════════════ -->
-<div id="page-messages" class="page">
-    <div class="container" style="padding-top:2rem;">
-        <button class="back-btn" onclick="showPage('home')">← رجوع</button>
-        <h2 class="section-title">رسائلنا 💌</h2>
-        <div class="ornament">❧</div>
-        <div class="connection-status offline" id="connectionStatus">جاري الاتصال...</div>
-        <div class="message-box">
-            <textarea class="message-textarea" id="messageInput"
-                placeholder="✍️ اكتب رسالتك هنا... 💕"></textarea>
-            <button class="send-btn" id="sendBtn" onclick="sendMessage()">
-                <span>📤</span> إرسال
+        <div class="sidebar-footer">
+            <button class="sidebar-footer-btn btn-dark-toggle" onclick="toggleDarkMode()">
+                <span id="darkIcon">☀️</span> الوضع
+            </button>
+            <button class="sidebar-footer-btn btn-logout" onclick="logout()">
+                🚪 خروج
             </button>
         </div>
-        <div class="message-box">
-            <h3 style="color:var(--rose); margin-bottom:1rem; font-family:'Amiri',serif; text-align:center;">📬 الرسائل</h3>
-            <div class="messages-list" id="messagesList">
-                <div class="no-messages">💭 لا توجد رسائل بعد...</div>
-            </div>
+    </aside>
+
+    <!-- ══════ TOP BAR (mobile) ══════ -->
+    <div class="top-bar" id="topBar">
+        <div class="top-bar-logo" onclick="showPage('home')">وعد الاصابع <span style="color:var(--gold)">🤞</span></div>
+        <div class="top-bar-right">
+            <button class="top-bar-btn" onclick="toggleDarkMode()" id="topDarkBtn">☀️</button>
+            <button class="top-bar-btn" onclick="logout()">🚪</button>
         </div>
     </div>
-</div>
 
-<!-- ═══════════════════════════════════════════
-     FOOTER
-═══════════════════════════════════════════ -->
-<footer id="mainFooter" style="display:none; background:var(--brown-dark); color:var(--cream); padding:1.5rem 5%; text-align:center; position:relative; z-index:1;">
+    <!-- ══════ MAIN CONTENT ══════ -->
+    <main class="main-content" id="mainContent">
+
+        <!-- HOME -->
+        <div id="page-home" class="page">
+            <div class="hero-bg" id="heroBg" style="display:none;">
+                <img src="IMG_20260503_233905_996.jpg" alt="background" class="parallax-layer" data-speed="0.3" />
+            </div>
+            <div class="hero-bg-overlay" id="heroBgOverlay" style="display:none;"></div>
+            <section class="hero">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <h1 class="hero-title">
+                            <span class="glitch" id="typingTitle" data-text="وعد الاصابع 🤞"></span>
+                        </h1>
+                        <p class="hero-subtitle" id="typingSubtitle"></p>
+                        <p class="hero-p">
+                            قصة حب مش عادية، بدأت بصدفة وكملت باختيار.<br>
+                            كل يوم بنختار بعض، وكل مشكلة بنتجاوزها مع بعض.
+                        </p>
+                        <button class="cta-button" onclick="showPage('story')">اقرأ القصة الكاملة 📖</button>
+                    </div>
+                    <div class="heartbeat-counter" onclick="showDayMessage()">
+                        <svg class="heart-svg" width="60" height="55" viewBox="0 0 60 55">
+                            <path d="M30 50 C30 50 5 33 5 18 C5 10 11 4 18.5 4 C23 4 27 6.5 30 10 C33 6.5 37 4 41.5 4 C49 4 55 10 55 18 C55 33 30 50 30 50Z" fill="var(--rose)" opacity="0.9"/>
+                        </svg>
+                        <div class="hb-days" id="daysCountDisplay">0</div>
+                        <div class="hb-label">يوم من قصتنا الجميلة 💕</div>
+                        <div class="hb-hint">👆 اضغط للرسالة</div>
+                    </div>
+                </div>
+            </section>
+            <section class="summary-section">
+                <div class="summary-box">
+                    <h2 class="summary-title">ملخص قصتنا 💝</h2>
+                    <div class="ornament">❧</div>
+                    <p class="summary-text">اتعرفنا بالصدفة في جروب، وعدنا فترة من البلوك والرجوع. اعترفنا بمشاعرنا يوم ١/٢/٢٠٢٣، وعدنا فترة من الفراق والحب. رجعنا لبعض يوم ٩/٨/٢٠٢٥، ومن ساعتها واحنا بنختار بعض كل يوم.</p>
+                    <div class="summary-highlight">
+                        <p>💕 <strong>مهما حصل من مشاكل أو فراق، في الآخر اختيارنا الأول هو إحنا.</strong> 💕<br><br>🤞 وعد الاصابع ده وعد على الحب والاستمرار مهما كانت الظروف.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- COUNTDOWN -->
+        <div id="page-countdown" class="page">
+            <div class="container">
+                <button class="back-btn" onclick="showPage('home')">← رجوع</button>
+                <h2 class="section-title">مناسباتنا القادمة ⏳</h2>
+                <div class="ornament">❧</div>
+                <div class="countdown-grid" id="countdownGrid"></div>
+            </div>
+        </div>
+
+        <!-- TIMELINE -->
+        <div id="page-timeline" class="page">
+            <div class="container">
+                <button class="back-btn" onclick="showPage('home')">← رجوع</button>
+                <h2 class="section-title">خط زمني لقصتنا 🗓️</h2>
+                <div class="ornament">❧</div>
+                <div class="timeline" id="timelineContainer"></div>
+            </div>
+        </div>
+
+        <!-- PLAYLIST -->
+        <div id="page-playlist" class="page">
+            <div class="container">
+                <button class="back-btn" onclick="showPage('home')">← رجوع</button>
+                <h2 class="section-title">بلايليستنا المشتركة 🎵</h2>
+                <div class="ornament">❧</div>
+                <div class="connection-status offline" id="playlistStatus" style="display:none;">❌ لا يوجد اتصال</div>
+                <div id="playlistSkeleton">
+                    <div class="skeleton-card"><div class="skeleton skeleton-line medium"></div><div class="skeleton skeleton-line full"></div><div class="skeleton skeleton-line short"></div></div>
+                    <div class="skeleton-card"><div class="skeleton skeleton-line medium"></div><div class="skeleton skeleton-line full"></div><div class="skeleton skeleton-line short"></div></div>
+                    <div class="skeleton-card"><div class="skeleton skeleton-line medium"></div><div class="skeleton skeleton-line full"></div><div class="skeleton skeleton-line short"></div></div>
+                </div>
+                <div class="playlist-add-box">
+                    <h3 style="color:var(--rose); margin-bottom:1rem; font-family:'Amiri',serif;">➕ أضف أغنية جديدة</h3>
+                    <div class="playlist-input-row">
+                        <input class="playlist-input" id="songTitle" type="text" placeholder="اسم الأغنية (اختياري)" />
+                        <input class="playlist-input" id="songUrl" type="url" placeholder="رابط اليوتيوب..." />
+                        <button class="add-song-btn" onclick="addSong()">▶ أضف</button>
+                    </div>
+                </div>
+                <div class="songs-list" id="songsList"><div class="no-songs">🎵 لا توجد أغاني بعد... أضف أول أغنية!</div></div>
+            </div>
+        </div>
+
+        <!-- CANVAS -->
+        <div id="page-canvas" class="page">
+            <div class="container">
+                <button class="back-btn" onclick="showPage('home')">← رجوع</button>
+                <h2 class="section-title">لوحتنا المشتركة 🎨</h2>
+                <div class="ornament">❧</div>
+                <div class="connection-status offline" id="canvasStatus" style="display:none;">❌ لا يوجد اتصال</div>
+                <div id="canvasSkeleton" style="margin-bottom:1rem;">
+                    <div class="skeleton" style="height:220px;width:100%;border-radius:8px;"></div>
+                </div>
+                <div class="canvas-wrapper">
+                    <!-- 3-column layout -->
+                    <div style="display:grid; grid-template-columns:56px 1fr 200px; gap:1rem; align-items:start;">
+
+                        <!-- LEFT: Tools -->
+                        <div style="display:flex; flex-direction:column; gap:0.5rem; padding-top:0.3rem;">
+                            <button class="canvas-tool-btn active" id="tool-pen" onclick="setTool('pen')" title="قلم" style="padding:0.6rem; font-size:1.2rem;">✏️</button>
+                            <button class="canvas-tool-btn" id="tool-brush" onclick="setTool('brush')" title="فرشاة" style="padding:0.6rem; font-size:1.2rem;">🖌️</button>
+                            <button class="canvas-tool-btn" id="tool-eraser" onclick="setTool('eraser')" title="ممحاة" style="padding:0.6rem; font-size:1.2rem;">⬜</button>
+                            <button class="canvas-tool-btn" id="tool-fill" onclick="setTool('fill')" title="تعبئة" style="padding:0.6rem; font-size:1.2rem;">🪣</button>
+                            <button class="canvas-tool-btn" id="tool-text" onclick="setTool('text')" title="نص" style="padding:0.6rem; font-size:1.2rem;">T</button>
+                            <hr style="border-color:var(--beige); margin:0.3rem 0;">
+                            <button class="canvas-action-btn" onclick="undoCanvas()" title="تراجع" style="padding:0.5rem; font-size:1rem;">↩️</button>
+                            <button class="canvas-action-btn" onclick="clearCanvas()" title="مسح الكل" style="padding:0.5rem; font-size:0.9rem;">🗑️</button>
+                            <button class="canvas-action-btn" onclick="saveCanvas()" title="تصدير PNG" style="padding:0.5rem; font-size:0.9rem;">📥</button>
+                        </div>
+
+                        <!-- CENTER: Canvas -->
+                        <div>
+                            <canvas id="loveCanvas" width="760" height="420"></canvas>
+                            <div style="display:flex; gap:0.5rem; margin-top:0.8rem; align-items:center;">
+                                <label style="font-size:0.8rem;color:var(--text-light); white-space:nowrap;">الحجم:</label>
+                                <input type="range" class="size-slider" id="brushSize" min="1" max="40" value="6" style="flex:1;">
+                                <span id="brushSizeVal" style="font-size:0.8rem;color:var(--rose);min-width:24px;">6</span>
+                            </div>
+                            <div style="display:flex; gap:0.5rem; margin-top:0.5rem; flex-wrap:wrap; align-items:center;">
+                                <label style="font-size:0.8rem;color:var(--text-light);">التعتيم:</label>
+                                <input type="range" id="brushOpacity" min="10" max="100" value="100" style="width:80px; accent-color:var(--rose);">
+                                <button class="canvas-action-btn" onclick="saveCanvasToDB()" style="margin-right:auto; background:var(--rose); color:white; padding:0.5rem 1rem;">💾 حفظ</button>
+                                <button class="canvas-action-btn" onclick="loadCanvasFromDB()" style="padding:0.5rem 0.8rem;">🔄</button>
+                            </div>
+                        </div>
+
+                        <!-- RIGHT: Colors -->
+                        <div style="display:flex; flex-direction:column; gap:0.8rem;">
+                            <!-- Color wheel -->
+                            <div>
+                                <div style="font-size:0.72rem;color:var(--gold);font-weight:700;margin-bottom:0.4rem;letter-spacing:0.5px;">عجلة الألوان</div>
+                                <input type="color" id="colorWheel" value="#8B1A3C"
+                                    style="width:100%;height:40px;border:none;border-radius:6px;cursor:pointer;padding:2px;"
+                                    oninput="setColorFromWheel(this.value)">
+                            </div>
+                            <!-- Quick palettes -->
+                            <div>
+                                <div style="font-size:0.72rem;color:var(--gold);font-weight:700;margin-bottom:0.4rem;letter-spacing:0.5px;">الألوان السريعة</div>
+                                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;" id="quickColors">
+                                    <div class="color-swatch active" style="background:#8B1A3C;" onclick="setColor('#8B1A3C',this)"></div>
+                                    <div class="color-swatch" style="background:#C8963E;" onclick="setColor('#C8963E',this)"></div>
+                                    <div class="color-swatch" style="background:#6B3A2A;" onclick="setColor('#6B3A2A',this)"></div>
+                                    <div class="color-swatch" style="background:#D4B896;" onclick="setColor('#D4B896',this)"></div>
+                                    <div class="color-swatch" style="background:#2d8a4e;" onclick="setColor('#2d8a4e',this)"></div>
+                                    <div class="color-swatch" style="background:#1a1a2e;" onclick="setColor('#1a1a2e',this)"></div>
+                                    <div class="color-swatch" style="background:#e74c3c;" onclick="setColor('#e74c3c',this)"></div>
+                                    <div class="color-swatch" style="background:#3498db;" onclick="setColor('#3498db',this)"></div>
+                                    <div class="color-swatch" style="background:#f39c12;" onclick="setColor('#f39c12',this)"></div>
+                                    <div class="color-swatch" style="background:#9b59b6;" onclick="setColor('#9b59b6',this)"></div>
+                                    <div class="color-swatch" style="background:#1abc9c;" onclick="setColor('#1abc9c',this)"></div>
+                                    <div class="color-swatch" style="background:#ffffff;border:1px solid #ccc;" onclick="setColor('#ffffff',this)"></div>
+                                </div>
+                            </div>
+                            <!-- Saved colors -->
+                            <div>
+                                <div style="font-size:0.72rem;color:var(--gold);font-weight:700;margin-bottom:0.4rem;letter-spacing:0.5px;">ألواني المحفوظة</div>
+                                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;" id="savedColorsGrid"></div>
+                                <button onclick="saveCurrentColor()" style="width:100%;margin-top:6px;padding:0.4rem;background:var(--beige);border:none;border-radius:6px;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:0.75rem;color:var(--brown);">+ احفظ اللون الحالي</button>
+                            </div>
+                            <!-- Palettes -->
+                            <div>
+                                <div style="font-size:0.72rem;color:var(--gold);font-weight:700;margin-bottom:0.4rem;letter-spacing:0.5px;">بالتات جاهزة</div>
+                                <div style="display:flex;flex-direction:column;gap:4px;">
+                                    <button onclick="applyPalette('romantic')" style="padding:0.3rem 0.6rem;border:1px solid var(--beige);background:var(--cream);border-radius:6px;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:0.72rem;color:var(--text);">💕 رومانسي</button>
+                                    <button onclick="applyPalette('ocean')" style="padding:0.3rem 0.6rem;border:1px solid var(--beige);background:var(--cream);border-radius:6px;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:0.72rem;color:var(--text);">🌊 المحيط</button>
+                                    <button onclick="applyPalette('sunset')" style="padding:0.3rem 0.6rem;border:1px solid var(--beige);background:var(--cream);border-radius:6px;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:0.72rem;color:var(--text);">🌅 الغروب</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Mobile canvas layout override -->
+                <style>
+                @media (max-width: 768px) {
+                    #page-canvas .canvas-wrapper > div[style*="grid"] {
+                        grid-template-columns: 1fr !important;
+                    }
+                    #page-canvas .canvas-wrapper > div[style*="grid"] > div:first-child {
+                        flex-direction: row !important;
+                        flex-wrap: wrap;
+                        gap: 0.4rem;
+                    }
+                    #page-canvas .canvas-wrapper > div[style*="grid"] > div:last-child {
+                        order: -1;
+                    }
+                }
+                </style>
+            </div>
+        </div>
+
+        <!-- STORY -->
+        <div id="page-story" class="page">
+            <div class="story-bg-layer">
+                <img src="IMG_20260503_233912_546.jpg" alt="story background" />
+                <div class="story-bg-layer-overlay"></div>
+            </div>
+            <div class="container">
+                <button class="back-btn" onclick="showPage('home')">← رجوع</button>
+                <h2 class="section-title">قصتنا الكاملة 📖</h2>
+                <div class="ornament">❧</div>
+                <div class="story-full">
+                    <h3>🎭 البداية الغريبة</h3>
+                    <p>قصة حبنا دي غريبة شوية بصراحة. من أول ما اتعرفنا على بعض واحنا أصلاً مش عارفين مين اللي بيكلم التاني ولا بعت له ليه. كانت بداية غريبة مليانة صدف ومواقف مش محسوبة، بس في الآخر كل ده كان قدر بيجمعنا مع بعض.</p>
+                    <h3>🎵 طريق الرجوع</h3>
+                    <p>زي مثلاً لما كنت ببعتلك فيديوهات أغاني لحد ما وصلنا لتاني بلوك بينا. كانت فترة صعبة، بس الأغاني كانت هي السبيل الوحيد اللي بنتواصل من خلاله. كل أغنية كانت بتعبر عن شعور، وكل لحن كان بيوصل رسالة مش معبر عنها.</p>
+                    <h3>💫 لحظة الاعتراف</h3>
+                    <p>عملنا جروب تاني بينا احنا وكنا بنتكلم أكتر وتعرفنا أكتر. كانت لحظة الاعتراف بالمشاعر يوم ١/٢/٢٠٢٣، يوم مش هننساه أبداً. يوم قررنا نكون صريحين مع بعض ونعترف باللي جوا قلوبنا.</p>
+                    <h3>💔 الفراق</h3>
+                    <p>أيوه كانت فترة قصيرة مكملتش شهر تقريباً، بس كانت فترة حبيتها وفاكر كل لحظة فيها. الفراق علمنا قيمة بعض، وخلانا نعرف إن الحب الحقيقي بيستحق التضحية والانتظار.</p>
+                    <h3>🌅 العودة من جديد</h3>
+                    <p>وفعلاً قررتِ ترجعي ونكمل مع بعض، بس بسبب إننا كنا صغيرين حصلت أول مشكلة. بس إحنا تعلمنا منها، وكل مشكلة عدت بينا خلتنا أقوى وأقرب لبعض.</p>
+                    <h3>✨ التجدد والمستقبل</h3>
+                    <p>بدأت فترة جميلة بينا وهي الاستعباط والتلميح. كل واحد كان بيحاول يلمح ويتأكد من حب التاني. ورجعنا لبعض يوم ٩/٨/٢٠٢٥، ومن ساعتها واحنا بنختار بعض كل يوم. 💕</p>
+                    <h3>🤞 وعد الاصابع</h3>
+                    <p>وعد الاصابع ده مش مجرد كلمة، ده عهد بينا. مهما أي حد فينا غلط، احنا مكملين. علشان دايماً اختيارنا هيكون <strong>إحنا</strong>. 💕</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FEELINGS -->
+        <div id="page-feelings" class="page">
+            <div class="container" style="padding-top:2rem;">
+                <button class="back-btn" onclick="showPage('home')">← رجوع</button>
+                <h2 class="section-title">مشاعرنا 🤍</h2>
+                <div class="ornament">❧</div>
+                <div class="feeling-card">
+                    <h3>🤗 الأمان</h3>
+                    <p class="feeling-text">معاكِ أحس إني في مكان آمن، زي ماكون في بيتي اللي مهما بعته أرجعله تاني.</p>
+                    <textarea class="feeling-input" placeholder="✍️ اكتبي هنا شعورك..."></textarea>
+                </div>
+                <div class="feeling-card">
+                    <h3>🤝 الثقة</h3>
+                    <p class="feeling-text">ثقتي فيكِ أكبر من أي شك، وأعرف إن مهما حصل هنفضل جنب بعض.</p>
+                    <textarea class="feeling-input" placeholder="✍️ اكتبي هنا عن ثقتك..."></textarea>
+                </div>
+                <div class="feeling-card">
+                    <h3>❤️ الحب</h3>
+                    <p class="feeling-text">حبنا مش مجرد كلمة، هو اختيار بنعمله كل يوم.</p>
+                    <textarea class="feeling-input" placeholder="✍️ اكتبي هنا عن حبك..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROBLEMS -->
+        <div id="page-problems" class="page">
+            <div class="problems-bg-layer">
+                <img src="IMG_20260503_233924_634.jpg" alt="problems" />
+                <div class="problems-bg-layer-ov"></div>
+            </div>
+            <div class="container">
+                <button class="back-btn" onclick="showPage('home')">← رجوع</button>
+                <h2 class="section-title">المشاكل 💪</h2>
+                <div class="ornament">❧</div>
+                <div class="counter-box">
+                    <span class="counter-number" id="problemsCount">0</span>
+                    <div class="counter-label">عدد المشاكل اللي عدت بينا</div>
+                    <div class="counter-controls">
+                        <button class="counter-btn btn-minus" onclick="updateProblems(-1)">−</button>
+                        <button class="counter-btn btn-plus"  onclick="updateProblems(1)">+</button>
+                    </div>
+                    <div class="sync-status" id="problemsSync">⚪ جاري التزامن...</div>
+                </div>
+                <div class="reminder-box">
+                    💕 <strong>مع كل مشكلة بينا، نفتكر الحب اللي بينا والمجهود اللي اتبذل.</strong><br><br>
+                    <em>احنا مش بنعد المشاكل، احنا بنعد اللحظات اللي قررنا فيها نكمل.</em>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROMISE -->
+        <div id="page-promise" class="page">
+            <div class="promise-solid-bg"></div>
+            <div class="promise-bg-layer">
+                <img src="IMG_20260503_233915_616.jpg" alt="promise" />
+                <div class="promise-bg-layer-ov"></div>
+            </div>
+            <div class="container">
+                <button class="back-btn" onclick="showPage('home')" style="background:rgba(255,255,255,0.2);color:white;">← رجوع</button>
+                <h2 class="section-title">وعدنا 🤞</h2>
+                <div class="ornament" style="color:rgba(245,236,215,0.6);">❧</div>
+                <div class="promise-box">
+                    <p style="font-size:1.1rem; color:rgba(245,236,215,0.9); margin-bottom:1rem; line-height:1.8;">
+                        مهما أي حد فينا غلط، احنا مكملين.<br>
+                        علشان دايماً اختيارنا هيكون <strong>إحنا</strong> 💕
+                    </p>
+                    <div class="promise-counter" id="promiseCount">0</div>
+                    <p style="color:rgba(245,236,215,0.8); margin-bottom:0.5rem;">مرة اخترنا فيها إحنا</p>
+                    <div class="sync-status" id="promiseSync" style="color:rgba(245,236,215,0.6);">⚪ جاري التزامن...</div>
+                    <button class="promise-btn" onclick="makePromise()">أنا أختار إحنا ❤️</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PHOTOS -->
+        <div id="page-photos" class="page">
+            <div class="container" style="padding-top:2rem;">
+                <button class="back-btn" onclick="showPage('home')">← رجوع</button>
+                <h2 class="section-title">صورنا 📸</h2>
+                <div class="ornament">❧</div>
+                <div class="photos-box">
+                    <div class="photos-number" id="photosCount">0</div>
+                    <div class="photos-label">صورة مع بعض 💕</div>
+                    <div class="sync-status" id="photosSync">⚪ جاري التزامن...</div>
+                    <p style="color:var(--text-light); margin-top:0.8rem; font-size:0.9rem;">العد مستمر إلى ما لا نهاية... ♾️</p>
+                </div>
+                <div class="celebration" id="celebration">
+                    <h3>🎉 مبروك! أول 100 صورة! 📸💕</h3>
+                    <p>كل صورة كانت ذكرى جميلة!</p>
+                </div>
+                <div style="text-align:center; margin-top:1rem;">
+                    <button class="cta-button" onclick="addPhoto()">📷 أضف صورة جديدة</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- DATES -->
+        <div id="page-dates" class="page">
+            <div class="container" style="padding-top:2rem;">
+                <button class="back-btn" onclick="showPage('home')">← رجوع</button>
+                <h2 class="section-title">تواريخنا المميزة 📅</h2>
+                <div class="ornament">❧</div>
+                <div class="date-card">
+                    <div class="date-display">📅 1 / 2 / 2023</div>
+                    <div class="date-title">🌸 البداية - يوم الاعتراف</div>
+                    <textarea class="date-input" placeholder="✍️ اكتبي هنا ذكرياتك..."></textarea>
+                </div>
+                <div class="date-card" style="border: 2px solid var(--gold);">
+                    <div class="date-display">📅 9 / 8 / 2025</div>
+                    <div class="date-title">💫 تجدد الحب - العودة للبعض</div>
+                    <textarea class="date-input" placeholder="✍️ اكتبي هنا ذكرياتك..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- MESSAGES -->
+        <div id="page-messages" class="page">
+            <div class="container" style="padding-top:2rem;">
+                <button class="back-btn" onclick="showPage('home')">← رجوع</button>
+                <h2 class="section-title">رسائلنا 💌</h2>
+                <div class="ornament">❧</div>
+                <div class="connection-status offline" id="connectionStatus" style="display:none;">❌ لا يوجد اتصال</div>
+                <div id="messagesSkeleton">
+                    <div class="skeleton-card"><div class="skeleton skeleton-line short"></div><div class="skeleton skeleton-line full"></div><div class="skeleton skeleton-line medium"></div></div>
+                    <div class="skeleton-card"><div class="skeleton skeleton-line short"></div><div class="skeleton skeleton-line full"></div><div class="skeleton skeleton-line medium"></div></div>
+                </div>
+                <div class="message-box">
+                    <textarea class="message-textarea" id="messageInput" placeholder="✍️ اكتب رسالتك هنا... 💕"></textarea>
+                    <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                        <span>📤</span> إرسال
+                    </button>
+                </div>
+                <div class="message-box">
+                    <h3 style="color:var(--rose); margin-bottom:1rem; font-family:'Amiri',serif; text-align:center;">📬 الرسائل</h3>
+                    <div class="messages-list" id="messagesList">
+                        <div class="no-messages">💭 لا توجد رسائل بعد...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main><!-- /main-content -->
+
+    <!-- ══════ BOTTOM BAR (mobile) ══════ -->
+    <nav class="bottom-bar" id="bottomBar">
+        <div class="bottom-bar-scroll" style="justify-content:space-around;">
+            <button class="bottom-item active" id="bnav-home" onclick="showPage('home')">
+                <span class="bottom-emoji">🏠</span>الرئيسية
+            </button>
+            <button class="bottom-item" id="bnav-messages" onclick="showPage('messages')" style="position:relative;">
+                <span class="bottom-emoji">💌</span>رسائل
+                <span class="bottom-badge" id="bottomMsgBadge">0</span>
+            </button>
+            <button class="bottom-item" id="bnav-story" onclick="showPage('story')">
+                <span class="bottom-emoji">📖</span>قصتنا
+            </button>
+            <button class="bottom-item" id="bnav-dates" onclick="showPage('dates')">
+                <span class="bottom-emoji">📅</span>تواريخ
+            </button>
+            <button class="bottom-item" id="bnav-more" onclick="toggleMoreMenu()">
+                <span class="bottom-emoji">☰</span>المزيد
+            </button>
+        </div>
+        <!-- More menu popup -->
+        <div id="moreMenu" style="display:none; position:fixed; bottom:70px; left:0; right:0; background:rgba(255,253,247,0.98); backdrop-filter:blur(20px); border-top:1px solid rgba(212,184,150,0.4); padding:1rem; z-index:5001; display:none;">
+            <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:0.5rem;">
+                <button class="bottom-item" id="bnav-feelings" onclick="showPage('feelings');closeMoreMenu()"><span class="bottom-emoji">🤍</span>مشاعر</button>
+                <button class="bottom-item" id="bnav-promise" onclick="showPage('promise');closeMoreMenu()"><span class="bottom-emoji">🤞</span>الوعد</button>
+                <button class="bottom-item" id="bnav-problems" onclick="showPage('problems');closeMoreMenu()"><span class="bottom-emoji">💪</span>مشاكل</button>
+                <button class="bottom-item" id="bnav-photos" onclick="showPage('photos');closeMoreMenu()"><span class="bottom-emoji">📸</span>صور</button>
+                <button class="bottom-item" id="bnav-countdown" onclick="showPage('countdown');closeMoreMenu()"><span class="bottom-emoji">⏳</span>مناسبات</button>
+                <button class="bottom-item" id="bnav-timeline" onclick="showPage('timeline');closeMoreMenu()"><span class="bottom-emoji">🗓️</span>زمني</button>
+                <button class="bottom-item" id="bnav-playlist" onclick="showPage('playlist');closeMoreMenu()"><span class="bottom-emoji">🎵</span>موسيقى</button>
+                <button class="bottom-item" id="bnav-canvas" onclick="showPage('canvas');closeMoreMenu()"><span class="bottom-emoji">🎨</span>لوحة</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar overlay for mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebarMobile()"></div>
+
+</div><!-- /app-shell -->
+
+<footer style="display:none; background:var(--brown-dark); color:var(--cream); padding:1.5rem 5%; text-align:center; position:relative; z-index:1;" id="mainFooter">
     <p style="font-family:'Amiri',serif; font-size:1.1rem;">وعد الاصابع 🤞 | خالد وفاطمة 💕</p>
 </footer>
 
@@ -1382,8 +1366,16 @@
 // ══════════════════════════════════════════════
 // FIREBASE
 // ══════════════════════════════════════════════
-const firebaseConfig = {
-    apiKey: "AIzaSyAklV4_qndb_vTeSXNm0AbgqrdxkYwt7ok",
+// ══════════════════════════════════════════════
+// FIREBASE — تحذير: استخدم environment variables في الإنتاج
+// أضف ملف .env وأضف متغيرات البيئة هناك
+// ثم استخدم: const firebaseConfig = window.__firebaseConfig || {};
+// ══════════════════════════════════════════════
+// لحماية المفاتيح على GitHub:
+// 1. أضف ملف firebase-config.js خارجي ولا ترفعه (أضفه لـ .gitignore)
+// 2. أو استخدم Firebase Hosting environment config
+const firebaseConfig = window.__firebaseConfig || {
+    apiKey: "REPLACE_WITH_ENV_VAR",
     authDomain: "love-for-ever-a3077.firebaseapp.com",
     databaseURL: "https://love-for-ever-a3077-default-rtdb.firebaseio.com",
     projectId: "love-for-ever-a3077",
@@ -1397,12 +1389,12 @@ let isConnected = false;
 
 try {
     firebase.initializeApp(firebaseConfig);
-    database     = firebase.database();
-    countersRef  = database.ref('counters');
-    messagesRef  = database.ref('messages');
-    playlistRef  = database.ref('playlist');
-    canvasRef    = database.ref('canvas');
-    isConnected  = true;
+    database = firebase.database();
+    countersRef = database.ref('counters');
+    messagesRef = database.ref('messages');
+    playlistRef = database.ref('playlist');
+    canvasRef   = database.ref('canvas');
+    isConnected = true;
     checkLocalSession();
 } catch(e) { console.error('Firebase:', e); }
 
@@ -1416,11 +1408,9 @@ function checkSecret() {
     const errDiv = document.getElementById('errorMessage');
     if (input === SECRET_PASSWORD) {
         localStorage.setItem('loveSession', JSON.stringify({
-            name: "فاطمة", loginTime: Date.now(),
-            expiresAt: Date.now() + 86400000
+            name: "فاطمة", loginTime: Date.now(), expiresAt: Date.now() + 86400000
         }));
-        firebase.auth().signInAnonymously()
-            .then(showMainContent).catch(showMainContent);
+        firebase.auth().signInAnonymously().then(showMainContent).catch(showMainContent);
     } else {
         errDiv.textContent = '❌ كلمة السر غير صحيحة';
         errDiv.classList.add('show');
@@ -1443,15 +1433,48 @@ function checkLocalSession() {
 
 function showMainContent() {
     document.getElementById('loginContainer').classList.add('hidden');
-    document.getElementById('mainHeader').style.display = 'block';
+    document.getElementById('appShell').style.display = 'flex';
     document.getElementById('mainFooter').style.display = 'block';
-    document.getElementById('logoutBtn').classList.add('show');
-    document.getElementById('darkToggle').classList.add('show');
     showPage('home');
     if (isConnected) {
         loadMessages(); loadProblems(); loadPromise(); loadPhotos();
         loadPlaylist(); loadCanvasFromDB();
     }
+}
+
+// ══════════════════════════════════════════════
+// SIDEBAR TOGGLE
+// ══════════════════════════════════════════════
+function toggleSidebar() {
+    const shell = document.getElementById('appShell');
+    shell.classList.toggle('sidebar-collapsed');
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('collapsed');
+}
+
+function closeSidebarMobile() {
+    document.getElementById('sidebarOverlay').classList.remove('show');
+}
+
+// ══════════════════════════════════════════════
+// MORE MENU (bottom bar)
+// ══════════════════════════════════════════════
+function toggleMoreMenu() {
+    const menu = document.getElementById('moreMenu');
+    const overlay = document.getElementById('moreMenuOverlay');
+    const isOpen = menu.classList.contains('show');
+    if (isOpen) {
+        menu.classList.remove('show');
+        overlay.classList.remove('show');
+    } else {
+        menu.classList.add('show');
+        overlay.classList.add('show');
+    }
+}
+
+function closeMoreMenu() {
+    document.getElementById('moreMenu').classList.remove('show');
+    document.getElementById('moreMenuOverlay').classList.remove('show');
 }
 
 // ══════════════════════════════════════════════
@@ -1461,32 +1484,57 @@ function toggleDarkMode() {
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
     document.documentElement.setAttribute('data-theme', isDark ? '' : 'dark');
     localStorage.setItem('theme', isDark ? 'light' : 'dark');
-    // update particles color
+    const icon = isDark ? '☀️' : '🌙';
+    const di = document.getElementById('darkIcon');
+    const tdi = document.getElementById('topDarkBtn');
+    if (di) di.textContent = icon;
+    if (tdi) tdi.textContent = icon;
     initParticles();
 }
-// Load saved theme
+
 const savedTheme = localStorage.getItem('theme');
-if (savedTheme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+if (savedTheme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    document.addEventListener('DOMContentLoaded', () => {
+        const di = document.getElementById('darkIcon');
+        const tdi = document.getElementById('topDarkBtn');
+        if (di) di.textContent = '🌙';
+        if (tdi) tdi.textContent = '🌙';
+    });
+}
 
 // ══════════════════════════════════════════════
 // PAGE NAVIGATION
 // ══════════════════════════════════════════════
 function showPage(pageId) {
     if (!localStorage.getItem('loveSession')) return;
+
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     const target = document.getElementById('page-' + pageId);
     if (target) target.classList.add('active');
 
+    // Hero bg
     const heroBg  = document.getElementById('heroBg');
     const heroBgO = document.getElementById('heroBgOverlay');
     if (heroBg)  heroBg.style.display  = pageId === 'home' ? 'block' : 'none';
     if (heroBgO) heroBgO.style.display = pageId === 'home' ? 'block' : 'none';
 
-    if (pageId === 'home')      updateDaysCounter();
+    // Sidebar active states
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+    const activeNav = document.getElementById('nav-' + pageId);
+    if (activeNav) activeNav.classList.add('active');
+
+    // Bottom bar active states
+    document.querySelectorAll('.bottom-item').forEach(b => b.classList.remove('active'));
+    const activeBottom = document.getElementById('bnav-' + pageId);
+    if (activeBottom) activeBottom.classList.add('active');
+
+    if (pageId === 'home')      { updateDaysCounter(); setTimeout(startTypingEffect, 400); }
     if (pageId === 'countdown') buildCountdowns();
     if (pageId === 'timeline')  buildTimeline();
     if (pageId === 'messages' && isConnected) loadMessages();
     if (pageId === 'playlist')  loadPlaylist();
+    if (pageId === 'canvas')    setTimeout(initCanvas, 200);
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -1518,7 +1566,7 @@ function startTypingEffect() {
 }
 
 // ══════════════════════════════════════════════
-// DAYS COUNTER + HEARTBEAT
+// DAYS COUNTER
 // ══════════════════════════════════════════════
 const START_DATE = new Date('2023-02-01T00:00:00');
 
@@ -1527,8 +1575,11 @@ function calculateDays() {
 }
 
 function updateDaysCounter() {
+    const days = calculateDays();
     const el = document.getElementById('daysCountDisplay');
-    if (el) el.textContent = calculateDays().toLocaleString('ar');
+    if (el) el.textContent = days.toLocaleString('ar');
+    const sp = document.getElementById('sidebarDays');
+    if (sp) sp.textContent = days.toLocaleString('ar') + ' يوم';
 }
 
 function showDayMessage() {
@@ -1562,19 +1613,14 @@ function getNextOccasion(month, day) {
     return next;
 }
 
-// Sort by next occurrence date, occasion-1 always first based on timeline
-function getSortedOccasions() {
-    const now = new Date();
-    return OCCASIONS.map(o => {
-        const next = getNextOccasion(o.month, o.day);
-        return { ...o, next, diff: next - now };
-    }).sort((a,b) => a.diff - b.diff);
-}
-
 function buildCountdowns() {
     const grid = document.getElementById('countdownGrid');
     grid.innerHTML = '';
-    const sorted = getSortedOccasions();
+    const sorted = OCCASIONS.map(o => {
+        const next = getNextOccasion(o.month, o.day);
+        return { ...o, next, diff: next - new Date() };
+    }).sort((a,b) => a.diff - b.diff);
+
     sorted.forEach((o, idx) => {
         const card = document.createElement('div');
         card.className = `countdown-card occasion-${idx+1}`;
@@ -1598,25 +1644,19 @@ function updateCountdowns() {
         if (!boxEl) return;
         const next = getNextOccasion(o.month, o.day);
         const diff = next - now;
-
-        // Check if today is the occasion (within same day)
         const today = new Date(); today.setHours(0,0,0,0);
         const occ = new Date(today.getFullYear(), o.month-1, o.day);
         if (+today === +occ) {
             boxEl.innerHTML = `<div class="occ-arrived">🎉 المناسبة اليوم! كل سنة وإنتو طيبين 💕</div>`;
             return;
         }
-
-        // Check if tomorrow is the occasion - show name reveal
         const tomorrow = new Date(today); tomorrow.setDate(tomorrow.getDate()+1);
         const showName = +tomorrow === +occ;
-
         if (diff <= 0) return;
         const d = Math.floor(diff / 86400000);
         const h = Math.floor((diff % 86400000) / 3600000);
         const m = Math.floor((diff % 3600000) / 60000);
         const s = Math.floor((diff % 60000) / 1000);
-
         boxEl.innerHTML = `
             <div class="cd-box"><span class="cd-num">${d}</span><div class="cd-label">يوم</div></div>
             <div class="cd-box"><span class="cd-num">${String(h).padStart(2,'0')}</span><div class="cd-label">ساعة</div></div>
@@ -1626,35 +1666,26 @@ function updateCountdowns() {
         `;
     });
 }
-
 setInterval(updateCountdowns, 1000);
 
 // ══════════════════════════════════════════════
-// MEMORY TIMELINE
+// TIMELINE
 // ══════════════════════════════════════════════
 const TIMELINE_EVENTS = [
-    { date: '2022 - مجهول', title: 'اللقاء الأول 🎭', emoji: '✨',
-      text: 'اتعرفنا بالصدفة في جروب - بداية غريبة مليانة صدف ومواقف مش محسوبة.' },
-    { date: '2022 - قبل الاعتراف', title: 'رحلة الأغاني 🎵', emoji: '🎶',
-      text: 'كنت ببعتلك فيديوهات أغاني كطريقة للتعبير. وصلنا لأول بلوك بينا.' },
-    { date: '1 فبراير 2023', title: 'لحظة الاعتراف 💫', emoji: '💕',
-      text: 'عملنا جروب تاني وكنا بنتكلم أكتر. يوم الاعتراف بالمشاعر - يوم مش هننساه.' },
-    { date: 'فبراير 2023', title: 'أول فراق 💔', emoji: '🌧️',
-      text: 'فترة قصيرة مكملتش شهر. الفراق علمنا قيمة بعض وخلانا أقوى.' },
-    { date: 'بعد الفراق', title: 'العودة والمشكلة 🌅', emoji: '🌈',
-      text: 'رجعنا لبعض بس حصلت أول مشكلة لإننا كنا صغيرين. تعلمنا منها.' },
-    { date: '2024 - 2025', title: 'الاستعباط والتلميح 😊', emoji: '🌟',
-      text: 'فترة جميلة من التلميح والاستعباط. كل واحد بيحاول يتأكد من حب التاني.' },
-    { date: '9 أغسطس 2025', title: 'تجدد الحب 💞', emoji: '🔥',
-      text: 'رجعنا لبعض رسمياً! ومن ساعتها واحنا بنختار بعض كل يوم. 💕' },
-    { date: 'الحاضر والمستقبل', title: 'وعد الاصابع 🤞', emoji: '♾️',
-      text: 'مهما أي حد فينا غلط، احنا مكملين. علشان دايماً اختيارنا هيكون إحنا.' },
+    { date: '2022 - مجهول', title: 'اللقاء الأول 🎭', emoji: '✨', text: 'اتعرفنا بالصدفة في جروب - بداية غريبة مليانة صدف ومواقف مش محسوبة.' },
+    { date: '2022 - قبل الاعتراف', title: 'رحلة الأغاني 🎵', emoji: '🎶', text: 'كنت ببعتلك فيديوهات أغاني كطريقة للتعبير. وصلنا لأول بلوك بينا.' },
+    { date: '1 فبراير 2023', title: 'لحظة الاعتراف 💫', emoji: '💕', text: 'عملنا جروب تاني وكنا بنتكلم أكتر. يوم الاعتراف بالمشاعر - يوم مش هننساه.' },
+    { date: 'فبراير 2023', title: 'أول فراق 💔', emoji: '🌧️', text: 'فترة قصيرة مكملتش شهر. الفراق علمنا قيمة بعض وخلانا أقوى.' },
+    { date: 'بعد الفراق', title: 'العودة والمشكلة 🌅', emoji: '🌈', text: 'رجعنا لبعض بس حصلت أول مشكلة لإننا كنا صغيرين. تعلمنا منها.' },
+    { date: '2024 - 2025', title: 'الاستعباط والتلميح 😊', emoji: '🌟', text: 'فترة جميلة من التلميح والاستعباط. كل واحد بيحاول يتأكد من حب التاني.' },
+    { date: '9 أغسطس 2025', title: 'تجدد الحب 💞', emoji: '🔥', text: 'رجعنا لبعض رسمياً! ومن ساعتها واحنا بنختار بعض كل يوم. 💕' },
+    { date: 'الحاضر والمستقبل', title: 'وعد الاصابع 🤞', emoji: '♾️', text: 'مهما أي حد فينا غلط، احنا مكملين. علشان دايماً اختيارنا هيكون إحنا.' },
 ];
 
 function buildTimeline() {
     const c = document.getElementById('timelineContainer');
     c.innerHTML = '';
-    TIMELINE_EVENTS.forEach((ev, i) => {
+    TIMELINE_EVENTS.forEach(ev => {
         const item = document.createElement('div');
         item.className = 'timeline-item';
         item.innerHTML = `
@@ -1664,7 +1695,7 @@ function buildTimeline() {
                 <div class="tl-title">${ev.title}</div>
                 <div class="tl-text">${ev.text}</div>
             </div>
-            <div class="timeline-dot" style="right:calc(50% - 7px);"></div>
+            <div class="timeline-dot"></div>
             <div style="flex:1;"></div>
         `;
         c.appendChild(item);
@@ -1672,10 +1703,8 @@ function buildTimeline() {
 }
 
 // ══════════════════════════════════════════════
-// SHARED PLAYLIST
+// PLAYLIST
 // ══════════════════════════════════════════════
-let playlistData = [];
-
 function getYouTubeId(url) {
     const m = url.match(/(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/);
     return m ? m[1] : null;
@@ -1692,27 +1721,23 @@ function addSong() {
     const session = JSON.parse(localStorage.getItem('loveSession') || '{}');
     playlistRef.push({
         title: titleEl.value.trim() || 'أغنية جديدة 🎵',
-        url, ytId,
-        addedBy: session.name || 'فاطمة',
-        timestamp: Date.now()
+        url, ytId, addedBy: session.name || 'فاطمة', timestamp: Date.now()
     }).then(() => {
-        titleEl.value = '';
-        urlEl.value = '';
+        titleEl.value = ''; urlEl.value = '';
         showCounterNotification('promise', '🎵 تمت إضافة الأغنية!');
     });
 }
 
 function loadPlaylist() {
     const statusEl = document.getElementById('playlistStatus');
+    const skelEl = document.getElementById('playlistSkeleton');
     if (!isConnected) {
-        statusEl.className = 'connection-status offline';
-        statusEl.textContent = '❌ لا يوجد اتصال';
+        if (statusEl) { statusEl.style.display='block'; statusEl.className = 'connection-status offline'; statusEl.textContent = '❌ لا يوجد اتصال'; }
+        if (skelEl) skelEl.style.display='none';
         return;
     }
-    statusEl.className = 'connection-status online';
-    statusEl.textContent = '✅ متصل';
-
     playlistRef.orderByChild('timestamp').on('value', snap => {
+        if(skelEl) skelEl.style.display='none';
         const list = [];
         snap.forEach(c => { const v = c.val(); v.key = c.key; list.unshift(v); });
         renderPlaylist(list);
@@ -1721,15 +1746,11 @@ function loadPlaylist() {
 
 function renderPlaylist(songs) {
     const el = document.getElementById('songsList');
-    if (!songs.length) {
-        el.innerHTML = '<div class="no-songs">🎵 لا توجد أغاني بعد... أضف أول أغنية!</div>';
-        return;
-    }
+    if (!songs.length) { el.innerHTML = '<div class="no-songs">🎵 لا توجد أغاني بعد... أضف أول أغنية!</div>'; return; }
     el.innerHTML = songs.map(s => `
         <div class="song-item">
             <div class="song-thumb">
-                <img src="https://img.youtube.com/vi/${s.ytId}/mqdefault.jpg" alt="thumb"
-                    onerror="this.parentElement.textContent='🎵'">
+                <img src="https://img.youtube.com/vi/${s.ytId}/mqdefault.jpg" alt="thumb" onerror="this.parentElement.textContent='🎵'">
             </div>
             <div class="song-info">
                 <div class="song-title">${escapeHtml(s.title)}</div>
@@ -1748,418 +1769,34 @@ function deleteSong(key) {
 }
 
 // ══════════════════════════════════════════════
-// SHARED CANVAS
+// CANVAS — upgraded
 // ══════════════════════════════════════════════
 let canvasCtx, canvasEl;
 let isDrawing = false;
 let currentColor = '#8B1A3C';
 let currentTool  = 'pen';
+let currentOpacity = 1;
 let lastX = 0, lastY = 0;
-let canvasSaveTimer = null;
+let canvasInited = false;
+let undoStack = [];      // stores full canvas snapshots per stroke
+let currentStroke = []; // points in current stroke
 
-function initCanvas() {
-    canvasEl = document.getElementById('loveCanvas');
-    if (!canvasEl) return;
-    canvasCtx = canvasEl.getContext('2d');
-
-    // Scale for DPR
-    const dpr = window.devicePixelRatio || 1;
-    const rect = canvasEl.getBoundingClientRect();
-    canvasEl.width = rect.width * dpr || 760;
-    canvasEl.height = 420 * dpr;
-    canvasCtx.scale(dpr, dpr);
-    canvasEl.style.width  = (canvasEl.width  / dpr) + 'px';
-    canvasEl.style.height = (canvasEl.height / dpr) + 'px';
-
-    canvasEl.addEventListener('mousedown', startDraw);
-    canvasEl.addEventListener('mousemove', draw);
-    canvasEl.addEventListener('mouseup',   endDraw);
-    canvasEl.addEventListener('mouseleave', endDraw);
-    canvasEl.addEventListener('touchstart', e => { e.preventDefault(); const t = e.touches[0]; startDraw(t); }, {passive:false});
-    canvasEl.addEventListener('touchmove',  e => { e.preventDefault(); const t = e.touches[0]; draw(t); },      {passive:false});
-    canvasEl.addEventListener('touchend',   endDraw);
-
-    loadCanvasFromDB();
-}
-
-function getPos(e) {
-    const rect = canvasEl.getBoundingClientRect();
-    return {
-        x: (e.clientX || e.pageX) - rect.left,
-        y: (e.clientY || e.pageY) - rect.top
-    };
-}
-
-function startDraw(e) {
-    isDrawing = true;
-    const p = getPos(e);
-    lastX = p.x; lastY = p.y;
-}
-
-function draw(e) {
-    if (!isDrawing) return;
-    const p = getPos(e);
-    const size = parseInt(document.getElementById('brushSize').value) || 6;
-    canvasCtx.beginPath();
-    canvasCtx.moveTo(lastX, lastY);
-    canvasCtx.lineTo(p.x, p.y);
-    canvasCtx.strokeStyle = currentTool === 'eraser' ? '#ffffff' : currentColor;
-    canvasCtx.lineWidth   = currentTool === 'eraser' ? size * 3 : size;
-    canvasCtx.lineCap = 'round';
-    canvasCtx.lineJoin = 'round';
-    canvasCtx.stroke();
-    lastX = p.x; lastY = p.y;
-
-    // Auto-save debounced
-    clearTimeout(canvasSaveTimer);
-    canvasSaveTimer = setTimeout(saveCanvasToDB, 10000);
-}
-
-function endDraw() {
-    isDrawing = false;
-    clearTimeout(canvasSaveTimer);
-    canvasSaveTimer = setTimeout(saveCanvasToDB, 3000);
-}
-
-function setTool(tool) {
-    currentTool = tool;
-    document.querySelectorAll('.canvas-tool-btn[id^="tool-"]').forEach(b => b.classList.remove('active'));
-    const btn = document.getElementById('tool-' + tool);
-    if (btn) btn.classList.add('active');
-}
-
-function setColor(color, el) {
-    currentColor = color;
-    document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
-    if (el) el.classList.add('active');
-    setTool('pen');
-}
-
-function addHeart() {
-    if (!canvasCtx) return;
-    const x = Math.random() * (canvasEl.offsetWidth - 60) + 30;
-    const y = Math.random() * (canvasEl.offsetHeight - 60) + 30;
-    canvasCtx.save();
-    canvasCtx.fillStyle = currentColor;
-    canvasCtx.font = '40px serif';
-    canvasCtx.textAlign = 'center';
-    canvasCtx.fillText('❤️', x, y);
-    canvasCtx.restore();
-    clearTimeout(canvasSaveTimer);
-    canvasSaveTimer = setTimeout(saveCanvasToDB, 3000);
-}
-
-function clearCanvas() {
-    if (!confirm('مسح اللوحة كلها؟')) return;
-    canvasCtx.clearRect(0, 0, canvasEl.width, canvasEl.height);
-    canvasCtx.fillStyle = 'white';
-    canvasCtx.fillRect(0, 0, canvasEl.width, canvasEl.height);
-    saveCanvasToDB();
-}
-
-function saveCanvas() {
-    const a = document.createElement('a');
-    a.download = 'لوحتنا.png';
-    a.href = canvasEl.toDataURL();
-    a.click();
-}
-
-function saveCanvasToDB() {
-    if (!isConnected || !canvasEl) return;
-    const data = canvasEl.toDataURL('image/jpeg', 0.6);
-    canvasRef.set({ data, updatedAt: Date.now() }).catch(() => {});
-}
-
-function loadCanvasFromDB() {
-    if (!isConnected) return;
-    const stEl = document.getElementById('canvasStatus');
-    if (stEl) { stEl.className = 'connection-status online'; stEl.textContent = '✅ متصل'; }
-    canvasRef.once('value').then(snap => {
-        const val = snap.val();
-        if (!val || !val.data) return;
-        if (!canvasCtx) initCanvas();
-        const img = new Image();
-        img.onload = () => canvasCtx.drawImage(img, 0, 0, canvasEl.offsetWidth, canvasEl.offsetHeight);
-        img.src = val.data;
-    });
-}
-
-// Auto-refresh canvas every 10s
-setInterval(() => {
-    if (document.getElementById('page-canvas')?.classList.contains('active')) {
-        loadCanvasFromDB();
-    }
-}, 10000);
-
-// ══════════════════════════════════════════════
-// COUNTERS (Problems, Promise, Photos)
-// ══════════════════════════════════════════════
-let problemsCount = 0, lastProblemsCount = 0;
-let promiseCount  = 0, lastPromiseCount  = 0;
-let photosCount   = 0, lastPhotosCount   = 0;
-let unreadMessages = 0;
-
-function loadProblems() {
-    countersRef.child('problems').on('value', snap => {
-        const v = snap.val() || 0;
-        if (v > lastProblemsCount && lastProblemsCount > 0)
-            showCounterNotification('problems', `💪 عدد المشاكل: ${v}`);
-        lastProblemsCount = v; problemsCount = v;
-        const el = document.getElementById('problemsCount');
-        if (el) el.textContent = v;
-        const sy = document.getElementById('problemsSync');
-        if (sy) { sy.textContent = '✅ متزامن'; sy.className = 'sync-status online'; }
-    });
-}
-
-function updateProblems(change) {
-    if (!isConnected) return;
-    showProblemsBackground();
-    countersRef.child('problems').set(Math.max(0, problemsCount + change));
-}
-
-function showProblemsBackground() {
-    const s = document.getElementById('page-problems');
-    s.classList.add('show-bg');
-    clearTimeout(window._pBgT);
-    window._pBgT = setTimeout(() => s.classList.remove('show-bg'), 5000);
-}
-
-function loadPromise() {
-    countersRef.child('promise').on('value', snap => {
-        const v = snap.val() || 0;
-        if (v > lastPromiseCount && lastPromiseCount > 0)
-            showCounterNotification('promise', `🤞 وعد جديد! الإجمالي: ${v}`);
-        lastPromiseCount = v; promiseCount = v;
-        const el = document.getElementById('promiseCount');
-        if (el) el.textContent = v;
-        const sy = document.getElementById('promiseSync');
-        if (sy) sy.textContent = '✅ متزامن';
-    });
-}
-
-function makePromise() {
-    if (!isConnected) return;
-    countersRef.child('promise').set(promiseCount + 1);
-    showPromiseBackground();
-    const ft = document.getElementById('flyingText');
-    ft.classList.remove('animate'); void ft.offsetWidth; ft.classList.add('animate');
-}
-
-function showPromiseBackground() {
-    const s = document.getElementById('page-promise');
-    s.classList.add('show-bg');
-    clearTimeout(window._prBgT);
-    window._prBgT = setTimeout(() => s.classList.remove('show-bg'), 8000);
-}
-
-function loadPhotos() {
-    countersRef.child('photos').on('value', snap => {
-        const v = snap.val() || 0;
-        if (v > lastPhotosCount && lastPhotosCount > 0) {
-            const rem = 100 - v;
-            showCounterNotification('photos', rem > 0 ? `📸 صورة جديدة! باقي ${rem}` : '🎉 100 صورة!');
-        }
-        lastPhotosCount = v; photosCount = v;
-        const el = document.getElementById('photosCount');
-        if (el) el.textContent = v;
-        const sy = document.getElementById('photosSync');
-        if (sy) { sy.textContent = '✅ متزامن'; sy.className = 'sync-status online'; }
-        const cel = document.getElementById('celebration');
-        if (cel && v >= 100) cel.classList.add('show');
-    });
-}
-
-function addPhoto() {
-    if (!isConnected) return;
-    countersRef.child('photos').set(photosCount + 1);
-    if (photosCount + 1 === 100) setTimeout(() => alert('🎉 مبروك! 100 صورة! 📸💕'), 500);
-}
-
-// ══════════════════════════════════════════════
-// MESSAGES
-// ══════════════════════════════════════════════
-function sendMessage() {
-    const input = document.getElementById('messageInput');
-    const btn   = document.getElementById('sendBtn');
-    const content = input.value.trim();
-    if (!content || !isConnected) return;
-    btn.disabled = true; btn.innerHTML = '<span>⏳</span> جاري الإرسال...';
-    const session = JSON.parse(localStorage.getItem('loveSession') || '{}');
-    messagesRef.push({ content, sender: session.name || 'فاطمة', timestamp: Date.now(), read: false })
-        .then(() => {
-            input.value = '';
-            btn.disabled = false; btn.innerHTML = '<span>📤</span> إرسال';
-        }).catch(() => {
-            btn.disabled = false; btn.innerHTML = '<span>❌</span> حاول مرة أخرى';
-        });
-}
-
-function loadMessages() {
-    const stEl = document.getElementById('connectionStatus');
-    if (stEl) { stEl.className = 'connection-status online'; stEl.textContent = '✅ متصل'; }
-    messagesRef.orderByChild('timestamp').on('value', snap => {
-        const msgs = [];
-        let newUnread = 0;
-        snap.forEach(c => { const m = c.val(); m.id = c.key; msgs.unshift(m); if (!m.read) newUnread++; });
-        if (newUnread > unreadMessages && unreadMessages > 0 && msgs[0])
-            showCounterNotification('message', `💌 رسالة جديدة من ${msgs[0].sender}!`);
-        unreadMessages = newUnread;
-        const badge = document.getElementById('messageBadge');
-        if (badge) { badge.textContent = unreadMessages; badge.classList.toggle('show', unreadMessages > 0); }
-        const list = document.getElementById('messagesList');
-        if (!list) return;
-        list.innerHTML = msgs.length
-            ? msgs.map(m => `
-                <div class="message-item ${!m.read ? 'new' : ''}">
-                    <div class="message-sender">👤 ${m.sender}</div>
-                    <div class="message-content">${escapeHtml(m.content)}</div>
-                    <div class="message-time">🕐 ${formatTime(m.timestamp)}</div>
-                </div>`).join('')
-            : '<div class="no-messages">💭 لا توجد رسائل بعد...</div>';
-    });
-}
-
-// ══════════════════════════════════════════════
-// NOTIFICATIONS
-// ══════════════════════════════════════════════
-function showCounterNotification(type, message) {
-    const n = document.getElementById('counterNotification');
-    const icon = document.getElementById('notificationIcon');
-    const text = document.getElementById('notificationText');
-    const icons = { photos:'📸', promise:'🤞', problems:'💪', message:'💌', days:'💕' };
-    n.className = `counter-notification${type === 'photos' ? ' photos' : type === 'promise' ? ' promise' : type === 'days' ? ' days' : ''}`;
-    icon.textContent = icons[type] || '🔔';
-    text.textContent = message;
-    n.classList.add('show');
-    playSound();
-    if (navigator.vibrate) navigator.vibrate([150, 80, 150]);
-    setTimeout(() => n.classList.remove('show'), 5000);
-}
-
-function playSound() {
-    try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const o = ctx.createOscillator(); const g = ctx.createGain();
-        o.connect(g); g.connect(ctx.destination);
-        o.frequency.value = 880; o.type = 'sine';
-        g.gain.setValueAtTime(0.2, ctx.currentTime);
-        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
-        o.start(); o.stop(ctx.currentTime + 0.4);
-    } catch(e) {}
-}
-
-// ══════════════════════════════════════════════
-// PARTICLES.JS (hearts + stars)
-// ══════════════════════════════════════════════
-let particles = [];
-
-function initParticles() {
-    const canvas = document.getElementById('particlesCanvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width  = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    const heartChar = ['💕','💖','✨','⭐','💫','🌟'];
-    particles = [];
-
-    for (let i = 0; i < 30; i++) {
-        particles.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            vy: -(0.3 + Math.random() * 0.5),
-            vx: (Math.random() - 0.5) * 0.3,
-            size: 10 + Math.random() * 14,
-            char: heartChar[Math.floor(Math.random() * heartChar.length)],
-            opacity: 0.05 + Math.random() * 0.12,
-            wobble: Math.random() * Math.PI * 2,
-            wobbleSpeed: 0.01 + Math.random() * 0.02,
-        });
-    }
-
-    function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        particles.forEach(p => {
-            p.y += p.vy;
-            p.x += Math.sin(p.wobble) * 0.4;
-            p.wobble += p.wobbleSpeed;
-            if (p.y < -30) { p.y = canvas.height + 20; p.x = Math.random() * canvas.width; }
-            ctx.globalAlpha = p.opacity;
-            ctx.font = `${p.size}px serif`;
-            ctx.fillText(p.char, p.x, p.y);
-        });
-        ctx.globalAlpha = 1;
-        requestAnimationFrame(animate);
-    }
-    animate();
-}
-
-window.addEventListener('resize', () => {
-    const c = document.getElementById('particlesCanvas');
-    c.width = window.innerWidth; c.height = window.innerHeight;
-});
-
-// Mouse interaction with particles
-document.addEventListener('mousemove', e => {
-    particles.forEach(p => {
-        const dx = e.clientX - p.x, dy = e.clientY - p.y;
-        const dist = Math.sqrt(dx*dx + dy*dy);
-        if (dist < 80) {
-            p.x -= dx * 0.02;
-            p.y -= dy * 0.02;
-        }
-    });
-    // Update cursor
-    const dot  = document.getElementById('cursorDot');
-    const ring = document.getElementById('cursorRing');
-    if (dot)  { dot.style.left  = e.clientX + 'px'; dot.style.top  = e.clientY + 'px'; }
-    if (ring) { ring.style.left = e.clientX + 'px'; ring.style.top = e.clientY + 'px'; }
-});
-
-// ══════════════════════════════════════════════
-// PARALLAX SCROLLING
-// ══════════════════════════════════════════════
-window.addEventListener('scroll', () => {
-    const scrollY = window.scrollY;
-    document.querySelectorAll('.parallax-layer').forEach(el => {
-        const speed = parseFloat(el.dataset.speed || 0.3);
-        el.style.transform = `translateY(${scrollY * speed}px)`;
-    });
-});
-
-// ══════════════════════════════════════════════
-// HELPERS
-// ══════════════════════════════════════════════
-function escapeHtml(t) {
-    const d = document.createElement('div'); d.textContent = t; return d.innerHTML;
-}
-function formatTime(ts) {
-    return new Date(ts).toLocaleString('ar-EG', {
-        year:'numeric', month:'short', day:'numeric',
-        hour:'2-digit', minute:'2-digit'
-    });
-}
-
-// ══════════════════════════════════════════════
-// INIT on page-home shown - start typing
-// ══════════════════════════════════════════════
-const _origShowPage = showPage;
-// Override to trigger typing when home is shown
-window.showPage = function(id) {
-    _origShowPage(id);
-    if (id === 'home') {
-        setTimeout(startTypingEffect, 400);
-    }
-    if (id === 'canvas') {
-        setTimeout(initCanvas, 200);
-    }
+const PALETTES = {
+    romantic: ['#8B1A3C','#C8963E','#E8A0B0','#F5D0D8','#6B3A2A'],
+    ocean:    ['#1a6985','#2980b9','#5dade2','#a9cce3','#1abc9c'],
+    sunset:   ['#e74c3c','#e67e22','#f39c12','#f8c471','#922b21'],
 };
 
-// ══════════════════════════════════════════════
-// BOOT
-// ══════════════════════════════════════════════
-initParticles();
-</script>
-</body>
-</html>
+let savedColors = JSON.parse(localStorage.getItem('savedColors')||'[]');
+
+function renderSavedColors() {
+    const grid = document.getElementById('savedColorsGrid');
+    if (!grid) return;
+    grid.innerHTML = savedColors.map(c=>`
+        <div class="color-swatch" style="background:${c};" onclick="setColor('${c}',this)" title="${c}"></div>
+    `).join('') || '<span style="font-size:0.72rem;color:var(--text-light);">لا يوجد</span>';
+}
+
+function saveCurrentColor() {
+    if (!savedColors.includes(currentColor)) {
+        savedCol
