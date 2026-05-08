@@ -25,14 +25,89 @@
 body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);overflow-x:hidden;transition:background .4s,color .4s;}
 canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;}
 
-/* ── SIDEBAR ── */
-.sidebar{width:var(--sidebar-w);background:rgba(255,253,247,.97);backdrop-filter:blur(20px);border-left:1px solid rgba(212,184,150,.4);position:fixed;top:0;right:0;height:100vh;z-index:5000;display:flex;flex-direction:column;transform:translateX(0);transition:transform .4s cubic-bezier(.16,1,.3,1),box-shadow .4s;box-shadow:-4px 0 30px rgba(107,58,42,.12);overflow:hidden;}
+/* ══════════════════════════════════════
+   SIDEBAR — مخفي بالكامل افتراضياً
+══════════════════════════════════════ */
+.sidebar{
+  width:var(--sidebar-w);
+  background:rgba(255,253,247,.97);
+  backdrop-filter:blur(20px);
+  border-left:1px solid rgba(212,184,150,.4);
+  position:fixed;
+  top:0;right:0;
+  height:100vh;
+  z-index:5000;
+  display:flex;
+  flex-direction:column;
+  /* مخفي بالكامل خارج الشاشة */
+  transform:translateX(110%);
+  transition:transform .4s cubic-bezier(.16,1,.3,1),box-shadow .4s;
+  box-shadow:-4px 0 30px rgba(107,58,42,.12);
+  overflow:hidden;
+}
 [data-theme="dark"] .sidebar{background:rgba(26,15,8,.97);border-left-color:rgba(90,58,37,.4);}
-.sidebar.collapsed{transform:translateX(calc(var(--sidebar-w) - 56px));}
-.sidebar-toggle{position:absolute;left:-20px;top:50%;transform:translateY(-50%);width:20px;height:56px;background:var(--rose);border-radius:8px 0 0 8px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;transition:background .2s;border:none;}
-.sidebar-toggle:hover{background:var(--brown);}
-.sidebar-toggle-icon{font-size:.75rem;color:#fff;transition:transform .4s;line-height:1;}
-.sidebar.collapsed .sidebar-toggle-icon{transform:rotate(180deg);}
+
+/* لما السايدبار مفتوح */
+.sidebar.open{
+  transform:translateX(0);
+  box-shadow:-8px 0 40px rgba(107,58,42,.25);
+}
+
+/* ══════════════════════════════════════
+   FLOATING TOGGLE BUTTON — الزرار الثابت
+══════════════════════════════════════ */
+.sidebar-fab{
+  position:fixed;
+  top:50%;
+  right:0;
+  transform:translateY(-50%);
+  width:48px;
+  height:56px;
+  background:linear-gradient(135deg,var(--rose),var(--brown));
+  border-radius:12px 0 0 12px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:6000;
+  border:none;
+  box-shadow:-4px 0 20px rgba(139,26,60,.35);
+  transition:all .3s cubic-bezier(.16,1,.3,1);
+}
+.sidebar-fab:hover{
+  width:56px;
+  background:linear-gradient(135deg,var(--brown),var(--rose));
+  box-shadow:-6px 0 28px rgba(139,26,60,.5);
+}
+.sidebar-fab-icon{
+  font-size:1.4rem;
+  transition:transform .4s;
+  line-height:1;
+  color:#fff;
+}
+/* لما السايدبار مفتوح: نحرك الأيقونة وننقل الزرار */
+.sidebar.open ~ .sidebar-fab,
+.sidebar-fab.sidebar-open-state{
+  right:var(--sidebar-w);
+  border-radius:12px 0 0 12px;
+  background:linear-gradient(135deg,var(--brown-dark),var(--rose));
+}
+.sidebar-fab.sidebar-open-state .sidebar-fab-icon{
+  transform:rotate(180deg);
+}
+
+/* Overlay خلف السايدبار */
+.sidebar-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.35);
+  z-index:4999;
+  display:none;
+  backdrop-filter:blur(2px);
+  transition:opacity .3s;
+}
+.sidebar-overlay.show{display:block;}
+
 .sidebar-header{padding:1.5rem 1.2rem 1rem;border-bottom:1px solid rgba(212,184,150,.3);flex-shrink:0;}
 .sidebar-logo{font-family:'Amiri',serif;font-size:1.4rem;color:var(--rose);cursor:pointer;display:block;margin-bottom:.8rem;white-space:nowrap;overflow:hidden;}
 .sidebar-logo span{color:var(--gold);}
@@ -57,10 +132,11 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
 .btn-logout{background:rgba(139,26,60,.1);color:var(--rose);}
 .btn-logout:hover{background:var(--rose);color:#fff;}
 
-/* ── LAYOUT ── */
+/* ══════════════════════════════════════
+   LAYOUT — المحتوى الرئيسي بدون margin
+══════════════════════════════════════ */
 .app-shell{display:flex;min-height:100vh;}
-.main-content{flex:1;margin-right:var(--sidebar-w);transition:margin-right .4s cubic-bezier(.16,1,.3,1);min-height:100vh;position:relative;z-index:1;}
-.sidebar.collapsed ~ .main-content,.sidebar-collapsed .main-content{margin-right:56px;}
+.main-content{flex:1;margin-right:0;transition:margin-right .4s cubic-bezier(.16,1,.3,1);min-height:100vh;position:relative;z-index:1;}
 
 /* ── TOP BAR (mobile) ── */
 .top-bar{display:none;position:fixed;top:0;left:0;right:0;background:rgba(255,253,247,.96);backdrop-filter:blur(16px);border-bottom:1px solid rgba(212,184,150,.4);padding:.7rem 1rem;z-index:4998;align-items:center;justify-content:space-between;}
@@ -358,13 +434,6 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
 /* ── SKELETON ── */
 .skeleton{background:linear-gradient(90deg,var(--cream-dark) 25%,var(--beige) 50%,var(--cream-dark) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:6px;}
 @keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
-.skeleton-line{height:14px;margin-bottom:10px;}
-.skeleton-line.short{width:40%;}
-.skeleton-line.medium{width:70%;}
-.skeleton-line.full{width:100%;}
-.skeleton-card{background:var(--white);border-radius:10px;padding:1.2rem 1.5rem;margin-bottom:.8rem;box-shadow:0 2px 8px rgba(107,58,42,.05);}
-[data-theme="dark"] .skeleton{background:linear-gradient(90deg,#2A1A0E 25%,#3A2515 50%,#2A1A0E 75%);background-size:200% 100%;}
-[data-theme="dark"] .skeleton-card{background:#3A2515;}
 
 /* ── LOGIN ── */
 .login-container{position:fixed;inset:0;background:linear-gradient(135deg,var(--cream) 0%,var(--cream-dark) 100%);display:flex;align-items:center;justify-content:center;z-index:99999;transition:opacity .6s ease,visibility .6s ease;}
@@ -386,7 +455,6 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
 
 /* ── RESPONSIVE ── */
 @media (max-width:768px) {
-  .sidebar{display:none;}
   .bottom-bar{display:block;}
   .top-bar{display:flex;}
   .main-content{margin-right:0;padding-bottom:80px;padding-top:60px;}
@@ -403,8 +471,14 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
   .timeline-content{max-width:100%;}
   .timeline-dot{right:10px;top:0;transform:none;}
   .cd-num{font-size:2.2rem;}
+  /* إخفاء الزرار الجانبي على الموبايل */
+  .sidebar-fab{display:none;}
 }
-@media (min-width:769px){.top-bar{display:none;}}
+@media (min-width:769px){
+  .top-bar{display:none;}
+  /* على الديسكتوب: ارفع الـ FAB فوق bottom bar */
+  .sidebar-fab{display:flex;}
+}
 </style>
 </head>
 <body>
@@ -438,13 +512,13 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
 <!-- APP SHELL -->
 <div class="app-shell" id="appShell" style="display:none;">
 
+  <!-- SIDEBAR OVERLAY (خلفية داكنة عند فتح السايدبار) -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
   <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
-    <button class="sidebar-toggle" onclick="toggleSidebar()">
-      <span class="sidebar-toggle-icon">◀</span>
-    </button>
     <div class="sidebar-header">
-      <a class="sidebar-logo" onclick="showPage('home')">وعد الاصابع <span>🤞</span></a>
+      <a class="sidebar-logo" onclick="showPage('home');closeSidebar()">وعد الاصابع <span>🤞</span></a>
       <div class="sidebar-meta">
         <span>💕 خالد وفاطمة</span>
         <span class="sidebar-days-pill" id="sidebarDays">0 يوم</span>
@@ -453,27 +527,27 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
     <nav class="sidebar-nav">
       <div class="nav-section-title">الرئيسية</div>
       <div class="nav-grid">
-        <button class="nav-item active" id="nav-home" onclick="showPage('home')"><span class="nav-emoji">🏠</span>الرئيسية</button>
-        <button class="nav-item" id="nav-messages" onclick="showPage('messages')" style="position:relative;"><span class="nav-emoji">💌</span>رسائل<span class="nav-badge" id="messageBadge">0</span></button>
+        <button class="nav-item active" id="nav-home" onclick="showPage('home');closeSidebar()"><span class="nav-emoji">🏠</span>الرئيسية</button>
+        <button class="nav-item" id="nav-messages" onclick="showPage('messages');closeSidebar()" style="position:relative;"><span class="nav-emoji">💌</span>رسائل<span class="nav-badge" id="messageBadge">0</span></button>
       </div>
       <div class="nav-section-title">قصتنا</div>
       <div class="nav-grid">
-        <button class="nav-item" id="nav-story" onclick="showPage('story')"><span class="nav-emoji">📖</span>قصتنا</button>
-        <button class="nav-item" id="nav-timeline" onclick="showPage('timeline')"><span class="nav-emoji">🗓️</span>خط زمني</button>
-        <button class="nav-item" id="nav-dates" onclick="showPage('dates')"><span class="nav-emoji">📅</span>التواريخ</button>
-        <button class="nav-item" id="nav-countdown" onclick="showPage('countdown')"><span class="nav-emoji">⏳</span>المناسبات</button>
+        <button class="nav-item" id="nav-story" onclick="showPage('story');closeSidebar()"><span class="nav-emoji">📖</span>قصتنا</button>
+        <button class="nav-item" id="nav-timeline" onclick="showPage('timeline');closeSidebar()"><span class="nav-emoji">🗓️</span>خط زمني</button>
+        <button class="nav-item" id="nav-dates" onclick="showPage('dates');closeSidebar()"><span class="nav-emoji">📅</span>التواريخ</button>
+        <button class="nav-item" id="nav-countdown" onclick="showPage('countdown');closeSidebar()"><span class="nav-emoji">⏳</span>المناسبات</button>
       </div>
       <div class="nav-section-title">مشاعرنا</div>
       <div class="nav-grid">
-        <button class="nav-item" id="nav-feelings" onclick="showPage('feelings')"><span class="nav-emoji">🤍</span>المشاعر</button>
-        <button class="nav-item" id="nav-promise" onclick="showPage('promise')"><span class="nav-emoji">🤞</span>الوعد</button>
-        <button class="nav-item" id="nav-problems" onclick="showPage('problems')"><span class="nav-emoji">💪</span>المشاكل</button>
-        <button class="nav-item" id="nav-photos" onclick="showPage('photos')"><span class="nav-emoji">📸</span>الصور</button>
+        <button class="nav-item" id="nav-feelings" onclick="showPage('feelings');closeSidebar()"><span class="nav-emoji">🤍</span>المشاعر</button>
+        <button class="nav-item" id="nav-promise" onclick="showPage('promise');closeSidebar()"><span class="nav-emoji">🤞</span>الوعد</button>
+        <button class="nav-item" id="nav-problems" onclick="showPage('problems');closeSidebar()"><span class="nav-emoji">💪</span>المشاكل</button>
+        <button class="nav-item" id="nav-photos" onclick="showPage('photos');closeSidebar()"><span class="nav-emoji">📸</span>الصور</button>
       </div>
       <div class="nav-section-title">الإبداع</div>
       <div class="nav-grid">
-        <button class="nav-item" id="nav-playlist" onclick="showPage('playlist')"><span class="nav-emoji">🎵</span>بلايليست</button>
-        <button class="nav-item" id="nav-canvas" onclick="showPage('canvas')"><span class="nav-emoji">🎨</span>اللوحة</button>
+        <button class="nav-item" id="nav-playlist" onclick="showPage('playlist');closeSidebar()"><span class="nav-emoji">🎵</span>بلايليست</button>
+        <button class="nav-item" id="nav-canvas" onclick="showPage('canvas');closeSidebar()"><span class="nav-emoji">🎨</span>اللوحة</button>
       </div>
     </nav>
     <div class="sidebar-footer">
@@ -482,7 +556,12 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
     </div>
   </aside>
 
-  <!-- TOP BAR -->
+  <!-- FLOATING SIDEBAR TOGGLE BUTTON -->
+  <button class="sidebar-fab" id="sidebarFab" onclick="toggleSidebar()">
+    <span class="sidebar-fab-icon" id="sidebarFabIcon">☰</span>
+  </button>
+
+  <!-- TOP BAR (mobile only) -->
   <div class="top-bar" id="topBar">
     <div class="top-bar-logo" onclick="showPage('home')">وعد الاصابع <span style="color:var(--gold)">🤞</span></div>
     <div class="top-bar-right">
@@ -555,7 +634,6 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
           <button class="back-btn" onclick="showPage('home')">← رجوع</button>
           <h2 class="section-title">بلايليستنا المشتركة 🎵</h2>
           <div class="ornament">❧</div>
-          <!-- MUSIC PLAYER -->
           <div class="mp-card" id="musicPlayerCard">
             <div class="mp-album-wrap" id="mpAlbumWrap">
               <div class="mp-album-img" id="mpAlbumImg" style="display:flex;align-items:center;justify-content:center;font-size:3.5rem;">🎵</div>
@@ -572,18 +650,17 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
               <div class="mp-times"><span id="mpCurrent">0:00</span><span id="mpDuration">0:00</span></div>
             </div>
             <div class="mp-controls">
-              <button class="mp-ctrl" id="mpShuffleBtn" onclick="mpToggleShuffle()" title="عشوائي">🔀</button>
-              <button class="mp-ctrl mp-ctrl-md" onclick="mpPrev()" title="السابق">⏮️</button>
+              <button class="mp-ctrl" id="mpShuffleBtn" onclick="mpToggleShuffle()">🔀</button>
+              <button class="mp-ctrl mp-ctrl-md" onclick="mpPrev()">⏮️</button>
               <button class="mp-ctrl mp-ctrl-play" id="mpPlayBtn" onclick="mpTogglePlay()">▶️</button>
-              <button class="mp-ctrl mp-ctrl-md" onclick="mpNext()" title="التالي">⏭️</button>
-              <button class="mp-ctrl" id="mpRepeatBtn" onclick="mpToggleRepeat()" title="تكرار">🔁</button>
+              <button class="mp-ctrl mp-ctrl-md" onclick="mpNext()">⏭️</button>
+              <button class="mp-ctrl" id="mpRepeatBtn" onclick="mpToggleRepeat()">🔁</button>
             </div>
             <div class="mp-vol-row">
               <span>🔊</span>
               <input type="range" class="mp-vol-slider" id="mpVolSlider" min="0" max="100" value="80" oninput="mpSetVolume(this.value)">
             </div>
           </div>
-          <!-- ADD SONG -->
           <div class="playlist-add-box" style="margin-top:1.5rem;">
             <h3 style="color:var(--rose);margin-bottom:1rem;font-family:'Amiri',serif;">➕ أضف أغنية جديدة</h3>
             <div class="playlist-input-row">
@@ -607,19 +684,17 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
         <div class="ornament">❧</div>
         <div class="canvas-wrapper">
           <div style="display:grid;grid-template-columns:56px 1fr 200px;gap:1rem;align-items:start;">
-            <!-- Tools -->
             <div style="display:flex;flex-direction:column;gap:.5rem;padding-top:.3rem;">
-              <button class="canvas-tool-btn active" id="tool-pen" onclick="setTool('pen')" title="قلم" style="padding:.6rem;font-size:1.2rem;">✏️</button>
-              <button class="canvas-tool-btn" id="tool-brush" onclick="setTool('brush')" title="فرشاة" style="padding:.6rem;font-size:1.2rem;">🖌️</button>
-              <button class="canvas-tool-btn" id="tool-eraser" onclick="setTool('eraser')" title="ممحاة" style="padding:.6rem;font-size:1.2rem;">⬜</button>
-              <button class="canvas-tool-btn" id="tool-fill" onclick="setTool('fill')" title="تعبئة" style="padding:.6rem;font-size:1.2rem;">🪣</button>
-              <button class="canvas-tool-btn" id="tool-text" onclick="setTool('text')" title="نص" style="padding:.6rem;font-size:.9rem;">T</button>
+              <button class="canvas-tool-btn active" id="tool-pen" onclick="setTool('pen')" style="padding:.6rem;font-size:1.2rem;">✏️</button>
+              <button class="canvas-tool-btn" id="tool-brush" onclick="setTool('brush')" style="padding:.6rem;font-size:1.2rem;">🖌️</button>
+              <button class="canvas-tool-btn" id="tool-eraser" onclick="setTool('eraser')" style="padding:.6rem;font-size:1.2rem;">⬜</button>
+              <button class="canvas-tool-btn" id="tool-fill" onclick="setTool('fill')" style="padding:.6rem;font-size:1.2rem;">🪣</button>
+              <button class="canvas-tool-btn" id="tool-text" onclick="setTool('text')" style="padding:.6rem;font-size:.9rem;">T</button>
               <hr style="border-color:var(--beige);margin:.3rem 0;">
-              <button class="canvas-action-btn" onclick="undoCanvas()" title="تراجع" style="padding:.5rem;font-size:1rem;">↩️</button>
-              <button class="canvas-action-btn" onclick="clearCanvas()" title="مسح الكل" style="padding:.5rem;font-size:.9rem;">🗑️</button>
-              <button class="canvas-action-btn" onclick="saveCanvas()" title="تصدير PNG" style="padding:.5rem;font-size:.9rem;">📥</button>
+              <button class="canvas-action-btn" onclick="undoCanvas()" style="padding:.5rem;font-size:1rem;">↩️</button>
+              <button class="canvas-action-btn" onclick="clearCanvas()" style="padding:.5rem;font-size:.9rem;">🗑️</button>
+              <button class="canvas-action-btn" onclick="saveCanvas()" style="padding:.5rem;font-size:.9rem;">📥</button>
             </div>
-            <!-- Canvas -->
             <div>
               <canvas id="loveCanvas" width="760" height="420"></canvas>
               <div style="display:flex;gap:.5rem;margin-top:.8rem;align-items:center;">
@@ -634,7 +709,6 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
                 <button class="canvas-action-btn" onclick="loadCanvasFromDB()" style="padding:.5rem .8rem;">🔄</button>
               </div>
             </div>
-            <!-- Colors -->
             <div style="display:flex;flex-direction:column;gap:.8rem;">
               <div>
                 <div style="font-size:.72rem;color:var(--gold);font-weight:700;margin-bottom:.4rem;">عجلة الألوان</div>
@@ -846,7 +920,7 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
 
   </main>
 
-  <!-- BOTTOM BAR -->
+  <!-- BOTTOM BAR (mobile) -->
   <nav class="bottom-bar" id="bottomBar">
     <div class="bottom-bar-scroll" style="justify-content:space-around;">
       <button class="bottom-item active" id="bnav-home" onclick="showPage('home')"><span class="bottom-emoji">🏠</span>الرئيسية</button>
@@ -857,14 +931,14 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
     </div>
     <div id="moreMenu" style="position:fixed;bottom:70px;left:0;right:0;background:rgba(255,253,247,.98);backdrop-filter:blur(20px);border-top:1px solid rgba(212,184,150,.4);padding:1rem;z-index:5001;display:none;">
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;">
-        <button class="bottom-item" id="bnav-feelings" onclick="showPage('feelings');closeMoreMenu()"><span class="bottom-emoji">🤍</span>مشاعر</button>
-        <button class="bottom-item" id="bnav-promise" onclick="showPage('promise');closeMoreMenu()"><span class="bottom-emoji">🤞</span>الوعد</button>
-        <button class="bottom-item" id="bnav-problems" onclick="showPage('problems');closeMoreMenu()"><span class="bottom-emoji">💪</span>مشاكل</button>
-        <button class="bottom-item" id="bnav-photos" onclick="showPage('photos');closeMoreMenu()"><span class="bottom-emoji">📸</span>صور</button>
-        <button class="bottom-item" id="bnav-countdown" onclick="showPage('countdown');closeMoreMenu()"><span class="bottom-emoji">⏳</span>مناسبات</button>
-        <button class="bottom-item" id="bnav-timeline" onclick="showPage('timeline');closeMoreMenu()"><span class="bottom-emoji">🗓️</span>زمني</button>
-        <button class="bottom-item" id="bnav-playlist" onclick="showPage('playlist');closeMoreMenu()"><span class="bottom-emoji">🎵</span>موسيقى</button>
-        <button class="bottom-item" id="bnav-canvas" onclick="showPage('canvas');closeMoreMenu()"><span class="bottom-emoji">🎨</span>لوحة</button>
+        <button class="bottom-item" onclick="showPage('feelings');closeMoreMenu()"><span class="bottom-emoji">🤍</span>مشاعر</button>
+        <button class="bottom-item" onclick="showPage('promise');closeMoreMenu()"><span class="bottom-emoji">🤞</span>الوعد</button>
+        <button class="bottom-item" onclick="showPage('problems');closeMoreMenu()"><span class="bottom-emoji">💪</span>مشاكل</button>
+        <button class="bottom-item" onclick="showPage('photos');closeMoreMenu()"><span class="bottom-emoji">📸</span>صور</button>
+        <button class="bottom-item" onclick="showPage('countdown');closeMoreMenu()"><span class="bottom-emoji">⏳</span>مناسبات</button>
+        <button class="bottom-item" onclick="showPage('timeline');closeMoreMenu()"><span class="bottom-emoji">🗓️</span>زمني</button>
+        <button class="bottom-item" onclick="showPage('playlist');closeMoreMenu()"><span class="bottom-emoji">🎵</span>موسيقى</button>
+        <button class="bottom-item" onclick="showPage('canvas');closeMoreMenu()"><span class="bottom-emoji">🎨</span>لوحة</button>
       </div>
     </div>
   </nav>
@@ -873,13 +947,13 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
 
 <script>
 // ══════════════════════════════════════════════
-// CLEANUP MANAGER — يحل مشكلة memory leaks
+// CLEANUP MANAGER
 // ══════════════════════════════════════════════
 const _cleanup = {
   _intervals: [],
   _listeners: [],
   addInterval(id) { this._intervals.push(id); return id; },
-  addListener(el, ev, fn) { el.addEventListener(ev, fn); this._listeners.push({el, ev, fn}); },
+  addListener(el, ev, fn, opts) { el.addEventListener(ev, fn, opts); this._listeners.push({el, ev, fn}); },
   clearAll() {
     this._intervals.forEach(clearInterval);
     this._intervals = [];
@@ -887,7 +961,6 @@ const _cleanup = {
     this._listeners = [];
   }
 };
-
 window.addEventListener('beforeunload', () => _cleanup.clearAll());
 
 // ══════════════════════════════════════════════
@@ -970,15 +1043,41 @@ function showMainContent() {
 checkLocalSession();
 
 // ══════════════════════════════════════════════
-// SIDEBAR
+// SIDEBAR TOGGLE
 // ══════════════════════════════════════════════
+let sidebarOpen = false;
+
 function toggleSidebar() {
-  document.getElementById('appShell').classList.toggle('sidebar-collapsed');
-  document.getElementById('sidebar').classList.toggle('collapsed');
+  sidebarOpen = !sidebarOpen;
+  const sidebar  = document.getElementById('sidebar');
+  const fab      = document.getElementById('sidebarFab');
+  const fabIcon  = document.getElementById('sidebarFabIcon');
+  const overlay  = document.getElementById('sidebarOverlay');
+
+  if (sidebarOpen) {
+    sidebar.classList.add('open');
+    fab.classList.add('sidebar-open-state');
+    fabIcon.textContent = '✕';
+    overlay.classList.add('show');
+  } else {
+    closeSidebar();
+  }
+}
+
+function closeSidebar() {
+  sidebarOpen = false;
+  const sidebar  = document.getElementById('sidebar');
+  const fab      = document.getElementById('sidebarFab');
+  const fabIcon  = document.getElementById('sidebarFabIcon');
+  const overlay  = document.getElementById('sidebarOverlay');
+  sidebar.classList.remove('open');
+  fab.classList.remove('sidebar-open-state');
+  fabIcon.textContent = '☰';
+  overlay.classList.remove('show');
 }
 
 // ══════════════════════════════════════════════
-// MORE MENU
+// MORE MENU (mobile)
 // ══════════════════════════════════════════════
 function toggleMoreMenu() {
   const menu = document.getElementById('moreMenu');
@@ -1007,7 +1106,6 @@ function toggleDarkMode() {
   initParticles();
 }
 
-// Apply saved theme
 (function() {
   const t = localStorage.getItem('theme');
   if (t === 'dark') {
@@ -1074,9 +1172,8 @@ function typeText(elId, text, speed) {
     if (i >= text.length) clearInterval(t);
   }, speed);
 }
-
 function startTypingEffect() {
-  typeText('typingTitle',    'وعد الاصابع 🤞',           80);
+  typeText('typingTitle', 'وعد الاصابع 🤞', 80);
   setTimeout(() => typeText('typingSubtitle', 'مهما حصل، احنا مكملين 💕', 80), 1200);
 }
 
@@ -1084,11 +1181,7 @@ function startTypingEffect() {
 // DAYS COUNTER
 // ══════════════════════════════════════════════
 const START_DATE = new Date('2023-02-01T00:00:00');
-
-function calculateDays() {
-  return Math.floor((new Date() - START_DATE) / 86400000);
-}
-
+function calculateDays() { return Math.floor((new Date() - START_DATE) / 86400000); }
 function updateDaysCounter() {
   const days = calculateDays();
   const el = document.getElementById('daysCountDisplay');
@@ -1096,12 +1189,10 @@ function updateDaysCounter() {
   const sp = document.getElementById('sidebarDays');
   if (sp) sp.textContent = days.toLocaleString('ar') + ' يوم';
 }
-
 function showDayMessage() {
   showCounterNotification('days', calculateDays().toLocaleString('ar') + ' يوم من الحب والاختيار 🌟');
   if (navigator.vibrate) navigator.vibrate([100,50,100]);
 }
-
 updateDaysCounter();
 _cleanup.addInterval(setInterval(updateDaysCounter, 60000));
 
@@ -1131,40 +1222,30 @@ const OCCASIONS = [
   { emoji: '🎂', name: 'عيد ميلاد خالد',      month: 3,  day: 15 },
   { emoji: '🌸', name: 'ذكرى الاعتراف الأول', month: 2,  day: 1  }
 ];
-
 function getNextOccasionDate(month, day) {
-  const now  = new Date();
-  const year = now.getFullYear();
+  const now = new Date(), year = now.getFullYear();
   let d = new Date(year, month - 1, day);
   if (d <= now) d = new Date(year + 1, month - 1, day);
   return d;
 }
-
 function buildCountdowns() {
   const grid = document.getElementById('countdownGrid');
   if (!grid) return;
   grid.innerHTML = '';
-
   OCCASIONS.forEach((occ, idx) => {
     const target = getNextOccasionDate(occ.month, occ.day);
-    const now = new Date();
-    const diff = target - now;
-    const days    = Math.floor(diff / 86400000);
-    const hours   = Math.floor((diff % 86400000) / 3600000);
-    const minutes = Math.floor((diff % 3600000)  / 60000);
-    const seconds = Math.floor((diff % 60000)    / 1000);
-
+    const diff = target - new Date();
+    const days = Math.floor(diff/86400000), hours = Math.floor((diff%86400000)/3600000);
+    const minutes = Math.floor((diff%3600000)/60000), seconds = Math.floor((diff%60000)/1000);
     const card = document.createElement('div');
     card.className = 'countdown-card occasion-' + idx;
     card.id = 'occ-card-' + idx;
-
-    const dateStr = occ.day + '/' + occ.month;
     card.innerHTML = `
       <div class="occ-emoji">${occ.emoji}</div>
       <div class="occ-name">${occ.name}</div>
-      <div class="occ-date">📅 ${dateStr}</div>
+      <div class="occ-date">📅 ${occ.day}/${occ.month}</div>
       ${diff <= 0
-        ? `<div class="occ-arrived">🎉 المناسبة وصلت! اليوم هو اليوم! 🎊</div>`
+        ? `<div class="occ-arrived">🎉 المناسبة وصلت! 🎊</div>`
         : `<div class="cd-boxes">
             <div class="cd-box"><span class="cd-num" id="cd-d-${idx}">${days}</span><div class="cd-label">يوم</div></div>
             <div class="cd-box"><span class="cd-num" id="cd-h-${idx}">${hours}</span><div class="cd-label">ساعة</div></div>
@@ -1174,23 +1255,18 @@ function buildCountdowns() {
       }`;
     grid.appendChild(card);
   });
-
-  // Live seconds update
   if (window._countdownTick) clearInterval(window._countdownTick);
   window._countdownTick = _cleanup.addInterval(setInterval(() => {
     OCCASIONS.forEach((occ, idx) => {
-      const target = getNextOccasionDate(occ.month, occ.day);
-      const diff = target - new Date();
+      const diff = getNextOccasionDate(occ.month, occ.day) - new Date();
       if (diff <= 0) return;
-      const d = document.getElementById('cd-d-' + idx);
-      const h = document.getElementById('cd-h-' + idx);
-      const m = document.getElementById('cd-m-' + idx);
-      const s = document.getElementById('cd-s-' + idx);
+      const d=document.getElementById('cd-d-'+idx), h=document.getElementById('cd-h-'+idx);
+      const m=document.getElementById('cd-m-'+idx), s=document.getElementById('cd-s-'+idx);
       if (!s) return;
-      if (d) d.textContent = Math.floor(diff / 86400000);
-      if (h) h.textContent = Math.floor((diff % 86400000) / 3600000);
-      if (m) m.textContent = Math.floor((diff % 3600000)  / 60000);
-      if (s) s.textContent = Math.floor((diff % 60000)    / 1000);
+      if (d) d.textContent = Math.floor(diff/86400000);
+      if (h) h.textContent = Math.floor((diff%86400000)/3600000);
+      if (m) m.textContent = Math.floor((diff%3600000)/60000);
+      if (s) s.textContent = Math.floor((diff%60000)/1000);
     });
   }, 1000));
 }
@@ -1199,20 +1275,19 @@ function buildCountdowns() {
 // TIMELINE
 // ══════════════════════════════════════════════
 const TIMELINE_DATA = [
-  { date: '2022', emoji: '🎭', title: 'البداية الغريبة',      text: 'اتعرفنا في جروب بالصدفة، بداية غريبة مليانة صدف.' },
-  { date: 'يناير 2023', emoji: '🎵', title: 'طريق الرجوع',    text: 'فيديوهات أغاني، بلوك ورجوع... الأغاني كانت لغتنا.' },
-  { date: '1 فبراير 2023', emoji: '💫', title: 'يوم الاعتراف', text: 'اعترفنا بمشاعرنا وبدأت قصة الحب رسمياً.' },
-  { date: 'مارس 2023', emoji: '💔', title: 'الفراق الأول',    text: 'فترة صعبة خلتنا نعرف قيمة بعض.' },
-  { date: '2023-2025', emoji: '🌅', title: 'فترة الشوق',      text: 'استعباط وتلميح وكل واحد بيحاول يتأكد من حب التاني.' },
-  { date: '9 أغسطس 2025', emoji: '✨', title: 'العودة للبعض', text: 'رجعنا لبعض وقررنا نكمل مع بعض للأبد. 💕' },
-  { date: 'الآن', emoji: '🤞', title: 'وعد الاصابع',         text: 'كل يوم بنختار بعض. هو ده الوعد. 💕' }
+  { date: '2022',           emoji: '🎭', title: 'البداية الغريبة',   text: 'اتعرفنا في جروب بالصدفة، بداية غريبة مليانة صدف.' },
+  { date: 'يناير 2023',    emoji: '🎵', title: 'طريق الرجوع',       text: 'فيديوهات أغاني، بلوك ورجوع... الأغاني كانت لغتنا.' },
+  { date: '1 فبراير 2023', emoji: '💫', title: 'يوم الاعتراف',      text: 'اعترفنا بمشاعرنا وبدأت قصة الحب رسمياً.' },
+  { date: 'مارس 2023',     emoji: '💔', title: 'الفراق الأول',      text: 'فترة صعبة خلتنا نعرف قيمة بعض.' },
+  { date: '2023-2025',      emoji: '🌅', title: 'فترة الشوق',        text: 'استعباط وتلميح وكل واحد بيحاول يتأكد من حب التاني.' },
+  { date: '9 أغسطس 2025',  emoji: '✨', title: 'العودة للبعض',      text: 'رجعنا لبعض وقررنا نكمل مع بعض للأبد. 💕' },
+  { date: 'الآن',           emoji: '🤞', title: 'وعد الاصابع',       text: 'كل يوم بنختار بعض. هو ده الوعد. 💕' }
 ];
-
 function buildTimeline() {
   const container = document.getElementById('timelineContainer');
   if (!container) return;
   container.innerHTML = '';
-  TIMELINE_DATA.forEach((item, idx) => {
+  TIMELINE_DATA.forEach(item => {
     const div = document.createElement('div');
     div.className = 'timeline-item';
     div.innerHTML = `
@@ -1228,10 +1303,9 @@ function buildTimeline() {
 }
 
 // ══════════════════════════════════════════════
-// PROBLEMS COUNTER
+// PROBLEMS
 // ══════════════════════════════════════════════
 let problemsVal = 0;
-
 function loadProblems() {
   if (!isConnected) return;
   countersRef.child('problems').on('value', snap => {
@@ -1243,25 +1317,16 @@ function loadProblems() {
     if (problemsVal > 0) document.getElementById('page-problems').classList.add('show-bg');
   });
 }
-
 function updateProblems(delta) {
   const newVal = Math.max(0, problemsVal + delta);
-  if (!isConnected) {
-    problemsVal = newVal;
-    const el = document.getElementById('problemsCount');
-    if (el) el.textContent = problemsVal;
-    return;
-  }
-  countersRef.child('problems').set(newVal).then(() => {
-    showCounterNotification('default', delta > 0 ? 'تمت الإضافة 💪' : 'تم التعديل');
-  });
+  if (!isConnected) { problemsVal = newVal; document.getElementById('problemsCount').textContent = problemsVal; return; }
+  countersRef.child('problems').set(newVal).then(() => showCounterNotification('default', delta > 0 ? 'تمت الإضافة 💪' : 'تم التعديل'));
 }
 
 // ══════════════════════════════════════════════
-// PROMISE COUNTER
+// PROMISE
 // ══════════════════════════════════════════════
 let promiseVal = 0;
-
 function loadPromise() {
   if (!isConnected) return;
   countersRef.child('promise').on('value', snap => {
@@ -1273,15 +1338,9 @@ function loadPromise() {
     if (promiseVal > 0) document.getElementById('page-promise').classList.add('show-bg');
   });
 }
-
 function makePromise() {
   const newVal = promiseVal + 1;
-  if (!isConnected) {
-    promiseVal = newVal;
-    const el = document.getElementById('promiseCount');
-    if (el) el.textContent = promiseVal;
-    return;
-  }
+  if (!isConnected) { promiseVal = newVal; document.getElementById('promiseCount').textContent = promiseVal; return; }
   countersRef.child('promise').set(newVal).then(() => {
     showCounterNotification('promise', 'اخترنا إحنا مرة تانية ❤️');
     if (navigator.vibrate) navigator.vibrate([200,100,200]);
@@ -1289,10 +1348,9 @@ function makePromise() {
 }
 
 // ══════════════════════════════════════════════
-// PHOTOS COUNTER
+// PHOTOS
 // ══════════════════════════════════════════════
 let photosVal = 0;
-
 function loadPhotos() {
   if (!isConnected) return;
   countersRef.child('photos').on('value', snap => {
@@ -1304,32 +1362,18 @@ function loadPhotos() {
     if (photosVal >= 100) document.getElementById('celebration').classList.add('show');
   });
 }
-
 function addPhoto() {
   const newVal = photosVal + 1;
-  if (!isConnected) {
-    photosVal = newVal;
-    const el = document.getElementById('photosCount');
-    if (el) el.textContent = photosVal;
-    return;
-  }
-  countersRef.child('photos').set(newVal).then(() => {
-    showCounterNotification('photos', 'صورة جديدة اتضافت 📸');
-  });
+  if (!isConnected) { photosVal = newVal; document.getElementById('photosCount').textContent = photosVal; return; }
+  countersRef.child('photos').set(newVal).then(() => showCounterNotification('photos', 'صورة جديدة اتضافت 📸'));
 }
 
 // ══════════════════════════════════════════════
 // MESSAGES
 // ══════════════════════════════════════════════
-let unreadCount = 0;
-
 function loadMessages() {
-  if (!isConnected) {
-    document.getElementById('messagesSkeleton') && (document.getElementById('messagesSkeleton').style.display = 'none');
-    return;
-  }
+  if (!isConnected) return;
   messagesRef.limitToLast(50).on('value', snap => {
-    document.getElementById('messagesSkeleton') && (document.getElementById('messagesSkeleton').style.display = 'none');
     const list = document.getElementById('messagesList');
     if (!list) return;
     list.innerHTML = '';
@@ -1349,7 +1393,6 @@ function loadMessages() {
     list.scrollTop = list.scrollHeight;
   });
 }
-
 function sendMessage() {
   const input = document.getElementById('messageInput');
   const btn   = document.getElementById('sendBtn');
@@ -1357,10 +1400,7 @@ function sendMessage() {
   const text = input.value.trim();
   const session = JSON.parse(localStorage.getItem('loveSession') || '{}');
   const msg = { text, sender: session.name || 'مجهول', timestamp: Date.now() };
-  if (!isConnected) {
-    showCounterNotification('default', 'لا يوجد اتصال بالإنترنت');
-    return;
-  }
+  if (!isConnected) { showCounterNotification('default', 'لا يوجد اتصال بالإنترنت'); return; }
   btn.disabled = true;
   messagesRef.push(msg).then(() => {
     input.value = '';
@@ -1372,12 +1412,7 @@ function sendMessage() {
 // ══════════════════════════════════════════════
 // PLAYLIST
 // ══════════════════════════════════════════════
-let songs = [];
-let mpCurrentIndex = -1;
-let mpAudio = null;
-let mpIsPlaying = false;
-let mpShuffle = false;
-let mpRepeat  = false;
+let songs = [], mpCurrentIndex = -1, mpAudio = null, mpIsPlaying = false, mpShuffle = false, mpRepeat = false;
 
 function loadPlaylist() {
   if (!isConnected) return;
@@ -1387,24 +1422,13 @@ function loadPlaylist() {
     renderSongs();
   });
 }
-
 function addSong() {
-  const titleEl = document.getElementById('songTitle');
-  const urlEl   = document.getElementById('songUrl');
+  const titleEl = document.getElementById('songTitle'), urlEl = document.getElementById('songUrl');
   if (!urlEl || !urlEl.value.trim()) { showCounterNotification('default','أدخل رابط الأغنية'); return; }
-  const song = {
-    title: titleEl.value.trim() || 'أغنية جميلة 🎵',
-    url:   urlEl.value.trim(),
-    addedAt: Date.now()
-  };
+  const song = { title: titleEl.value.trim() || 'أغنية جميلة 🎵', url: urlEl.value.trim(), addedAt: Date.now() };
   if (!isConnected) { songs.push(song); renderSongs(); return; }
-  playlistRef.push(song).then(() => {
-    titleEl.value = '';
-    urlEl.value   = '';
-    showCounterNotification('default','تمت إضافة الأغنية 🎵');
-  });
+  playlistRef.push(song).then(() => { titleEl.value=''; urlEl.value=''; showCounterNotification('default','تمت إضافة الأغنية 🎵'); });
 }
-
 function renderSongs() {
   const list = document.getElementById('songsList');
   if (!list) return;
@@ -1413,7 +1437,6 @@ function renderSongs() {
   songs.forEach((song, idx) => {
     const div = document.createElement('div');
     div.className = 'song-item' + (idx === mpCurrentIndex ? ' mp-active' : '');
-    div.id = 'song-' + idx;
     const isYT = song.url && (song.url.includes('youtube') || song.url.includes('youtu.be'));
     div.innerHTML = `
       <div class="song-thumb">${isYT ? '🎬' : '🎵'}</div>
@@ -1428,14 +1451,11 @@ function renderSongs() {
     list.appendChild(div);
   });
 }
-
 function deleteSong(idx, firebaseId) {
   if (!confirm('تأكيد الحذف؟')) return;
   if (isConnected && firebaseId) { playlistRef.child(firebaseId).remove(); return; }
-  songs.splice(idx, 1);
-  renderSongs();
+  songs.splice(idx, 1); renderSongs();
 }
-
 function mpPlay(idx) {
   mpCurrentIndex = idx;
   const song = songs[idx];
@@ -1443,11 +1463,7 @@ function mpPlay(idx) {
   const isYT = song.url && (song.url.includes('youtube') || song.url.includes('youtu.be'));
   document.getElementById('mpTitle').textContent = song.title;
   document.getElementById('mpArtist').textContent = isYT ? 'يوتيوب 🎬' : 'ملف صوتي 🎵';
-  if (isYT) {
-    // For YouTube links, open in new tab
-    window.open(song.url, '_blank');
-    return;
-  }
+  if (isYT) { window.open(song.url, '_blank'); return; }
   if (mpAudio) { mpAudio.pause(); mpAudio = null; }
   mpAudio = new Audio(song.url);
   mpAudio.volume = (document.getElementById('mpVolSlider')?.value || 80) / 100;
@@ -1457,7 +1473,7 @@ function mpPlay(idx) {
     document.getElementById('mpAlbumWrap').classList.add('spinning');
   }).catch(e => console.warn('Audio play error:', e));
   mpAudio.ontimeupdate = () => {
-    const pct = mpAudio.duration ? (mpAudio.currentTime / mpAudio.duration * 100) : 0;
+    const pct = mpAudio.duration ? (mpAudio.currentTime/mpAudio.duration*100) : 0;
     const fill = document.getElementById('mpProgressFill');
     if (fill) fill.style.width = pct + '%';
     const cur = document.getElementById('mpCurrent');
@@ -1470,302 +1486,72 @@ function mpPlay(idx) {
     document.getElementById('mpPlayBtn').textContent = '▶️';
     document.getElementById('mpAlbumWrap').classList.remove('spinning');
     if (mpRepeat) { mpPlay(idx); return; }
-    if (mpShuffle) { mpPlay(Math.floor(Math.random() * songs.length)); return; }
-    if (idx + 1 < songs.length) mpPlay(idx + 1);
+    if (mpShuffle) { mpPlay(Math.floor(Math.random()*songs.length)); return; }
+    if (idx+1 < songs.length) mpPlay(idx+1);
   };
   renderSongs();
 }
-
-function fmtTime(s) {
-  const m = Math.floor(s / 60);
-  const sec = Math.floor(s % 60);
-  return m + ':' + (sec < 10 ? '0' : '') + sec;
-}
-
+function fmtTime(s) { const m=Math.floor(s/60),sec=Math.floor(s%60); return m+':'+(sec<10?'0':'')+sec; }
 function mpTogglePlay() {
   if (!mpAudio) return;
-  if (mpIsPlaying) {
-    mpAudio.pause(); mpIsPlaying = false;
-    document.getElementById('mpPlayBtn').textContent = '▶️';
-    document.getElementById('mpAlbumWrap').classList.remove('spinning');
-  } else {
-    mpAudio.play(); mpIsPlaying = true;
-    document.getElementById('mpPlayBtn').textContent = '⏸️';
-    document.getElementById('mpAlbumWrap').classList.add('spinning');
-  }
+  if (mpIsPlaying) { mpAudio.pause(); mpIsPlaying=false; document.getElementById('mpPlayBtn').textContent='▶️'; document.getElementById('mpAlbumWrap').classList.remove('spinning'); }
+  else { mpAudio.play(); mpIsPlaying=true; document.getElementById('mpPlayBtn').textContent='⏸️'; document.getElementById('mpAlbumWrap').classList.add('spinning'); }
 }
-function mpNext() { if (songs.length) mpPlay((mpCurrentIndex + 1) % songs.length); }
-function mpPrev() { if (songs.length) mpPlay((mpCurrentIndex - 1 + songs.length) % songs.length); }
-function mpToggleShuffle() { mpShuffle = !mpShuffle; document.getElementById('mpShuffleBtn').classList.toggle('active', mpShuffle); }
-function mpToggleRepeat()  { mpRepeat  = !mpRepeat;  document.getElementById('mpRepeatBtn').classList.toggle('active', mpRepeat);  }
-function mpSetVolume(v) { if (mpAudio) mpAudio.volume = v / 100; }
+function mpNext() { if (songs.length) mpPlay((mpCurrentIndex+1)%songs.length); }
+function mpPrev() { if (songs.length) mpPlay((mpCurrentIndex-1+songs.length)%songs.length); }
+function mpToggleShuffle() { mpShuffle=!mpShuffle; document.getElementById('mpShuffleBtn').classList.toggle('active',mpShuffle); }
+function mpToggleRepeat()  { mpRepeat=!mpRepeat;   document.getElementById('mpRepeatBtn').classList.toggle('active',mpRepeat); }
+function mpSetVolume(v) { if (mpAudio) mpAudio.volume=v/100; }
 function mpSeek(e) {
   if (!mpAudio || !mpAudio.duration) return;
-  const rect = e.currentTarget.getBoundingClientRect();
-  const pct  = (e.clientX - rect.left) / rect.width;
-  mpAudio.currentTime = pct * mpAudio.duration;
+  const rect=e.currentTarget.getBoundingClientRect();
+  mpAudio.currentTime = ((e.clientX-rect.left)/rect.width)*mpAudio.duration;
 }
 
 // ══════════════════════════════════════════════
 // CANVAS
 // ══════════════════════════════════════════════
-let canvasCtx = null;
-let isDrawing = false;
-let currentTool = 'pen';
-let currentColor = '#8B1A3C';
-let undoStack = [];
-let savedColors = JSON.parse(localStorage.getItem('savedColors') || '[]');
+let canvasCtx=null, isDrawing=false, currentTool='pen', currentColor='#8B1A3C', undoStack=[];
+let savedColors = JSON.parse(localStorage.getItem('savedColors')||'[]');
 
 function initCanvas() {
   const canvas = document.getElementById('loveCanvas');
-  if (!canvas) return;
-  if (canvasCtx) return; // already initialized
+  if (!canvas || canvasCtx) return;
   canvasCtx = canvas.getContext('2d');
-
-  // Resize to container
   const wrapper = canvas.parentElement;
-  if (wrapper) {
-    canvas.width  = wrapper.clientWidth  || 760;
-    canvas.height = Math.min(420, window.innerHeight * 0.55);
-  }
-
-  canvasCtx.fillStyle = '#ffffff';
-  canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
-
-  // Touch & mouse events
-  const onStart = (e) => {
-    e.preventDefault();
-    isDrawing = true;
-    const pos = getPos(e, canvas);
-    if (currentTool === 'fill') { floodFill(pos.x, pos.y); return; }
-    if (currentTool === 'text') { addText(pos.x, pos.y); return; }
-    saveUndo();
-    canvasCtx.beginPath();
-    canvasCtx.moveTo(pos.x, pos.y);
-  };
-  const onMove = (e) => {
-    if (!isDrawing) return;
-    e.preventDefault();
-    const pos = getPos(e, canvas);
-    const size    = parseInt(document.getElementById('brushSize')?.value || 6);
-    const opacity = parseInt(document.getElementById('brushOpacity')?.value || 100) / 100;
-    canvasCtx.globalAlpha = opacity;
-    if (currentTool === 'eraser') {
-      canvasCtx.globalCompositeOperation = 'destination-out';
-      canvasCtx.lineWidth = size * 3;
-    } else {
-      canvasCtx.globalCompositeOperation = 'source-over';
-      canvasCtx.lineWidth = currentTool === 'brush' ? size * 2 : size;
-      canvasCtx.strokeStyle = currentColor;
-      canvasCtx.lineCap  = 'round';
-      canvasCtx.lineJoin = 'round';
-    }
-    canvasCtx.lineTo(pos.x, pos.y);
-    canvasCtx.stroke();
-  };
-  const onEnd = () => {
-    isDrawing = false;
-    canvasCtx.globalAlpha = 1;
-    canvasCtx.globalCompositeOperation = 'source-over';
-  };
-
-  _cleanup.addListener(canvas, 'mousedown',  onStart);
-  _cleanup.addListener(canvas, 'mousemove',  onMove);
-  _cleanup.addListener(canvas, 'mouseup',    onEnd);
-  _cleanup.addListener(canvas, 'mouseleave', onEnd);
-  _cleanup.addListener(canvas, 'touchstart', onStart, {passive:false});
-  _cleanup.addListener(canvas, 'touchmove',  onMove,  {passive:false});
-  _cleanup.addListener(canvas, 'touchend',   onEnd);
-
-  renderSavedColors();
-  loadCanvasFromDB();
+  if (wrapper) { canvas.width=wrapper.clientWidth||760; canvas.height=Math.min(420,window.innerHeight*.55); }
+  canvasCtx.fillStyle='#ffffff'; canvasCtx.fillRect(0,0,canvas.width,canvas.height);
+  const onStart=(e)=>{e.preventDefault();isDrawing=true;const pos=getPos(e,canvas);if(currentTool==='fill'){floodFill(pos.x,pos.y);return;}if(currentTool==='text'){addText(pos.x,pos.y);return;}saveUndo();canvasCtx.beginPath();canvasCtx.moveTo(pos.x,pos.y);};
+  const onMove=(e)=>{if(!isDrawing)return;e.preventDefault();const pos=getPos(e,canvas);const size=parseInt(document.getElementById('brushSize')?.value||6);const opacity=parseInt(document.getElementById('brushOpacity')?.value||100)/100;canvasCtx.globalAlpha=opacity;if(currentTool==='eraser'){canvasCtx.globalCompositeOperation='destination-out';canvasCtx.lineWidth=size*3;}else{canvasCtx.globalCompositeOperation='source-over';canvasCtx.lineWidth=currentTool==='brush'?size*2:size;canvasCtx.strokeStyle=currentColor;canvasCtx.lineCap='round';canvasCtx.lineJoin='round';}canvasCtx.lineTo(pos.x,pos.y);canvasCtx.stroke();};
+  const onEnd=()=>{isDrawing=false;canvasCtx.globalAlpha=1;canvasCtx.globalCompositeOperation='source-over';};
+  _cleanup.addListener(canvas,'mousedown',onStart);_cleanup.addListener(canvas,'mousemove',onMove);_cleanup.addListener(canvas,'mouseup',onEnd);_cleanup.addListener(canvas,'mouseleave',onEnd);
+  _cleanup.addListener(canvas,'touchstart',onStart,{passive:false});_cleanup.addListener(canvas,'touchmove',onMove,{passive:false});_cleanup.addListener(canvas,'touchend',onEnd);
+  renderSavedColors(); loadCanvasFromDB();
 }
-
-function destroyCanvas() {
-  canvasCtx = null;
-  isDrawing = false;
+function destroyCanvas() { canvasCtx=null; isDrawing=false; }
+function getPos(e,canvas) {
+  const rect=canvas.getBoundingClientRect(),scaleX=canvas.width/rect.width,scaleY=canvas.height/rect.height;
+  if(e.touches&&e.touches[0]) return{x:(e.touches[0].clientX-rect.left)*scaleX,y:(e.touches[0].clientY-rect.top)*scaleY};
+  return{x:(e.clientX-rect.left)*scaleX,y:(e.clientY-rect.top)*scaleY};
 }
-
-function getPos(e, canvas) {
-  const rect = canvas.getBoundingClientRect();
-  const scaleX = canvas.width  / rect.width;
-  const scaleY = canvas.height / rect.height;
-  if (e.touches && e.touches[0]) {
-    return {
-      x: (e.touches[0].clientX - rect.left) * scaleX,
-      y: (e.touches[0].clientY - rect.top)  * scaleY
-    };
-  }
-  return {
-    x: (e.clientX - rect.left) * scaleX,
-    y: (e.clientY - rect.top)  * scaleY
-  };
-}
-
-function setTool(tool) {
-  currentTool = tool;
-  document.querySelectorAll('.canvas-tool-btn').forEach(b => b.classList.remove('active'));
-  const btn = document.getElementById('tool-' + tool);
-  if (btn) btn.classList.add('active');
-}
-
-function setColor(color, el) {
-  currentColor = color;
-  document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
-  if (el) el.classList.add('active');
-  const wheel = document.getElementById('colorWheel');
-  if (wheel) wheel.value = color;
-}
-
-function setColorFromWheel(color) {
-  currentColor = color;
-  document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
-}
-
-function saveUndo() {
-  const canvas = document.getElementById('loveCanvas');
-  if (!canvas || !canvasCtx) return;
-  if (undoStack.length > 20) undoStack.shift();
-  undoStack.push(canvasCtx.getImageData(0, 0, canvas.width, canvas.height));
-}
-
-function undoCanvas() {
-  if (!undoStack.length || !canvasCtx) return;
-  const img = undoStack.pop();
-  canvasCtx.putImageData(img, 0, 0);
-}
-
-function clearCanvas() {
-  if (!canvasCtx) return;
-  const canvas = document.getElementById('loveCanvas');
-  if (!canvas) return;
-  saveUndo();
-  canvasCtx.fillStyle = '#ffffff';
-  canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
-}
-
-function saveCanvas() {
-  const canvas = document.getElementById('loveCanvas');
-  if (!canvas) return;
-  const a = document.createElement('a');
-  a.download = 'لوحتنا-المشتركة.png';
-  a.href = canvas.toDataURL('image/png');
-  a.click();
-}
-
-function saveCanvasToDB() {
-  const canvas = document.getElementById('loveCanvas');
-  if (!canvas || !isConnected) { showCounterNotification('default','لا يوجد اتصال'); return; }
-  const data = canvas.toDataURL('image/jpeg', 0.6);
-  canvasRef.set({ data, savedAt: Date.now() }).then(() => {
-    showCounterNotification('default','تم حفظ اللوحة ✅');
-  }).catch(() => showCounterNotification('default','خطأ في الحفظ'));
-}
-
-function loadCanvasFromDB() {
-  if (!isConnected || !canvasCtx) return;
-  canvasRef.once('value', snap => {
-    const d = snap.val();
-    if (!d || !d.data) return;
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.getElementById('loveCanvas');
-      if (canvas && canvasCtx) canvasCtx.drawImage(img, 0, 0, canvas.width, canvas.height);
-    };
-    img.src = d.data;
-  });
-}
-
-function floodFill(x, y) {
-  const canvas = document.getElementById('loveCanvas');
-  if (!canvas || !canvasCtx) return;
-  // Simple flood fill using canvas imageData
-  const imgData = canvasCtx.getImageData(0, 0, canvas.width, canvas.height);
-  const data = imgData.data;
-  const targetColor = getPixel(data, Math.floor(x), Math.floor(y), canvas.width);
-  const fillColor = hexToRgb(currentColor);
-  if (!fillColor) return;
-  if (colorsMatch(targetColor, fillColor)) return;
-  const stack = [[Math.floor(x), Math.floor(y)]];
-  while (stack.length) {
-    const [px, py] = stack.pop();
-    if (px < 0 || px >= canvas.width || py < 0 || py >= canvas.height) continue;
-    const c = getPixel(data, px, py, canvas.width);
-    if (!colorsMatch(c, targetColor)) continue;
-    setPixel(data, px, py, canvas.width, fillColor);
-    stack.push([px+1,py],[px-1,py],[px,py+1],[px,py-1]);
-  }
-  canvasCtx.putImageData(imgData, 0, 0);
-}
-
-function getPixel(data, x, y, w) {
-  const i = (y * w + x) * 4;
-  return [data[i], data[i+1], data[i+2], data[i+3]];
-}
-function setPixel(data, x, y, w, color) {
-  const i = (y * w + x) * 4;
-  data[i] = color[0]; data[i+1] = color[1]; data[i+2] = color[2]; data[i+3] = 255;
-}
-function colorsMatch(a, b) {
-  return Math.abs(a[0]-b[0]) < 30 && Math.abs(a[1]-b[1]) < 30 && Math.abs(a[2]-b[2]) < 30;
-}
-function hexToRgb(hex) {
-  const r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return r ? [parseInt(r[1],16), parseInt(r[2],16), parseInt(r[3],16)] : null;
-}
-
-function addText(x, y) {
-  const text = prompt('اكتب النص:');
-  if (!text || !canvasCtx) return;
-  saveUndo();
-  canvasCtx.font = '20px Tajawal, Arial';
-  canvasCtx.fillStyle = currentColor;
-  canvasCtx.textAlign = 'right';
-  canvasCtx.fillText(text, x, y);
-}
-
-function saveCurrentColor() {
-  if (!savedColors.includes(currentColor)) {
-    savedColors.push(currentColor);
-    if (savedColors.length > 8) savedColors.shift();
-    localStorage.setItem('savedColors', JSON.stringify(savedColors));
-    renderSavedColors();
-  }
-}
-
-function renderSavedColors() {
-  const grid = document.getElementById('savedColorsGrid');
-  if (!grid) return;
-  grid.innerHTML = '';
-  savedColors.forEach(c => {
-    const div = document.createElement('div');
-    div.className = 'color-swatch';
-    div.style.background = c;
-    div.onclick = () => setColor(c, div);
-    grid.appendChild(div);
-  });
-}
-
-function applyPalette(name) {
-  const palettes = {
-    romantic: ['#8B1A3C','#C8963E','#F5ECD7','#D4B896','#6B3A2A'],
-    ocean:    ['#0077b6','#00b4d8','#90e0ef','#023e8a','#48cae4'],
-    sunset:   ['#ff6b6b','#ffa06b','#ffd166','#ef8c47','#d63031']
-  };
-  const colors = palettes[name];
-  if (!colors) return;
-  const grid = document.getElementById('quickColors');
-  if (!grid) return;
-  grid.innerHTML = '';
-  colors.forEach(c => {
-    const div = document.createElement('div');
-    div.className = 'color-swatch';
-    div.style.background = c;
-    div.onclick = () => setColor(c, div);
-    grid.appendChild(div);
-  });
-  setColor(colors[0], grid.firstChild);
-}
+function setTool(tool) { currentTool=tool; document.querySelectorAll('.canvas-tool-btn').forEach(b=>b.classList.remove('active')); const btn=document.getElementById('tool-'+tool); if(btn)btn.classList.add('active'); }
+function setColor(color,el) { currentColor=color; document.querySelectorAll('.color-swatch').forEach(s=>s.classList.remove('active')); if(el)el.classList.add('active'); const w=document.getElementById('colorWheel'); if(w)w.value=color; }
+function setColorFromWheel(color) { currentColor=color; document.querySelectorAll('.color-swatch').forEach(s=>s.classList.remove('active')); }
+function saveUndo() { const c=document.getElementById('loveCanvas'); if(!c||!canvasCtx)return; if(undoStack.length>20)undoStack.shift(); undoStack.push(canvasCtx.getImageData(0,0,c.width,c.height)); }
+function undoCanvas() { if(!undoStack.length||!canvasCtx)return; canvasCtx.putImageData(undoStack.pop(),0,0); }
+function clearCanvas() { const c=document.getElementById('loveCanvas'); if(!c||!canvasCtx)return; saveUndo(); canvasCtx.fillStyle='#ffffff'; canvasCtx.fillRect(0,0,c.width,c.height); }
+function saveCanvas() { const c=document.getElementById('loveCanvas'); if(!c)return; const a=document.createElement('a'); a.download='لوحتنا-المشتركة.png'; a.href=c.toDataURL('image/png'); a.click(); }
+function saveCanvasToDB() { const c=document.getElementById('loveCanvas'); if(!c||!isConnected){showCounterNotification('default','لا يوجد اتصال');return;} canvasRef.set({data:c.toDataURL('image/jpeg',.6),savedAt:Date.now()}).then(()=>showCounterNotification('default','تم حفظ اللوحة ✅')).catch(()=>showCounterNotification('default','خطأ في الحفظ')); }
+function loadCanvasFromDB() { if(!isConnected||!canvasCtx)return; canvasRef.once('value',snap=>{const d=snap.val(); if(!d||!d.data)return; const img=new Image(); img.onload=()=>{const c=document.getElementById('loveCanvas'); if(c&&canvasCtx)canvasCtx.drawImage(img,0,0,c.width,c.height);}; img.src=d.data;}); }
+function floodFill(x,y){const c=document.getElementById('loveCanvas');if(!c||!canvasCtx)return;const imgData=canvasCtx.getImageData(0,0,c.width,c.height),data=imgData.data;const tC=getPixel(data,Math.floor(x),Math.floor(y),c.width),fC=hexToRgb(currentColor);if(!fC||colorsMatch(tC,fC))return;const stack=[[Math.floor(x),Math.floor(y)]];while(stack.length){const[px,py]=stack.pop();if(px<0||px>=c.width||py<0||py>=c.height)continue;if(!colorsMatch(getPixel(data,px,py,c.width),tC))continue;setPixel(data,px,py,c.width,fC);stack.push([px+1,py],[px-1,py],[px,py+1],[px,py-1]);}canvasCtx.putImageData(imgData,0,0);}
+function getPixel(d,x,y,w){const i=(y*w+x)*4;return[d[i],d[i+1],d[i+2],d[i+3]];}
+function setPixel(d,x,y,w,c){const i=(y*w+x)*4;d[i]=c[0];d[i+1]=c[1];d[i+2]=c[2];d[i+3]=255;}
+function colorsMatch(a,b){return Math.abs(a[0]-b[0])<30&&Math.abs(a[1]-b[1])<30&&Math.abs(a[2]-b[2])<30;}
+function hexToRgb(hex){const r=/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);return r?[parseInt(r[1],16),parseInt(r[2],16),parseInt(r[3],16)]:null;}
+function addText(x,y){const text=prompt('اكتب النص:');if(!text||!canvasCtx)return;saveUndo();canvasCtx.font='20px Tajawal, Arial';canvasCtx.fillStyle=currentColor;canvasCtx.textAlign='right';canvasCtx.fillText(text,x,y);}
+function saveCurrentColor(){if(!savedColors.includes(currentColor)){savedColors.push(currentColor);if(savedColors.length>8)savedColors.shift();localStorage.setItem('savedColors',JSON.stringify(savedColors));renderSavedColors();}}
+function renderSavedColors(){const g=document.getElementById('savedColorsGrid');if(!g)return;g.innerHTML='';savedColors.forEach(c=>{const d=document.createElement('div');d.className='color-swatch';d.style.background=c;d.onclick=()=>setColor(c,d);g.appendChild(d);});}
+function applyPalette(name){const palettes={romantic:['#8B1A3C','#C8963E','#F5ECD7','#D4B896','#6B3A2A'],ocean:['#0077b6','#00b4d8','#90e0ef','#023e8a','#48cae4'],sunset:['#ff6b6b','#ffa06b','#ffd166','#ef8c47','#d63031']};const colors=palettes[name];if(!colors)return;const g=document.getElementById('quickColors');if(!g)return;g.innerHTML='';colors.forEach(c=>{const d=document.createElement('div');d.className='color-swatch';d.style.background=c;d.onclick=()=>setColor(c,d);g.appendChild(d);});setColor(colors[0],g.firstChild);}
 
 // ══════════════════════════════════════════════
 // PARTICLES
@@ -1775,47 +1561,15 @@ function initParticles() {
   const canvas = document.getElementById('particlesCanvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  canvas.width  = window.innerWidth;
-  canvas.height = window.innerHeight;
+  canvas.width = window.innerWidth; canvas.height = window.innerHeight;
   const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-
-  const pts = Array.from({length: 35}, () => ({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    vx: (Math.random() - 0.5) * 0.4,
-    vy: (Math.random() - 0.5) * 0.4,
-    r: Math.random() * 2.5 + 1,
-    op: Math.random() * 0.4 + 0.1,
-    pulse: Math.random() * Math.PI * 2
-  }));
-
+  const pts = Array.from({length:35},()=>({x:Math.random()*canvas.width,y:Math.random()*canvas.height,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,r:Math.random()*2.5+1,op:Math.random()*.4+.1,pulse:Math.random()*Math.PI*2}));
   if (particleAnimFrame) cancelAnimationFrame(particleAnimFrame);
-
-  function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    pts.forEach(p => {
-      p.x += p.vx; p.y += p.vy; p.pulse += 0.02;
-      if (p.x < 0 || p.x > canvas.width)  p.vx *= -1;
-      if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-      const op = p.op + Math.sin(p.pulse) * 0.1;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = isDark
-        ? `rgba(200,150,62,${op})`
-        : `rgba(139,26,60,${op})`;
-      ctx.fill();
-    });
-    particleAnimFrame = requestAnimationFrame(draw);
-  }
+  function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.pulse+=.02;if(p.x<0||p.x>canvas.width)p.vx*=-1;if(p.y<0||p.y>canvas.height)p.vy*=-1;const op=p.op+Math.sin(p.pulse)*.1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=isDark?`rgba(200,150,62,${op})`:`rgba(139,26,60,${op})`;ctx.fill();});particleAnimFrame=requestAnimationFrame(draw);}
   draw();
 }
-
-window.addEventListener('resize', () => {
-  const c = document.getElementById('particlesCanvas');
-  if (c) { c.width = window.innerWidth; c.height = window.innerHeight; }
-});
-
+window.addEventListener('resize',()=>{const c=document.getElementById('particlesCanvas');if(c){c.width=window.innerWidth;c.height=window.innerHeight;}});
 initParticles();
 </script>
 </body>
-                                                                                                                          </html>
+</html>
