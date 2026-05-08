@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>وعد الاصابع | خالد وفاطمة</title>
+<title>بيت الذكريات | خالد وفاطمة</title>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
@@ -494,8 +494,8 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
 <div class="login-container" id="loginContainer">
   <div class="login-box">
     <div class="login-icon">💕</div>
-    <h1>وعد الاصابع</h1>
-    <p class="subtitle">أدخل كلمة السر للدخول للعالم الخاص 🤞</p>
+    <h1>بيت الذكريات</h1>
+    <p class="subtitle">أدخل كلمة السر للدخول للعالم الخاص 🏡</p>
     <div class="input-group">
       <label for="secretCode">🔑 كلمة السر</label>
       <input type="password" id="secretCode" placeholder="اكتب كلمة السر هنا"
@@ -518,7 +518,7 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
   <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
-      <a class="sidebar-logo" onclick="showPage('home');closeSidebar()">وعد الاصابع <span>🤞</span></a>
+      <a class="sidebar-logo" onclick="showPage('home');closeSidebar()">بيت الذكريات <span>🏡</span></a>
       <div class="sidebar-meta">
         <span>💕 خالد وفاطمة</span>
         <span class="sidebar-days-pill" id="sidebarDays">0 يوم</span>
@@ -563,7 +563,7 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
 
   <!-- TOP BAR (mobile only) -->
   <div class="top-bar" id="topBar">
-    <div class="top-bar-logo" onclick="showPage('home')">وعد الاصابع <span style="color:var(--gold)">🤞</span></div>
+    <div class="top-bar-logo" onclick="showPage('home')">بيت الذكريات <span style="color:var(--gold)">🏡</span></div>
     <div class="top-bar-right">
       <button class="top-bar-btn" onclick="toggleDarkMode()" id="topDarkBtn">☀️</button>
       <button class="top-bar-btn" onclick="logout()">🚪</button>
@@ -580,7 +580,7 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
       <section class="hero">
         <div class="hero-content">
           <div class="hero-text">
-            <h1 class="hero-title"><span class="glitch" id="typingTitle" data-text="وعد الاصابع 🤞"></span></h1>
+            <h1 class="hero-title"><span class="glitch" id="typingTitle" data-text="بيت الذكريات 🏡"></span></h1>
             <p class="hero-subtitle" id="typingSubtitle"></p>
             <p class="hero-p">قصة حب مش عادية، بدأت بصدفة وكملت باختيار.<br>كل يوم بنختار بعض، وكل مشكلة بنتجاوزها مع بعض.</p>
             <button class="cta-button" onclick="showPage('story')">اقرأ القصة الكاملة 📖</button>
@@ -601,7 +601,7 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
           <div class="ornament">❧</div>
           <p class="summary-text">اتعرفنا بالصدفة في جروب، وعدنا فترة من البلوك والرجوع. اعترفنا بمشاعرنا يوم ١/٢/٢٠٢٣، وعدنا فترة من الفراق والحب. رجعنا لبعض يوم ٩/٨/٢٠٢٥، ومن ساعتها واحنا بنختار بعض كل يوم.</p>
           <div class="summary-highlight">
-            <p>💕 <strong>مهما حصل من مشاكل أو فراق، في الآخر اختيارنا الأول هو إحنا.</strong> 💕<br><br>🤞 وعد الاصابع ده وعد على الحب والاستمرار مهما كانت الظروف.</p>
+            <p>💕 <strong>مهما حصل من مشاكل أو فراق، في الآخر اختيارنا الأول هو إحنا.</strong> 💕<br><br>🏡 بيت الذكريات ده بيتنا اللي بنحفظ فيه كل لحظة جميلة.</p>
           </div>
         </div>
       </section>
@@ -614,6 +614,36 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
         <h2 class="section-title">مناسباتنا القادمة ⏳</h2>
         <div class="ornament">❧</div>
         <div class="countdown-grid" id="countdownGrid"></div>
+
+        <!-- إضافة مناسبة جديدة -->
+        <div class="countdown-card" style="border:2px dashed var(--gold);background:rgba(200,150,62,.04);margin-top:2rem;">
+          <div style="font-size:1.8rem;margin-bottom:.5rem;">➕</div>
+          <div style="font-family:'Amiri',serif;font-size:1.3rem;color:var(--rose);margin-bottom:1rem;">أضف مناسبة جديدة</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:.8rem;text-align:right;">
+            <div>
+              <label style="font-size:.8rem;color:var(--text-light);display:block;margin-bottom:.3rem;">🏷️ اسم المناسبة</label>
+              <input id="newOccName" type="text" placeholder="مثلاً: عيد ميلادك..." style="width:100%;padding:.7rem;border:2px solid var(--beige);border-radius:8px;font-family:'Tajawal',sans-serif;font-size:.9rem;background:var(--cream);color:var(--text);">
+            </div>
+            <div>
+              <label style="font-size:.8rem;color:var(--text-light);display:block;margin-bottom:.3rem;">🎭 إيموجي</label>
+              <input id="newOccEmoji" type="text" placeholder="💕" style="width:100%;padding:.7rem;border:2px solid var(--beige);border-radius:8px;font-family:'Tajawal',sans-serif;font-size:.9rem;background:var(--cream);color:var(--text);">
+            </div>
+            <div>
+              <label style="font-size:.8rem;color:var(--text-light);display:block;margin-bottom:.3rem;">📅 اليوم</label>
+              <input id="newOccDay" type="number" min="1" max="31" placeholder="يوم" style="width:100%;padding:.7rem;border:2px solid var(--beige);border-radius:8px;font-family:'Tajawal',sans-serif;font-size:.9rem;background:var(--cream);color:var(--text);">
+            </div>
+            <div>
+              <label style="font-size:.8rem;color:var(--text-light);display:block;margin-bottom:.3rem;">🗓️ الشهر</label>
+              <select id="newOccMonth" style="width:100%;padding:.7rem;border:2px solid var(--beige);border-radius:8px;font-family:'Tajawal',sans-serif;font-size:.9rem;background:var(--cream);color:var(--text);">
+                <option value="1">يناير</option><option value="2">فبراير</option><option value="3">مارس</option>
+                <option value="4">أبريل</option><option value="5">مايو</option><option value="6">يونيو</option>
+                <option value="7">يوليو</option><option value="8">أغسطس</option><option value="9">سبتمبر</option>
+                <option value="10">أكتوبر</option><option value="11">نوفمبر</option><option value="12">ديسمبر</option>
+              </select>
+            </div>
+          </div>
+          <button onclick="addNewOccasion()" style="padding:.8rem 2rem;background:linear-gradient(135deg,var(--rose),var(--brown));color:var(--cream);border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;font-family:'Tajawal',sans-serif;">💾 أضف المناسبة</button>
+        </div>
       </div>
     </div>
 
@@ -766,21 +796,25 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
         <button class="back-btn" onclick="showPage('home')">← رجوع</button>
         <h2 class="section-title">قصتنا الكاملة 📖</h2>
         <div class="ornament">❧</div>
-        <div class="story-full">
-          <h3>🎭 البداية الغريبة</h3>
-          <p>قصة حبنا دي غريبة شوية بصراحة. من أول ما اتعرفنا على بعض واحنا أصلاً مش عارفين مين اللي بيكلم التاني ولا بعت له ليه. كانت بداية غريبة مليانة صدف ومواقف مش محسوبة، بس في الآخر كل ده كان قدر بيجمعنا مع بعض.</p>
-          <h3>🎵 طريق الرجوع</h3>
-          <p>زي مثلاً لما كنت ببعتلك فيديوهات أغاني لحد ما وصلنا لتاني بلوك بينا. كانت فترة صعبة، بس الأغاني كانت هي السبيل الوحيد اللي بنتواصل من خلاله.</p>
-          <h3>💫 لحظة الاعتراف</h3>
-          <p>عملنا جروب تاني بينا احنا وكنا بنتكلم أكتر وتعرفنا أكتر. كانت لحظة الاعتراف بالمشاعر يوم ١/٢/٢٠٢٣، يوم مش هننساه أبداً.</p>
-          <h3>💔 الفراق</h3>
-          <p>أيوه كانت فترة قصيرة مكملتش شهر تقريباً، بس كانت فترة حبيتها وفاكر كل لحظة فيها. الفراق علمنا قيمة بعض.</p>
-          <h3>🌅 العودة من جديد</h3>
-          <p>وفعلاً قررتِ ترجعي ونكمل مع بعض. إحنا تعلمنا من كل مشكلة، وكل موقف خلانا أقوى وأقرب لبعض.</p>
-          <h3>✨ التجدد والمستقبل</h3>
-          <p>رجعنا لبعض يوم ٩/٨/٢٠٢٥، ومن ساعتها واحنا بنختار بعض كل يوم. 💕</p>
-          <h3>🤞 وعد الاصابع</h3>
-          <p>وعد الاصابع ده مش مجرد كلمة، ده عهد بينا. مهما أي حد فينا غلط، احنا مكملين. علشان دايماً اختيارنا هيكون <strong>إحنا</strong>. 💕</p>
+
+        <!-- الأجزاء المحفوظة -->
+        <div id="storyChapters" style="margin-bottom:1.5rem;"></div>
+
+        <!-- صندوق إضافة جزء جديد -->
+        <div class="story-full" style="margin-bottom:1.5rem;">
+          <h3 style="margin-top:0;">✍️ أضف جزءاً جديداً للقصة</h3>
+          <div style="margin-bottom:1rem;">
+            <label style="display:block;font-size:.85rem;color:var(--gold);font-weight:700;margin-bottom:.4rem;">📌 عنوان الجزء</label>
+            <input id="storyChapterTitle" type="text" placeholder="مثلاً: البداية الجميلة، يوم لا ننساه..." style="width:100%;padding:.8rem 1rem;border:2px solid var(--beige);border-radius:8px;font-family:'Tajawal',sans-serif;font-size:1rem;background:var(--cream);color:var(--text);transition:all .3s;" onfocus="this.style.borderColor='var(--rose)'" onblur="this.style.borderColor='var(--beige)'">
+          </div>
+          <div style="margin-bottom:1rem;">
+            <label style="display:block;font-size:.85rem;color:var(--gold);font-weight:700;margin-bottom:.4rem;">📝 اكتب هنا</label>
+            <textarea id="storyChapterText" placeholder="اكتب جزء من قصتك هنا... كل كلمة تُضاف للقصة الكبيرة 💕" style="width:100%;padding:1rem;border:2px solid var(--beige);border-radius:8px;font-family:'Tajawal',sans-serif;font-size:.95rem;resize:vertical;min-height:120px;background:var(--cream);color:var(--text);line-height:2;transition:all .3s;" onfocus="this.style.borderColor='var(--rose)'" onblur="this.style.borderColor='var(--beige)'"></textarea>
+          </div>
+          <div style="display:flex;gap:.8rem;flex-wrap:wrap;align-items:center;">
+            <button onclick="saveStoryChapter()" style="padding:.8rem 2rem;background:linear-gradient(135deg,var(--rose),var(--brown));color:var(--cream);border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;font-family:'Tajawal',sans-serif;transition:all .3s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">💾 احفظ وأضفه للقصة</button>
+            <span id="storySyncStatus" style="font-size:.82rem;color:var(--text-light);">⚪ لم يتم الحفظ بعد</span>
+          </div>
         </div>
       </div>
     </div>
@@ -885,15 +919,26 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
         <button class="back-btn" onclick="showPage('home')">← رجوع</button>
         <h2 class="section-title">تواريخنا المميزة 📅</h2>
         <div class="ornament">❧</div>
-        <div class="date-card">
-          <div class="date-display">📅 1 / 2 / 2023</div>
-          <div class="date-title">🌸 البداية - يوم الاعتراف</div>
-          <textarea class="date-input" placeholder="✍️ اكتبي هنا ذكرياتك..."></textarea>
-        </div>
-        <div class="date-card" style="border:2px solid var(--gold);">
-          <div class="date-display">📅 9 / 8 / 2025</div>
-          <div class="date-title">💫 تجدد الحب - العودة للبعض</div>
-          <textarea class="date-input" placeholder="✍️ اكتبي هنا ذكرياتك..."></textarea>
+
+        <!-- التواريخ الثابتة مع ملاحظات قابلة للحفظ -->
+        <div id="fixedDatesContainer"></div>
+
+        <!-- إضافة تاريخ جديد -->
+        <div class="date-card" style="border:2px dashed var(--gold);background:rgba(200,150,62,.05);">
+          <div class="date-title" style="color:var(--gold);">➕ أضف تاريخاً مميزاً جديداً</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:.8rem;">
+            <div>
+              <label style="font-size:.8rem;color:var(--text-light);display:block;margin-bottom:.3rem;">📅 التاريخ</label>
+              <input id="newDateVal" type="date" style="width:100%;padding:.7rem;border:2px solid var(--beige);border-radius:8px;font-family:'Tajawal',sans-serif;font-size:.9rem;background:var(--cream);color:var(--text);">
+            </div>
+            <div>
+              <label style="font-size:.8rem;color:var(--text-light);display:block;margin-bottom:.3rem;">🏷️ الاسم</label>
+              <input id="newDateName" type="text" placeholder="مثلاً: يوم خاص..." style="width:100%;padding:.7rem;border:2px solid var(--beige);border-radius:8px;font-family:'Tajawal',sans-serif;font-size:.9rem;background:var(--cream);color:var(--text);">
+            </div>
+          </div>
+          <input id="newDateEmoji" type="text" placeholder="إيموجي (اختياري) مثل: 💕 ✨ 🎉" style="width:100%;padding:.7rem;border:2px solid var(--beige);border-radius:8px;font-family:'Tajawal',sans-serif;font-size:.9rem;background:var(--cream);color:var(--text);margin-bottom:.8rem;">
+          <textarea id="newDateNote" placeholder="✍️ اكتب ذكرياتك عن هذا اليوم..." style="width:100%;padding:.8rem;border:2px solid var(--beige);border-radius:8px;font-family:'Tajawal',sans-serif;font-size:.9rem;resize:vertical;min-height:80px;background:var(--cream);color:var(--text);margin-bottom:.8rem;"></textarea>
+          <button onclick="addNewDate()" style="padding:.8rem 2rem;background:linear-gradient(135deg,var(--rose),var(--brown));color:var(--cream);border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;font-family:'Tajawal',sans-serif;">💾 أضف التاريخ</button>
         </div>
       </div>
     </div>
@@ -976,7 +1021,7 @@ const firebaseConfig = {
   appId: "1:265907206498:web:27b2f107a3a6c3a9c3943b"
 };
 
-let database, countersRef, messagesRef, playlistRef, canvasRef;
+let database, countersRef, messagesRef, playlistRef, canvasRef, storyRef, datesRef;
 let isConnected = false;
 
 try {
@@ -986,6 +1031,8 @@ try {
   messagesRef = database.ref('messages');
   playlistRef = database.ref('playlist');
   canvasRef   = database.ref('canvas');
+  storyRef    = database.ref('story');
+  datesRef    = database.ref('dates');
   isConnected = true;
 } catch(e) { console.error('Firebase init error:', e); }
 
@@ -1037,6 +1084,9 @@ function showMainContent() {
     loadPromise();
     loadPhotos();
     loadPlaylist();
+    loadStory();
+    loadDates();
+    loadExtraOccasions();
   }
 }
 
@@ -1173,7 +1223,7 @@ function typeText(elId, text, speed) {
   }, speed);
 }
 function startTypingEffect() {
-  typeText('typingTitle', 'وعد الاصابع 🤞', 80);
+  typeText('typingTitle', 'بيت الذكريات 🏡', 80);
   setTimeout(() => typeText('typingSubtitle', 'مهما حصل، احنا مكملين 💕', 80), 1200);
 }
 
@@ -1214,14 +1264,25 @@ function showCounterNotification(type, text) {
   notifTimer = setTimeout(() => el.classList.remove('show'), 3500);
 }
 
+
 // ══════════════════════════════════════════════
-// OCCASIONS / COUNTDOWN
+// OCCASIONS / COUNTDOWN — مع إمكانية الإضافة
 // ══════════════════════════════════════════════
-const OCCASIONS = [
+const BASE_OCCASIONS = [
   { emoji: '💕', name: 'ذكرى رجوعنا لبعض',   month: 8,  day: 9  },
-  { emoji: '🎂', name: 'عيد ميلاد خالد',      month: 3,  day: 15 },
+  { emoji: '🎂', name: 'عيد ميلاد فاطمة',      month: 8,  day: 20 },
   { emoji: '🌸', name: 'ذكرى الاعتراف الأول', month: 2,  day: 1  }
 ];
+let extraOccasions = [];
+function getAllOccasions() { return [...BASE_OCCASIONS, ...extraOccasions]; }
+function loadExtraOccasions() {
+  if (!isConnected) return;
+  database.ref('occasions').on('value', snap => {
+    const data = snap.val();
+    extraOccasions = data ? Object.entries(data).map(([k,v])=>({id:k,...v})) : [];
+    if (document.getElementById('page-countdown').classList.contains('active')) buildCountdowns();
+  });
+}
 function getNextOccasionDate(month, day) {
   const now = new Date(), year = now.getFullYear();
   let d = new Date(year, month - 1, day);
@@ -1232,15 +1293,18 @@ function buildCountdowns() {
   const grid = document.getElementById('countdownGrid');
   if (!grid) return;
   grid.innerHTML = '';
-  OCCASIONS.forEach((occ, idx) => {
+  getAllOccasions().forEach((occ, idx) => {
     const target = getNextOccasionDate(occ.month, occ.day);
     const diff = target - new Date();
     const days = Math.floor(diff/86400000), hours = Math.floor((diff%86400000)/3600000);
     const minutes = Math.floor((diff%3600000)/60000), seconds = Math.floor((diff%60000)/1000);
     const card = document.createElement('div');
-    card.className = 'countdown-card occasion-' + idx;
+    card.className = 'countdown-card occasion-' + (idx % 3);
     card.id = 'occ-card-' + idx;
+    card.style.position = 'relative';
+    const deleteBtn = occ.id ? `<button onclick="deleteOccasion('${occ.id}')" style="position:absolute;top:.7rem;left:.7rem;background:none;border:none;color:var(--beige-dark);cursor:pointer;font-size:.85rem;" onmouseover="this.style.color='var(--rose)'" onmouseout="this.style.color='var(--beige-dark)'">🗑️</button>` : '';
     card.innerHTML = `
+      ${deleteBtn}
       <div class="occ-emoji">${occ.emoji}</div>
       <div class="occ-name">${occ.name}</div>
       <div class="occ-date">📅 ${occ.day}/${occ.month}</div>
@@ -1257,7 +1321,7 @@ function buildCountdowns() {
   });
   if (window._countdownTick) clearInterval(window._countdownTick);
   window._countdownTick = _cleanup.addInterval(setInterval(() => {
-    OCCASIONS.forEach((occ, idx) => {
+    getAllOccasions().forEach((occ, idx) => {
       const diff = getNextOccasionDate(occ.month, occ.day) - new Date();
       if (diff <= 0) return;
       const d=document.getElementById('cd-d-'+idx), h=document.getElementById('cd-h-'+idx);
@@ -1270,6 +1334,27 @@ function buildCountdowns() {
     });
   }, 1000));
 }
+function addNewOccasion() {
+  const name=document.getElementById('newOccName').value.trim();
+  const emoji=document.getElementById('newOccEmoji').value.trim()||'🎉';
+  const day=parseInt(document.getElementById('newOccDay').value);
+  const month=parseInt(document.getElementById('newOccMonth').value);
+  if (!name||!day||day<1||day>31){showCounterNotification('default','اكمل البيانات أولاً 📅');return;}
+  const occ={name,emoji,day,month};
+  if (!isConnected){extraOccasions.push(occ);buildCountdowns();return;}
+  database.ref('occasions').push(occ).then(()=>{
+    document.getElementById('newOccName').value='';
+    document.getElementById('newOccEmoji').value='';
+    document.getElementById('newOccDay').value='';
+    showCounterNotification('default','تمت إضافة المناسبة 🎉');
+  });
+}
+function deleteOccasion(id) {
+  if (!confirm('تأكيد حذف المناسبة؟')) return;
+  if (!isConnected){extraOccasions=extraOccasions.filter(o=>o.id!==id);buildCountdowns();return;}
+  database.ref('occasions/'+id).remove();
+}
+
 
 // ══════════════════════════════════════════════
 // TIMELINE
@@ -1509,67 +1594,42 @@ function mpSeek(e) {
 }
 
 // ══════════════════════════════════════════════
-// CANVAS
+// STORY — قصة قابلة للتعديل والإضافة
 // ══════════════════════════════════════════════
-let canvasCtx=null, isDrawing=false, currentTool='pen', currentColor='#8B1A3C', undoStack=[];
-let savedColors = JSON.parse(localStorage.getItem('savedColors')||'[]');
 
-function initCanvas() {
-  const canvas = document.getElementById('loveCanvas');
-  if (!canvas || canvasCtx) return;
-  canvasCtx = canvas.getContext('2d');
-  const wrapper = canvas.parentElement;
-  if (wrapper) { canvas.width=wrapper.clientWidth||760; canvas.height=Math.min(420,window.innerHeight*.55); }
-  canvasCtx.fillStyle='#ffffff'; canvasCtx.fillRect(0,0,canvas.width,canvas.height);
-  const onStart=(e)=>{e.preventDefault();isDrawing=true;const pos=getPos(e,canvas);if(currentTool==='fill'){floodFill(pos.x,pos.y);return;}if(currentTool==='text'){addText(pos.x,pos.y);return;}saveUndo();canvasCtx.beginPath();canvasCtx.moveTo(pos.x,pos.y);};
-  const onMove=(e)=>{if(!isDrawing)return;e.preventDefault();const pos=getPos(e,canvas);const size=parseInt(document.getElementById('brushSize')?.value||6);const opacity=parseInt(document.getElementById('brushOpacity')?.value||100)/100;canvasCtx.globalAlpha=opacity;if(currentTool==='eraser'){canvasCtx.globalCompositeOperation='destination-out';canvasCtx.lineWidth=size*3;}else{canvasCtx.globalCompositeOperation='source-over';canvasCtx.lineWidth=currentTool==='brush'?size*2:size;canvasCtx.strokeStyle=currentColor;canvasCtx.lineCap='round';canvasCtx.lineJoin='round';}canvasCtx.lineTo(pos.x,pos.y);canvasCtx.stroke();};
-  const onEnd=()=>{isDrawing=false;canvasCtx.globalAlpha=1;canvasCtx.globalCompositeOperation='source-over';};
-  _cleanup.addListener(canvas,'mousedown',onStart);_cleanup.addListener(canvas,'mousemove',onMove);_cleanup.addListener(canvas,'mouseup',onEnd);_cleanup.addListener(canvas,'mouseleave',onEnd);
-  _cleanup.addListener(canvas,'touchstart',onStart,{passive:false});_cleanup.addListener(canvas,'touchmove',onMove,{passive:false});_cleanup.addListener(canvas,'touchend',onEnd);
-  renderSavedColors(); loadCanvasFromDB();
-}
-function destroyCanvas() { canvasCtx=null; isDrawing=false; }
-function getPos(e,canvas) {
-  const rect=canvas.getBoundingClientRect(),scaleX=canvas.width/rect.width,scaleY=canvas.height/rect.height;
-  if(e.touches&&e.touches[0]) return{x:(e.touches[0].clientX-rect.left)*scaleX,y:(e.touches[0].clientY-rect.top)*scaleY};
-  return{x:(e.clientX-rect.left)*scaleX,y:(e.clientY-rect.top)*scaleY};
-}
-function setTool(tool) { currentTool=tool; document.querySelectorAll('.canvas-tool-btn').forEach(b=>b.classList.remove('active')); const btn=document.getElementById('tool-'+tool); if(btn)btn.classList.add('active'); }
-function setColor(color,el) { currentColor=color; document.querySelectorAll('.color-swatch').forEach(s=>s.classList.remove('active')); if(el)el.classList.add('active'); const w=document.getElementById('colorWheel'); if(w)w.value=color; }
-function setColorFromWheel(color) { currentColor=color; document.querySelectorAll('.color-swatch').forEach(s=>s.classList.remove('active')); }
-function saveUndo() { const c=document.getElementById('loveCanvas'); if(!c||!canvasCtx)return; if(undoStack.length>20)undoStack.shift(); undoStack.push(canvasCtx.getImageData(0,0,c.width,c.height)); }
-function undoCanvas() { if(!undoStack.length||!canvasCtx)return; canvasCtx.putImageData(undoStack.pop(),0,0); }
-function clearCanvas() { const c=document.getElementById('loveCanvas'); if(!c||!canvasCtx)return; saveUndo(); canvasCtx.fillStyle='#ffffff'; canvasCtx.fillRect(0,0,c.width,c.height); }
-function saveCanvas() { const c=document.getElementById('loveCanvas'); if(!c)return; const a=document.createElement('a'); a.download='لوحتنا-المشتركة.png'; a.href=c.toDataURL('image/png'); a.click(); }
-function saveCanvasToDB() { const c=document.getElementById('loveCanvas'); if(!c||!isConnected){showCounterNotification('default','لا يوجد اتصال');return;} canvasRef.set({data:c.toDataURL('image/jpeg',.6),savedAt:Date.now()}).then(()=>showCounterNotification('default','تم حفظ اللوحة ✅')).catch(()=>showCounterNotification('default','خطأ في الحفظ')); }
-function loadCanvasFromDB() { if(!isConnected||!canvasCtx)return; canvasRef.once('value',snap=>{const d=snap.val(); if(!d||!d.data)return; const img=new Image(); img.onload=()=>{const c=document.getElementById('loveCanvas'); if(c&&canvasCtx)canvasCtx.drawImage(img,0,0,c.width,c.height);}; img.src=d.data;}); }
-function floodFill(x,y){const c=document.getElementById('loveCanvas');if(!c||!canvasCtx)return;const imgData=canvasCtx.getImageData(0,0,c.width,c.height),data=imgData.data;const tC=getPixel(data,Math.floor(x),Math.floor(y),c.width),fC=hexToRgb(currentColor);if(!fC||colorsMatch(tC,fC))return;const stack=[[Math.floor(x),Math.floor(y)]];while(stack.length){const[px,py]=stack.pop();if(px<0||px>=c.width||py<0||py>=c.height)continue;if(!colorsMatch(getPixel(data,px,py,c.width),tC))continue;setPixel(data,px,py,c.width,fC);stack.push([px+1,py],[px-1,py],[px,py+1],[px,py-1]);}canvasCtx.putImageData(imgData,0,0);}
-function getPixel(d,x,y,w){const i=(y*w+x)*4;return[d[i],d[i+1],d[i+2],d[i+3]];}
-function setPixel(d,x,y,w,c){const i=(y*w+x)*4;d[i]=c[0];d[i+1]=c[1];d[i+2]=c[2];d[i+3]=255;}
-function colorsMatch(a,b){return Math.abs(a[0]-b[0])<30&&Math.abs(a[1]-b[1])<30&&Math.abs(a[2]-b[2])<30;}
-function hexToRgb(hex){const r=/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);return r?[parseInt(r[1],16),parseInt(r[2],16),parseInt(r[3],16)]:null;}
-function addText(x,y){const text=prompt('اكتب النص:');if(!text||!canvasCtx)return;saveUndo();canvasCtx.font='20px Tajawal, Arial';canvasCtx.fillStyle=currentColor;canvasCtx.textAlign='right';canvasCtx.fillText(text,x,y);}
-function saveCurrentColor(){if(!savedColors.includes(currentColor)){savedColors.push(currentColor);if(savedColors.length>8)savedColors.shift();localStorage.setItem('savedColors',JSON.stringify(savedColors));renderSavedColors();}}
-function renderSavedColors(){const g=document.getElementById('savedColorsGrid');if(!g)return;g.innerHTML='';savedColors.forEach(c=>{const d=document.createElement('div');d.className='color-swatch';d.style.background=c;d.onclick=()=>setColor(c,d);g.appendChild(d);});}
-function applyPalette(name){const palettes={romantic:['#8B1A3C','#C8963E','#F5ECD7','#D4B896','#6B3A2A'],ocean:['#0077b6','#00b4d8','#90e0ef','#023e8a','#48cae4'],sunset:['#ff6b6b','#ffa06b','#ffd166','#ef8c47','#d63031']};const colors=palettes[name];if(!colors)return;const g=document.getElementById('quickColors');if(!g)return;g.innerHTML='';colors.forEach(c=>{const d=document.createElement('div');d.className='color-swatch';d.style.background=c;d.onclick=()=>setColor(c,d);g.appendChild(d);});setColor(colors[0],g.firstChild);}
+// الأجزاء الافتراضية المدمجة في الكود
+const DEFAULT_STORY_CHAPTERS = [
+  { title: '🎭 البداية الغريبة', text: 'قصة حبنا دي غريبة شوية بصراحة. من أول ما اتعرفنا على بعض واحنا أصلاً مش عارفين مين اللي بيكلم التاني ولا بعت له ليه. كانت بداية غريبة مليانة صدف ومواقف مش محسوبة، بس في الآخر كل ده كان قدر بيجمعنا مع بعض.', isDefault: true, savedAt: 0 },
+  { title: '🎵 طريق الرجوع', text: 'زي مثلاً لما كنت ببعتلك فيديوهات أغاني لحد ما وصلنا لتاني بلوك بينا. كانت فترة صعبة، بس الأغاني كانت هي السبيل الوحيد اللي بنتواصل من خلاله.', isDefault: true, savedAt: 1 },
+  { title: '💫 لحظة الاعتراف', text: 'عملنا جروب تاني بينا احنا وكنا بنتكلم أكتر وتعرفنا أكتر. كانت لحظة الاعتراف بالمشاعر يوم ١/٢/٢٠٢٣، يوم مش هننساه أبداً.', isDefault: true, savedAt: 2 },
+  { title: '💔 الفراق', text: 'أيوه كانت فترة قصيرة مكملتش شهر تقريباً، بس كانت فترة حبيتها وفاكر كل لحظة فيها. الفراق علمنا قيمة بعض.', isDefault: true, savedAt: 3 },
+  { title: '🌅 العودة من جديد', text: 'وفعلاً قررتِ ترجعي ونكمل مع بعض. إحنا تعلمنا من كل مشكلة، وكل موقف خلانا أقوى وأقرب لبعض.', isDefault: true, savedAt: 4 },
+  { title: '✨ التجدد والمستقبل', text: 'رجعنا لبعض يوم ٩/٨/٢٠٢٥، ومن ساعتها واحنا بنختار بعض كل يوم. 💕', isDefault: true, savedAt: 5 },
+  { title: '🤞 وعد الاصابع', text: 'وعد الاصابع ده مش مجرد كلمة، ده عهد بينا. مهما أي حد فينا غلط، احنا مكملين. علشان دايماً اختيارنا هيكون إحنا. 💕', isDefault: true, savedAt: 6 }
+];
 
-// ══════════════════════════════════════════════
-// PARTICLES
-// ══════════════════════════════════════════════
-let particleAnimFrame = null;
-function initParticles() {
-  const canvas = document.getElementById('particlesCanvas');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-  const pts = Array.from({length:35},()=>({x:Math.random()*canvas.width,y:Math.random()*canvas.height,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,r:Math.random()*2.5+1,op:Math.random()*.4+.1,pulse:Math.random()*Math.PI*2}));
-  if (particleAnimFrame) cancelAnimationFrame(particleAnimFrame);
-  function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.pulse+=.02;if(p.x<0||p.x>canvas.width)p.vx*=-1;if(p.y<0||p.y>canvas.height)p.vy*=-1;const op=p.op+Math.sin(p.pulse)*.1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=isDark?`rgba(200,150,62,${op})`:`rgba(139,26,60,${op})`;ctx.fill();});particleAnimFrame=requestAnimationFrame(draw);}
-  draw();
+let storyChapters = [];
+
+function loadStory() {
+  if (!isConnected) { storyChapters = [...DEFAULT_STORY_CHAPTERS]; renderStoryChapters(); return; }
+  storyRef.on('value', snap => {
+    const data = snap.val();
+    const saved = data ? Object.entries(data).map(([k,v]) => ({id:k,...v})) : [];
+    // دمج الأجزاء الافتراضية مع المحفوظة
+    storyChapters = [...DEFAULT_STORY_CHAPTERS, ...saved.sort((a,b)=>(a.savedAt||0)-(b.savedAt||0))];
+    renderStoryChapters();
+  });
 }
-window.addEventListener('resize',()=>{const c=document.getElementById('particlesCanvas');if(c){c.width=window.innerWidth;c.height=window.innerHeight;}});
-initParticles();
-</script>
-</body>
-</html>
+
+function renderStoryChapters() {
+  const container = document.getElementById('storyChapters');
+  if (!container) return;
+  container.innerHTML = '';
+  storyChapters.forEach((ch, idx) => {
+    const div = document.createElement('div');
+    div.className = 'story-full';
+    div.style.cssText = 'margin-bottom:1.2rem;';
+    const dateStr = ch.savedAt && !ch.isDefault
+      ? `<div style="font-size:.75rem;color:var(--gold);margin-bottom:.8rem;">🕐 ${new Date(ch.savedAt).toLocaleDateString('ar-EG')} ${new Date(ch.savedAt).toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'})}</div>`
+      : '';
+    const d
