@@ -7,7 +7,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Noto+Naskh+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
   --cream:#F5ECD7; --cream-dark:#EDD9B8; --gold:#C8963E; --gold-light:#D4A853;
@@ -16,13 +16,13 @@
   --white:#FFFDF7; --sidebar-w:280px;
 }
 [data-theme="dark"] {
-  --cream:#1A0F08; --cream-dark:#2A1A0E; --gold:#D4A853; --gold-light:#E8C070;
-  --rose:#C43060; --rose-light:#E04070; --brown:#D4B896; --brown-dark:#EDD9B8;
-  --beige:#5A3A25; --beige-dark:#4A2A18; --text:#EDD9B8; --text-light:#B8946E;
-  --white:#2A1A0E;
+  --cream:#0A0503; --cream-dark:#120906; --gold:#E2B45A; --gold-light:#F0CC80;
+  --rose:#D4366A; --rose-light:#E85080; --brown:#D4B896; --brown-dark:#EDD9B8;
+  --beige:#3D2418; --beige-dark:#2D1810; --text:#F0DFC0; --text-light:#C09870;
+  --white:#1A0C07;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);overflow-x:hidden;transition:background .4s,color .4s;}
+body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);overflow-x:hidden;transition:background .4s,color .4s;}
 canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;}
 
 /* ══════════════════════════════════════
@@ -109,7 +109,7 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
 .sidebar-overlay.show{display:block;}
 
 .sidebar-header{padding:1.5rem 1.2rem 1rem;border-bottom:1px solid rgba(212,184,150,.3);flex-shrink:0;}
-.sidebar-logo{font-family:'Amiri',serif;font-size:1.4rem;color:var(--rose);cursor:pointer;display:block;margin-bottom:.8rem;white-space:nowrap;overflow:hidden;}
+.sidebar-logo{font-family:'Noto Naskh Arabic',serif;font-size:1.4rem;color:var(--rose);cursor:pointer;display:block;margin-bottom:.8rem;white-space:nowrap;overflow:hidden;}
 .sidebar-logo span{color:var(--gold);}
 .sidebar-meta{display:flex;align-items:center;gap:.6rem;font-size:.8rem;color:var(--text-light);}
 .sidebar-days-pill{background:linear-gradient(135deg,var(--rose),var(--brown));color:#fff;padding:.2rem .7rem;border-radius:8px;font-size:.75rem;font-weight:700;white-space:nowrap;}
@@ -118,7 +118,7 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
 .sidebar-nav::-webkit-scrollbar-thumb{background:var(--beige);border-radius:2px;}
 .nav-section-title{font-size:.68rem;letter-spacing:1px;color:var(--gold);font-weight:700;text-transform:uppercase;padding:.8rem .4rem .4rem;opacity:.8;}
 .nav-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.5rem;}
-.nav-item{display:flex;flex-direction:column;align-items:center;gap:.3rem;padding:.75rem .4rem;border-radius:10px;cursor:pointer;border:none;background:transparent;color:var(--text-light);font-family:'Tajawal',sans-serif;font-size:.78rem;font-weight:600;transition:all .25s;position:relative;text-align:center;line-height:1.2;width:100%;}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:.3rem;padding:.75rem .4rem;border-radius:10px;cursor:pointer;border:none;background:transparent;color:var(--text-light);font-family:'Cairo',sans-serif;font-size:.78rem;font-weight:600;transition:all .25s;position:relative;text-align:center;line-height:1.2;width:100%;}
 .nav-item:hover{background:rgba(139,26,60,.08);color:var(--rose);transform:translateY(-2px);}
 .nav-item.active{background:linear-gradient(135deg,rgba(139,26,60,.12),rgba(200,150,62,.1));color:var(--rose);border:1px solid rgba(139,26,60,.2);}
 .nav-item .nav-emoji{font-size:1.4rem;}
@@ -126,7 +126,7 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
 .nav-badge.show{display:block;animation:badgePulse 2s infinite;}
 @keyframes badgePulse{0%,100%{transform:scale(1);}50%{transform:scale(1.15);}}
 .sidebar-footer{padding:.8rem 1rem;border-top:1px solid rgba(212,184,150,.3);display:flex;gap:.5rem;align-items:center;flex-shrink:0;}
-.sidebar-footer-btn{flex:1;padding:.55rem .6rem;border-radius:10px;border:none;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:.82rem;font-weight:700;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:.3rem;}
+.sidebar-footer-btn{flex:1;padding:.55rem .6rem;border-radius:10px;border:none;cursor:pointer;font-family:'Cairo',sans-serif;font-size:.82rem;font-weight:700;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:.3rem;}
 .btn-dark-toggle{background:var(--beige);color:var(--brown);}
 .btn-dark-toggle:hover{background:var(--gold);color:#fff;}
 .btn-logout{background:rgba(139,26,60,.1);color:var(--rose);}
@@ -141,7 +141,7 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
 /* ── TOP BAR (mobile) ── */
 .top-bar{display:none;position:fixed;top:0;left:0;right:0;background:rgba(255,253,247,.96);backdrop-filter:blur(16px);border-bottom:1px solid rgba(212,184,150,.4);padding:.7rem 1rem;z-index:4998;align-items:center;justify-content:space-between;}
 [data-theme="dark"] .top-bar{background:rgba(26,15,8,.96);}
-.top-bar-logo{font-family:'Amiri',serif;font-size:1.2rem;color:var(--rose);cursor:pointer;}
+.top-bar-logo{font-family:'Noto Naskh Arabic',serif;font-size:1.2rem;color:var(--rose);cursor:pointer;}
 .top-bar-logo span{color:var(--gold);}
 .top-bar-right{display:flex;gap:.5rem;align-items:center;}
 .top-bar-btn{background:none;border:none;cursor:pointer;font-size:1.1rem;padding:.3rem;color:var(--text-light);transition:color .2s;}
@@ -151,7 +151,7 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
 .bottom-bar{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(255,253,247,.97);backdrop-filter:blur(20px);border-top:1px solid rgba(212,184,150,.4);z-index:5000;padding:.4rem .3rem calc(.4rem + env(safe-area-inset-bottom));}
 [data-theme="dark"] .bottom-bar{background:rgba(26,15,8,.97);border-top-color:rgba(90,58,37,.4);}
 .bottom-bar-scroll{display:flex;gap:0;}
-.bottom-item{display:flex;flex-direction:column;align-items:center;gap:.15rem;padding:.4rem .2rem;border-radius:8px;cursor:pointer;border:none;background:transparent;color:var(--text-light);font-family:'Tajawal',sans-serif;font-size:.65rem;font-weight:600;transition:all .2s;flex:1;position:relative;white-space:nowrap;}
+.bottom-item{display:flex;flex-direction:column;align-items:center;gap:.15rem;padding:.4rem .2rem;border-radius:8px;cursor:pointer;border:none;background:transparent;color:var(--text-light);font-family:'Cairo',sans-serif;font-size:.65rem;font-weight:600;transition:all .2s;flex:1;position:relative;white-space:nowrap;}
 .bottom-item .bottom-emoji{font-size:1.25rem;}
 .bottom-item:hover,.bottom-item.active{color:var(--rose);background:rgba(139,26,60,.08);}
 .bottom-badge{position:absolute;top:2px;right:2px;background:var(--rose);color:#fff;font-size:.55rem;padding:.1rem .3rem;border-radius:6px;display:none;font-weight:700;}
@@ -170,10 +170,10 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
 @keyframes pageIn{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
 .ornament{text-align:center;color:var(--gold);font-size:1.2rem;letter-spacing:.3rem;margin:1.5rem 0;opacity:.7;}
 .ornament::before,.ornament::after{content:'';display:inline-block;width:60px;height:1px;background:var(--gold);vertical-align:middle;margin:0 .8rem;opacity:.5;}
-.section-title{font-family:'Amiri',serif;text-align:center;font-size:2.4rem;color:var(--rose);margin-bottom:.5rem;}
+.section-title{font-family:'Noto Naskh Arabic',serif;text-align:center;font-size:2.4rem;color:var(--rose);margin-bottom:.5rem;}
 .section-subtitle{text-align:center;color:var(--text-light);margin-bottom:2.5rem;}
 .container{max-width:820px;margin:0 auto;padding:0 1.5rem;}
-.back-btn{display:inline-flex;align-items:center;gap:.4rem;margin-bottom:2rem;padding:.7rem 1.4rem;background:var(--beige);color:var(--brown);text-decoration:none;border-radius:8px;font-weight:600;font-size:.9rem;transition:all .3s;border:none;cursor:pointer;font-family:'Tajawal',sans-serif;}
+.back-btn{display:inline-flex;align-items:center;gap:.4rem;margin-bottom:2rem;padding:.7rem 1.4rem;background:var(--beige);color:var(--brown);text-decoration:none;border-radius:8px;font-weight:600;font-size:.9rem;transition:all .3s;border:none;cursor:pointer;font-family:'Cairo',sans-serif;}
 .back-btn:hover{background:var(--rose);color:var(--cream);}
 
 /* ── HOME ── */
@@ -186,30 +186,30 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
 .hero-content{max-width:680px;width:100%;display:flex;flex-direction:column;align-items:center;gap:2rem;}
 .hero-text{text-align:center;background:rgba(255,253,247,.88);backdrop-filter:blur(20px);padding:2.5rem 2.8rem;border-radius:16px;box-shadow:0 20px 60px rgba(107,58,42,.2),0 0 0 1px rgba(200,150,62,.3);}
 [data-theme="dark"] .hero-text{background:rgba(42,26,14,.9);box-shadow:0 20px 60px rgba(0,0,0,.4),0 0 0 1px rgba(200,150,62,.2);}
-.hero-title{font-family:'Amiri',serif;font-size:2.8rem;color:var(--rose);margin-bottom:.5rem;line-height:1.3;min-height:3.5rem;}
+.hero-title{font-family:'Noto Naskh Arabic',serif;font-size:2.8rem;color:var(--rose);margin-bottom:.5rem;line-height:1.3;min-height:3.5rem;}
 .hero-subtitle{color:var(--gold);font-size:1.2rem;font-weight:500;margin-bottom:1.2rem;}
 .hero-p{font-size:1rem;color:var(--text-light);line-height:2;margin-bottom:1.5rem;}
 .glitch{position:relative;display:inline-block;}
-.glitch::before,.glitch::after{content:attr(data-text);position:absolute;top:0;left:0;width:100%;height:100%;font-family:'Amiri',serif;}
+.glitch::before,.glitch::after{content:attr(data-text);position:absolute;top:0;left:0;width:100%;height:100%;font-family:'Noto Naskh Arabic',serif;}
 .glitch::before{color:var(--gold);animation:glitch1 3s infinite;clip-path:polygon(0 20%,100% 20%,100% 40%,0 40%);}
 .glitch::after{color:var(--rose-light);animation:glitch2 3s infinite;clip-path:polygon(0 60%,100% 60%,100% 80%,0 80%);}
 @keyframes glitch1{0%,90%,100%{transform:none;opacity:0;}92%{transform:translateX(-3px);opacity:.7;}94%{transform:translateX(3px);opacity:.7;}96%{transform:translateX(-2px);opacity:0;}}
 @keyframes glitch2{0%,88%,100%{transform:none;opacity:0;}90%{transform:translateX(3px);opacity:.6;}92%{transform:translateX(-3px);opacity:.6;}94%{transform:none;opacity:0;}}
-.cta-button{display:inline-block;padding:.85rem 2rem;background:linear-gradient(135deg,var(--rose),var(--brown));color:var(--cream);text-decoration:none;border-radius:8px;font-weight:700;transition:all .3s;border:none;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:.95rem;}
+.cta-button{display:inline-block;padding:.85rem 2rem;background:linear-gradient(135deg,var(--rose),var(--brown));color:var(--cream);text-decoration:none;border-radius:8px;font-weight:700;transition:all .3s;border:none;cursor:pointer;font-family:'Cairo',sans-serif;font-size:.95rem;}
 .cta-button:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(139,26,60,.4);}
 .heartbeat-counter{background:rgba(255,253,247,.9);backdrop-filter:blur(20px);border-radius:16px;padding:1.8rem 2.5rem;text-align:center;box-shadow:0 12px 40px rgba(107,58,42,.2),0 0 0 1px rgba(200,150,62,.2);cursor:pointer;transition:all .3s;width:100%;max-width:420px;}
 [data-theme="dark"] .heartbeat-counter{background:rgba(42,26,14,.9);}
 .heartbeat-counter:hover{transform:translateY(-3px);box-shadow:0 18px 50px rgba(107,58,42,.3);}
 .heart-svg{display:block;margin:0 auto 1rem;animation:heartbeat 1.2s ease-in-out infinite;}
 @keyframes heartbeat{0%{transform:scale(1);}14%{transform:scale(1.18);}28%{transform:scale(1);}42%{transform:scale(1.12);}70%{transform:scale(1);}}
-.hb-days{font-family:'Amiri',serif;font-size:3.5rem;color:var(--rose);font-weight:700;line-height:1;}
+.hb-days{font-family:'Noto Naskh Arabic',serif;font-size:3.5rem;color:var(--rose);font-weight:700;line-height:1;}
 .hb-label{color:var(--text-light);font-size:.95rem;margin-top:.3rem;}
 .hb-hint{color:var(--gold);font-size:.8rem;margin-top:.5rem;animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:.6;}50%{opacity:1;}}
 .summary-section{padding:2rem 5% 5rem;position:relative;z-index:1;}
 .summary-box{max-width:720px;margin:0 auto;text-align:center;background:rgba(255,253,247,.88);backdrop-filter:blur(12px);border-radius:12px;padding:2.5rem;box-shadow:0 8px 40px rgba(107,58,42,.12),0 0 0 1px rgba(200,150,62,.2);}
 [data-theme="dark"] .summary-box{background:rgba(42,26,14,.88);}
-.summary-title{font-family:'Amiri',serif;font-size:1.9rem;color:var(--rose);margin-bottom:1rem;}
+.summary-title{font-family:'Noto Naskh Arabic',serif;font-size:1.9rem;color:var(--rose);margin-bottom:1rem;}
 .summary-text{font-size:1rem;line-height:2.2;color:var(--text-light);margin-bottom:1.5rem;}
 .summary-highlight{background:linear-gradient(135deg,rgba(200,150,62,.15),rgba(212,184,150,.2));padding:1.5rem;border-radius:16px;border:1px solid rgba(200,150,62,.3);}
 .summary-highlight p{color:var(--text);font-size:1rem;line-height:1.9;}
@@ -224,12 +224,12 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
 .countdown-card.occasion-1::before{background:linear-gradient(90deg,var(--gold),#e8a0b0);}
 .countdown-card.occasion-2::before{background:linear-gradient(90deg,#7b4fa6,var(--rose));}
 .occ-emoji{font-size:2.5rem;margin-bottom:.5rem;}
-.occ-name{font-family:'Amiri',serif;font-size:1.5rem;color:var(--rose);margin-bottom:.3rem;}
+.occ-name{font-family:'Noto Naskh Arabic',serif;font-size:1.5rem;color:var(--rose);margin-bottom:.3rem;}
 .occ-date{color:var(--text-light);font-size:.9rem;margin-bottom:1.5rem;}
 .cd-boxes{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;}
 .cd-box{background:linear-gradient(135deg,var(--cream),var(--cream-dark));border-radius:8px;padding:1rem 1.2rem;min-width:70px;border:1px solid rgba(200,150,62,.3);}
 [data-theme="dark"] .cd-box{background:linear-gradient(135deg,#2A1A0E,#1A0F08);}
-.cd-num{font-family:'Amiri',serif;font-size:2.8rem;color:var(--rose);font-weight:700;line-height:1;display:block;}
+.cd-num{font-family:'Noto Naskh Arabic',serif;font-size:2.8rem;color:var(--rose);font-weight:700;line-height:1;display:block;}
 .cd-label{font-size:.75rem;color:var(--text-light);margin-top:.3rem;}
 .occ-arrived{background:linear-gradient(135deg,rgba(200,150,62,.2),rgba(212,184,150,.2));border-radius:12px;padding:1.2rem;color:var(--rose);font-weight:700;font-size:1.1rem;}
 
@@ -244,7 +244,7 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
 .timeline-content:hover{transform:translateY(-4px);}
 .timeline-dot{width:14px;height:14px;background:var(--rose);border-radius:50%;position:absolute;right:50%;top:1.5rem;transform:translate(50%,0);box-shadow:0 0 0 4px var(--cream),0 0 0 6px var(--rose);z-index:2;}
 .tl-date{font-size:.8rem;color:var(--gold);font-weight:700;margin-bottom:.4rem;letter-spacing:.5px;}
-.tl-title{font-family:'Amiri',serif;font-size:1.3rem;color:var(--rose);margin-bottom:.5rem;}
+.tl-title{font-family:'Noto Naskh Arabic',serif;font-size:1.3rem;color:var(--rose);margin-bottom:.5rem;}
 .tl-text{font-size:.95rem;color:var(--text-light);line-height:1.8;}
 .tl-emoji{font-size:2rem;margin-bottom:.5rem;display:block;}
 
@@ -253,10 +253,10 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
 .playlist-add-box{background:var(--white);border-radius:12px;padding:2rem;box-shadow:0 8px 30px rgba(107,58,42,.1),0 0 0 1px rgba(200,150,62,.2);margin-bottom:2rem;}
 [data-theme="dark"] .playlist-add-box{background:#3A2515;}
 .playlist-input-row{display:flex;gap:.8rem;flex-wrap:wrap;}
-.playlist-input{flex:1;min-width:200px;padding:.9rem 1rem;border:2px solid var(--beige);border-radius:8px;font-family:'Tajawal',sans-serif;font-size:1rem;background:var(--cream);color:var(--text);transition:all .3s;}
+.playlist-input{flex:1;min-width:200px;padding:.9rem 1rem;border:2px solid var(--beige);border-radius:8px;font-family:'Cairo',sans-serif;font-size:1rem;background:var(--cream);color:var(--text);transition:all .3s;}
 .playlist-input:focus{outline:none;border-color:var(--rose);}
 [data-theme="dark"] .playlist-input{background:#2A1A0E;border-color:#3A2515;}
-.add-song-btn{padding:.9rem 1.8rem;background:linear-gradient(135deg,var(--rose),var(--brown));color:var(--cream);border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;transition:all .3s;font-family:'Tajawal',sans-serif;white-space:nowrap;}
+.add-song-btn{padding:.9rem 1.8rem;background:linear-gradient(135deg,var(--rose),var(--brown));color:var(--cream);border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;transition:all .3s;font-family:'Cairo',sans-serif;white-space:nowrap;}
 .add-song-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(139,26,60,.3);}
 .songs-list{display:flex;flex-direction:column;gap:1rem;}
 .song-item{background:var(--white);border-radius:10px;padding:1.2rem 1.5rem;box-shadow:0 3px 15px rgba(107,58,42,.08),0 0 0 1px rgba(200,150,62,.15);display:flex;align-items:center;gap:1rem;animation:slideIn .4s ease;transition:transform .2s;}
@@ -284,7 +284,7 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
 .mp-album-img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:4px solid var(--white);background:var(--cream-dark);display:flex;align-items:center;justify-content:center;font-size:3rem;}
 .mp-vinyl-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:52px;height:52px;background:var(--white);border-radius:50%;border:3px solid var(--cream-dark);display:flex;align-items:center;justify-content:center;font-size:1.3rem;box-shadow:inset 0 2px 8px rgba(0,0,0,.1);}
 .mp-song-info{text-align:center;padding:0 1.5rem .5rem;}
-.mp-title{font-family:'Amiri',serif;font-size:1.25rem;color:var(--rose);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.mp-title{font-family:'Noto Naskh Arabic',serif;font-size:1.25rem;color:var(--rose);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .mp-artist{font-size:.9rem;color:var(--text-light);margin-top:.2rem;}
 .mp-progress-wrap{padding:.8rem 1.8rem 0;}
 .mp-progress-bar-bg{width:100%;height:6px;background:var(--cream-dark);border-radius:10px;cursor:pointer;position:relative;overflow:visible;}
@@ -314,13 +314,13 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
 #page-canvas{padding:7rem 5% 4rem;background:linear-gradient(160deg,var(--cream) 0%,var(--cream-dark) 100%);}
 .canvas-wrapper{background:var(--white);border-radius:12px;padding:1.5rem;box-shadow:0 12px 40px rgba(107,58,42,.15),0 0 0 1px rgba(200,150,62,.2);}
 [data-theme="dark"] .canvas-wrapper{background:#3A2515;}
-.canvas-tool-btn{padding:.5rem 1rem;border-radius:8px;border:2px solid var(--beige);background:var(--cream);color:var(--text);cursor:pointer;font-family:'Tajawal',sans-serif;font-size:.85rem;transition:all .2s;}
+.canvas-tool-btn{padding:.5rem 1rem;border-radius:8px;border:2px solid var(--beige);background:var(--cream);color:var(--text);cursor:pointer;font-family:'Cairo',sans-serif;font-size:.85rem;transition:all .2s;}
 .canvas-tool-btn:hover,.canvas-tool-btn.active{background:var(--rose);color:#fff;border-color:var(--rose);}
 [data-theme="dark"] .canvas-tool-btn{background:#2A1A0E;border-color:#3A2515;color:var(--text);}
 .color-swatch{width:28px;height:28px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:all .2s;}
 .color-swatch:hover,.color-swatch.active{border-color:var(--gold);transform:scale(1.2);}
 #loveCanvas{width:100%;border-radius:16px;border:2px solid rgba(200,150,62,.3);cursor:crosshair;display:block;touch-action:none;background:#fff;}
-.canvas-action-btn{padding:.6rem 1.2rem;border-radius:8px;background:var(--beige);color:var(--brown);border:none;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:.9rem;transition:all .2s;}
+.canvas-action-btn{padding:.6rem 1.2rem;border-radius:8px;background:var(--beige);color:var(--brown);border:none;cursor:pointer;font-family:'Cairo',sans-serif;font-size:.9rem;transition:all .2s;}
 .canvas-action-btn:hover{background:var(--rose);color:#fff;}
 
 /* ── STORY ── */
@@ -332,16 +332,16 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
 #page-story .container{position:relative;z-index:1;}
 .story-full{background:rgba(255,253,247,.92);padding:2.5rem;border-radius:12px;line-height:2.2;font-size:1rem;color:var(--text);backdrop-filter:blur(10px);box-shadow:0 12px 40px rgba(0,0,0,.1);border:1px solid rgba(200,150,62,.2);}
 [data-theme="dark"] .story-full{background:rgba(42,26,14,.92);}
-.story-full h3{color:var(--rose);margin:2rem 0 1rem;font-family:'Amiri',serif;font-size:1.4rem;border-right:4px solid var(--gold);padding-right:1rem;}
+.story-full h3{color:var(--rose);margin:2rem 0 1rem;font-family:'Noto Naskh Arabic',serif;font-size:1.4rem;border-right:4px solid var(--gold);padding-right:1rem;}
 .story-full p{margin-bottom:1.5rem;text-align:justify;line-height:2;color:var(--text-light);}
 
 /* ── FEELINGS ── */
 #page-feelings{padding:7rem 5% 4rem;background:linear-gradient(160deg,var(--cream) 0%,var(--cream-dark) 100%);}
 .feeling-card{background:var(--white);padding:2rem;border-radius:12px;margin-bottom:1.5rem;box-shadow:0 5px 20px rgba(107,58,42,.08),0 0 0 1px rgba(200,150,62,.15);}
 [data-theme="dark"] .feeling-card{background:#3A2515;}
-.feeling-card h3{color:var(--rose);margin-bottom:1rem;font-family:'Amiri',serif;font-size:1.4rem;}
+.feeling-card h3{color:var(--rose);margin-bottom:1rem;font-family:'Noto Naskh Arabic',serif;font-size:1.4rem;}
 .feeling-text{color:var(--text-light);line-height:1.9;margin-bottom:1rem;font-size:.95rem;}
-.feeling-input{width:100%;padding:1rem;border:2px solid var(--beige);border-radius:8px;font-family:'Tajawal',sans-serif;font-size:.95rem;resize:vertical;min-height:80px;background:var(--cream);color:var(--text);transition:all .3s;}
+.feeling-input{width:100%;padding:1rem;border:2px solid var(--beige);border-radius:8px;font-family:'Cairo',sans-serif;font-size:.95rem;resize:vertical;min-height:80px;background:var(--cream);color:var(--text);transition:all .3s;}
 .feeling-input:focus{outline:none;border-color:var(--rose);}
 [data-theme="dark"] .feeling-input{background:#2A1A0E;border-color:#3A2515;}
 
@@ -354,10 +354,10 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
 #page-problems .container{position:relative;z-index:1;}
 .counter-box{background:rgba(255,253,247,.95);padding:2.5rem;border-radius:12px;text-align:center;box-shadow:0 10px 30px rgba(107,58,42,.12),0 0 0 1px rgba(200,150,62,.2);margin-bottom:1.5rem;backdrop-filter:blur(8px);}
 [data-theme="dark"] .counter-box{background:rgba(42,26,14,.95);}
-.counter-number{font-family:'Amiri',serif;font-size:5rem;font-weight:700;color:var(--rose);display:block;line-height:1;}
+.counter-number{font-family:'Noto Naskh Arabic',serif;font-size:5rem;font-weight:700;color:var(--rose);display:block;line-height:1;}
 .counter-label{font-size:1.1rem;color:var(--text-light);margin:1rem 0;}
 .counter-controls{display:flex;gap:1rem;justify-content:center;margin-top:1.5rem;}
-.counter-btn{padding:.9rem 2rem;border:none;border-radius:8px;font-size:1.5rem;cursor:pointer;transition:all .3s;font-family:'Tajawal',sans-serif;}
+.counter-btn{padding:.9rem 2rem;border:none;border-radius:8px;font-size:1.5rem;cursor:pointer;transition:all .3s;font-family:'Cairo',sans-serif;}
 .counter-btn:hover{transform:scale(1.08);}
 .btn-minus{background:linear-gradient(135deg,#c0392b,#922b21);color:#fff;}
 .btn-plus{background:linear-gradient(135deg,#27ae60,#1e8449);color:#fff;}
@@ -376,15 +376,15 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
 #page-promise .container{position:relative;z-index:1;}
 #page-promise .section-title{color:var(--cream);text-shadow:0 2px 10px rgba(0,0,0,.3);}
 .promise-box{background:rgba(255,255,255,.12);backdrop-filter:blur(14px);padding:2.5rem;border-radius:12px;border:1px solid rgba(255,255,255,.2);text-align:center;}
-.promise-counter{font-family:'Amiri',serif;font-size:5rem;font-weight:700;color:#fff;margin:1rem 0;line-height:1;}
-.promise-btn{padding:1rem 2.5rem;background:#fff;color:var(--rose);border:none;border-radius:8px;font-size:1.1rem;font-weight:700;cursor:pointer;transition:all .3s;margin-top:1rem;font-family:'Tajawal',sans-serif;}
+.promise-counter{font-family:'Noto Naskh Arabic',serif;font-size:5rem;font-weight:700;color:#fff;margin:1rem 0;line-height:1;}
+.promise-btn{padding:1rem 2.5rem;background:#fff;color:var(--rose);border:none;border-radius:8px;font-size:1.1rem;font-weight:700;cursor:pointer;transition:all .3s;margin-top:1rem;font-family:'Cairo',sans-serif;}
 .promise-btn:hover{transform:scale(1.05);box-shadow:0 8px 25px rgba(0,0,0,.2);}
 
 /* ── PHOTOS ── */
 #page-photos{padding:7rem 5% 4rem;background:linear-gradient(160deg,var(--cream) 0%,var(--cream-dark) 100%);}
 .photos-box{background:var(--white);padding:2.5rem;border-radius:12px;text-align:center;box-shadow:0 10px 30px rgba(107,58,42,.1),0 0 0 1px rgba(200,150,62,.2);margin-bottom:1.5rem;}
 [data-theme="dark"] .photos-box{background:#3A2515;}
-.photos-number{font-family:'Amiri',serif;font-size:5.5rem;font-weight:700;color:var(--rose);}
+.photos-number{font-family:'Noto Naskh Arabic',serif;font-size:5.5rem;font-weight:700;color:var(--rose);}
 .photos-label{font-size:1.2rem;color:var(--text-light);margin:.8rem 0;}
 .celebration{display:none;margin-top:1.5rem;padding:1.5rem;background:linear-gradient(135deg,#ffd700,#ffed4e);border-radius:16px;}
 .celebration.show{display:block;animation:celebrate .8s ease;}
@@ -395,9 +395,9 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
 #page-dates{padding:7rem 5% 4rem;background:linear-gradient(160deg,var(--cream) 0%,var(--cream-dark) 100%);}
 .date-card{background:var(--white);padding:2rem;border-radius:12px;margin-bottom:1.5rem;box-shadow:0 5px 20px rgba(107,58,42,.08),0 0 0 1px rgba(200,150,62,.15);}
 [data-theme="dark"] .date-card{background:#3A2515;}
-.date-display{font-family:'Amiri',serif;font-size:2.2rem;font-weight:700;color:var(--rose);margin-bottom:.3rem;}
+.date-display{font-family:'Noto Naskh Arabic',serif;font-size:2.2rem;font-weight:700;color:var(--rose);margin-bottom:.3rem;}
 .date-title{font-size:1.2rem;color:var(--gold);margin-bottom:1rem;font-weight:600;}
-.date-input{width:100%;padding:.9rem;border:2px solid var(--beige);border-radius:8px;font-family:'Tajawal',sans-serif;font-size:.95rem;min-height:60px;resize:vertical;background:var(--cream);color:var(--text);transition:all .3s;}
+.date-input{width:100%;padding:.9rem;border:2px solid var(--beige);border-radius:8px;font-family:'Cairo',sans-serif;font-size:.95rem;min-height:60px;resize:vertical;background:var(--cream);color:var(--text);transition:all .3s;}
 .date-input:focus{outline:none;border-color:var(--rose);}
 [data-theme="dark"] .date-input{background:#2A1A0E;border-color:#3A2515;}
 
@@ -405,10 +405,10 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
 #page-messages{padding:7rem 5% 4rem;background:linear-gradient(160deg,var(--cream) 0%,var(--cream-dark) 100%);}
 .message-box{background:var(--white);padding:2rem;border-radius:12px;box-shadow:0 10px 30px rgba(107,58,42,.1),0 0 0 1px rgba(200,150,62,.15);margin-bottom:1.5rem;}
 [data-theme="dark"] .message-box{background:#3A2515;}
-.message-textarea{width:100%;padding:1.2rem;border:2px solid var(--beige);border-radius:8px;font-family:'Tajawal',sans-serif;font-size:1rem;resize:vertical;min-height:110px;margin-bottom:1rem;background:var(--cream);color:var(--text);transition:all .3s;}
+.message-textarea{width:100%;padding:1.2rem;border:2px solid var(--beige);border-radius:8px;font-family:'Cairo',sans-serif;font-size:1rem;resize:vertical;min-height:110px;margin-bottom:1rem;background:var(--cream);color:var(--text);transition:all .3s;}
 .message-textarea:focus{outline:none;border-color:var(--rose);}
 [data-theme="dark"] .message-textarea{background:#2A1A0E;border-color:#3A2515;}
-.send-btn{padding:.9rem 2rem;background:linear-gradient(135deg,var(--rose),var(--brown));color:var(--cream);border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;transition:all .3s;display:flex;align-items:center;gap:.5rem;margin:0 auto;font-family:'Tajawal',sans-serif;}
+.send-btn{padding:.9rem 2rem;background:linear-gradient(135deg,var(--rose),var(--brown));color:var(--cream);border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;transition:all .3s;display:flex;align-items:center;gap:.5rem;margin:0 auto;font-family:'Cairo',sans-serif;}
 .send-btn:hover{transform:translateY(-3px);box-shadow:0 8px 25px rgba(139,26,60,.3);}
 .send-btn:disabled{opacity:.6;cursor:not-allowed;transform:none;}
 .messages-list{max-height:500px;overflow-y:auto;padding:.5rem;}
@@ -427,7 +427,7 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
 [data-theme="dark"] .connection-status.online{background:#1a3d28;color:#7ed99a;}
 
 /* ── FLYING TEXT ── */
-.flying-text{position:fixed;bottom:-150px;left:50%;transform:translateX(-50%);font-family:'Amiri',serif;font-size:2rem;color:rgba(139,26,60,.25);text-shadow:0 0 40px rgba(200,150,62,.4);pointer-events:none;z-index:9999;white-space:nowrap;opacity:0;}
+.flying-text{position:fixed;bottom:-150px;left:50%;transform:translateX(-50%);font-family:'Noto Naskh Arabic',serif;font-size:2rem;color:rgba(139,26,60,.25);text-shadow:0 0 40px rgba(200,150,62,.4);pointer-events:none;z-index:9999;white-space:nowrap;opacity:0;}
 .flying-text.animate{animation:flyUp 8s ease-out forwards;}
 @keyframes flyUp{0%{bottom:-150px;opacity:0;}10%{opacity:1;bottom:10%;}80%{opacity:.8;bottom:85%;}100%{bottom:110%;opacity:0;}}
 
@@ -442,13 +442,13 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
 .login-box::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--rose),var(--gold),var(--rose));}
 @keyframes slideUp{from{opacity:0;transform:translateY(40px) scale(.96);}to{opacity:1;transform:translateY(0) scale(1);}}
 .login-icon{font-size:3.5rem;margin-bottom:1rem;}
-.login-box h1{font-family:'Amiri',serif;font-size:2.2rem;color:var(--rose);margin-bottom:.3rem;}
+.login-box h1{font-family:'Noto Naskh Arabic',serif;font-size:2.2rem;color:var(--rose);margin-bottom:.3rem;}
 .login-box .subtitle{color:var(--text-light);margin-bottom:2rem;font-size:1rem;}
 .input-group{margin-bottom:1.5rem;text-align:right;}
 .input-group label{display:block;margin-bottom:.5rem;color:var(--brown);font-weight:600;font-size:.9rem;}
-.input-group input{width:100%;padding:.9rem 1rem;border:2px solid var(--beige);border-radius:8px;font-family:'Tajawal',sans-serif;font-size:1rem;background:var(--cream);color:var(--text);transition:all .3s;}
+.input-group input{width:100%;padding:.9rem 1rem;border:2px solid var(--beige);border-radius:8px;font-family:'Cairo',sans-serif;font-size:1rem;background:var(--cream);color:var(--text);transition:all .3s;}
 .input-group input:focus{outline:none;border-color:var(--rose);background:var(--white);}
-.login-btn{width:100%;padding:1rem;background:linear-gradient(135deg,var(--rose),var(--brown));color:var(--cream);border:none;border-radius:8px;font-size:1.1rem;font-weight:700;cursor:pointer;transition:all .3s;margin-top:.5rem;font-family:'Tajawal',sans-serif;letter-spacing:.5px;}
+.login-btn{width:100%;padding:1rem;background:linear-gradient(135deg,var(--rose),var(--brown));color:var(--cream);border:none;border-radius:8px;font-size:1.1rem;font-weight:700;cursor:pointer;transition:all .3s;margin-top:.5rem;font-family:'Cairo',sans-serif;letter-spacing:.5px;}
 .login-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,26,60,.4);}
 .error-message{color:#c0392b;margin-top:1rem;font-size:.9rem;display:none;}
 .error-message.show{display:block;}
@@ -479,6 +479,88 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
   /* على الديسكتوب: ارفع الـ FAB فوق bottom bar */
   .sidebar-fab{display:flex;}
 }
+
+/* ══════════════════════════════════════
+   SCROLL REVEAL
+══════════════════════════════════════ */
+.sr{opacity:0;transform:translateY(30px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1);}
+.sr.sr-left{transform:translateX(-30px);}
+.sr.sr-right{transform:translateX(30px);}
+.sr.sr-scale{transform:scale(.94);}
+.sr.visible{opacity:1;transform:none;}
+.sr-delay-1{transition-delay:.1s;}
+.sr-delay-2{transition-delay:.2s;}
+.sr-delay-3{transition-delay:.3s;}
+.sr-delay-4{transition-delay:.4s;}
+
+/* ══════════════════════════════════════
+   READING MODE
+══════════════════════════════════════ */
+.reading-overlay{position:fixed;inset:0;z-index:20000;background:var(--cream);overflow-y:auto;padding:4rem 2rem 6rem;display:none;animation:fadeInUp .4s cubic-bezier(.16,1,.3,1);}
+[data-theme="dark"] .reading-overlay{background:#0A0503;}
+.reading-overlay.show{display:block;}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.reading-content{max-width:680px;margin:0 auto;}
+.reading-close-btn{position:fixed;top:1.2rem;left:1.2rem;background:var(--rose);color:#fff;border:none;border-radius:50%;width:48px;height:48px;font-size:1.3rem;cursor:pointer;box-shadow:0 4px 15px rgba(139,26,60,.4);display:flex;align-items:center;justify-content:center;z-index:20001;transition:all .2s;}
+.reading-close-btn:hover{transform:scale(1.1);}
+.reading-content .reading-chapter{margin-bottom:3rem;padding-bottom:2rem;border-bottom:1px solid rgba(200,150,62,.2);}
+.reading-content .reading-chapter:last-child{border-bottom:none;}
+.reading-chapter-title{font-family:'Noto Naskh Arabic',serif;font-size:1.5rem;color:var(--rose);margin-bottom:1rem;border-right:4px solid var(--gold);padding-right:1rem;}
+.reading-chapter-text{font-family:'Noto Naskh Arabic',serif;font-size:1.25rem;line-height:2.4;color:var(--text);text-align:justify;}
+.reading-actions{position:fixed;bottom:1.5rem;right:50%;transform:translateX(50%);display:flex;gap:.8rem;z-index:20001;}
+.reading-action-btn{padding:.8rem 1.5rem;border-radius:50px;border:none;cursor:pointer;font-family:'Cairo',sans-serif;font-size:.9rem;font-weight:700;box-shadow:0 4px 20px rgba(0,0,0,.2);transition:all .3s;display:flex;align-items:center;gap:.4rem;}
+.reading-action-pdf{background:linear-gradient(135deg,var(--rose),var(--brown));color:#fff;}
+.reading-action-close{background:var(--beige);color:var(--brown);}
+.reading-action-btn:hover{transform:translateY(-2px);}
+
+/* ══════════════════════════════════════
+   CHAT MESSAGES — bubble style
+══════════════════════════════════════ */
+.chat-wrapper{display:flex;flex-direction:column;gap:.5rem;}
+.msg-bubble{max-width:82%;padding:1rem 1.2rem;border-radius:18px;position:relative;animation:slideIn .3s ease;word-break:break-word;line-height:1.7;}
+.msg-bubble.mine{align-self:flex-start;background:linear-gradient(135deg,var(--rose),#a02048);color:#fff;border-bottom-right-radius:4px;}
+[data-theme="dark"] .msg-bubble.mine{background:linear-gradient(135deg,#b02050,#7a1535);}
+.msg-bubble.theirs{align-self:flex-end;background:var(--white);color:var(--text);border-bottom-left-radius:4px;border:1px solid rgba(200,150,62,.2);}
+[data-theme="dark"] .msg-bubble.theirs{background:#1A0C07;border-color:rgba(200,150,62,.15);}
+.msg-sender-tag{font-size:.72rem;font-weight:700;opacity:.8;margin-bottom:.3rem;}
+.msg-bubble.mine .msg-sender-tag{color:rgba(255,255,255,.85);}
+.msg-bubble.theirs .msg-sender-tag{color:var(--gold);}
+.msg-text{font-size:.97rem;}
+.msg-time{font-size:.72rem;margin-top:.4rem;opacity:.6;text-align:left;}
+.msg-bubble.mine .msg-time{text-align:right;color:rgba(255,255,255,.7);}
+
+/* ══════════════════════════════════════
+   SEARCH BAR
+══════════════════════════════════════ */
+.msg-search-wrap{position:relative;margin-bottom:1rem;}
+.msg-search-input{width:100%;padding:.85rem 1rem .85rem 3rem;border:2px solid var(--beige);border-radius:50px;font-family:'Cairo',sans-serif;font-size:.95rem;background:var(--cream);color:var(--text);transition:all .3s;outline:none;}
+.msg-search-input:focus{border-color:var(--rose);}
+[data-theme="dark"] .msg-search-input{background:#120906;border-color:#3D2418;}
+.msg-search-icon{position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--text-light);font-size:1rem;pointer-events:none;}
+.msg-search-count{font-size:.8rem;color:var(--gold);margin-top:.4rem;text-align:center;min-height:1.2rem;}
+
+/* ══════════════════════════════════════
+   MOBILE — larger touch targets
+══════════════════════════════════════ */
+@media (max-width:768px){
+  .bottom-item{min-height:52px;padding:.5rem .2rem;}
+  .cta-button,.send-btn,.promise-btn,.counter-btn{min-height:50px;font-size:1rem;}
+  .back-btn{display:none;}
+  .counter-btn{padding:1rem 2.2rem;}
+  .nav-item{min-height:60px;}
+}
+
+/* ══════════════════════════════════════
+   LOGIN — name picker step
+══════════════════════════════════════ */
+.name-picker{display:none;margin-top:1.5rem;}
+.name-picker.show{display:block;animation:slideUp .4s cubic-bezier(.16,1,.3,1);}
+.name-picker-title{font-family:'Noto Naskh Arabic',serif;font-size:1.1rem;color:var(--brown);margin-bottom:1rem;font-weight:600;}
+.name-btns{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;}
+.name-btn{padding:1.1rem;border-radius:12px;border:2px solid var(--beige);background:var(--cream);color:var(--text);font-family:'Cairo',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:all .3s;}
+.name-btn:hover{border-color:var(--rose);color:var(--rose);transform:translateY(-2px);}
+.name-btn.selected{background:linear-gradient(135deg,var(--rose),var(--brown));color:#fff;border-color:transparent;box-shadow:0 6px 20px rgba(139,26,60,.3);}
+
 </style>
 </head>
 <body>
@@ -503,6 +585,14 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
     </div>
     <button class="login-btn" onclick="checkSecret()">دخول 💕</button>
     <div class="error-message" id="errorMessage"></div>
+    <!-- Name picker step -->
+    <div class="name-picker" id="namePicker">
+      <p class="name-picker-title">💕 أهلاً! من الي دخل؟</p>
+      <div class="name-btns">
+        <button class="name-btn" id="nameKhaled" onclick="selectName('خالد')">👨‍💻 خالد</button>
+        <button class="name-btn" id="nameFatima" onclick="selectName('فاطمة')">👩‍💕 فاطمة</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -575,17 +665,17 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
 
     <!-- HOME -->
     <div id="page-home" class="page">
-      <div class="hero-bg" id="heroBg" style="display:none;"></div>
+      <div class="hero-bg" id="heroBg" style="display:none;"><img src="https://images.unsplash.com/photo-1518621736915-f3b1c41bfd00?w=1920&q=80&auto=format&fit=crop" alt="hero" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center;"></div>
       <div class="hero-bg-overlay" id="heroBgOverlay" style="display:none;"></div>
       <section class="hero">
         <div class="hero-content">
-          <div class="hero-text">
+          <div class="hero-text sr">
             <h1 class="hero-title"><span class="glitch" id="typingTitle" data-text="بيت الذكريات 🏡"></span></h1>
             <p class="hero-subtitle" id="typingSubtitle"></p>
             <p class="hero-p">قصة حب مش عادية، بدأت بصدفة وكملت باختيار.<br>كل يوم بنختار بعض، وكل مشكلة بنتجاوزها مع بعض.</p>
             <button class="cta-button" onclick="showPage('story')">اقرأ القصة الكاملة 📖</button>
           </div>
-          <div class="heartbeat-counter" onclick="showDayMessage()">
+          <div class="heartbeat-counter sr sr-scale sr-delay-2" onclick="showDayMessage()">
             <svg class="heart-svg" width="60" height="55" viewBox="0 0 60 55">
               <path d="M30 50 C30 50 5 33 5 18 C5 10 11 4 18.5 4 C23 4 27 6.5 30 10 C33 6.5 37 4 41.5 4 C49 4 55 10 55 18 C55 33 30 50 30 50Z" fill="var(--rose)" opacity=".9"/>
             </svg>
@@ -596,7 +686,7 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
         </div>
       </section>
       <section class="summary-section">
-        <div class="summary-box">
+        <div class="summary-box sr sr-delay-1">
           <h2 class="summary-title">ملخص قصتنا 💝</h2>
           <div class="ornament">❧</div>
           <p class="summary-text">اتعرفنا بالصدفة في جروب، وعدنا فترة من البلوك والرجوع. اعترفنا بمشاعرنا يوم ١/٢/٢٠٢٣، وعدنا فترة من الفراق والحب. رجعنا لبعض يوم ٩/٨/٢٠٢٥، ومن ساعتها واحنا بنختار بعض كل يوم.</p>
@@ -618,23 +708,23 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
         <!-- إضافة مناسبة جديدة -->
         <div class="countdown-card" style="border:2px dashed var(--gold);background:rgba(200,150,62,.04);margin-top:2rem;">
           <div style="font-size:1.8rem;margin-bottom:.5rem;">➕</div>
-          <div style="font-family:'Amiri',serif;font-size:1.3rem;color:var(--rose);margin-bottom:1rem;">أضف مناسبة جديدة</div>
+          <div style="font-family:'Noto Naskh Arabic',serif;font-size:1.3rem;color:var(--rose);margin-bottom:1rem;">أضف مناسبة جديدة</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:.8rem;text-align:right;">
             <div>
               <label style="font-size:.8rem;color:var(--text-light);display:block;margin-bottom:.3rem;">🏷️ اسم المناسبة</label>
-              <input id="newOccName" type="text" placeholder="مثلاً: عيد ميلادك..." style="width:100%;padding:.7rem;border:2px solid var(--beige);border-radius:8px;font-family:'Tajawal',sans-serif;font-size:.9rem;background:var(--cream);color:var(--text);">
+              <input id="newOccName" type="text" placeholder="مثلاً: عيد ميلادك..." style="width:100%;padding:.7rem;border:2px solid var(--beige);border-radius:8px;font-family:'Cairo',sans-serif;font-size:.9rem;background:var(--cream);color:var(--text);">
             </div>
             <div>
               <label style="font-size:.8rem;color:var(--text-light);display:block;margin-bottom:.3rem;">🎭 إيموجي</label>
-              <input id="newOccEmoji" type="text" placeholder="💕" style="width:100%;padding:.7rem;border:2px solid var(--beige);border-radius:8px;font-family:'Tajawal',sans-serif;font-size:.9rem;background:var(--cream);color:var(--text);">
+              <input id="newOccEmoji" type="text" placeholder="💕" style="width:100%;padding:.7rem;border:2px solid var(--beige);border-radius:8px;font-family:'Cairo',sans-serif;font-size:.9rem;background:var(--cream);color:var(--text);">
             </div>
             <div>
               <label style="font-size:.8rem;color:var(--text-light);display:block;margin-bottom:.3rem;">📅 اليوم</label>
-              <input id="newOccDay" type="number" min="1" max="31" placeholder="يوم" style="width:100%;padding:.7rem;border:2px solid var(--beige);border-radius:8px;font-family:'Tajawal',sans-serif;font-size:.9rem;background:var(--cream);color:var(--text);">
+              <input id="newOccDay" type="number" min="1" max="31" placeholder="يوم" style="width:100%;padding:.7rem;border:2px solid var(--beige);border-radius:8px;font-family:'Cairo',sans-serif;font-size:.9rem;background:var(--cream);color:var(--text);">
             </div>
             <div>
               <label style="font-size:.8rem;color:var(--text-light);display:block;margin-bottom:.3rem;">🗓️ الشهر</label>
-              <select id="newOccMonth" style="width:100%;padding:.7rem;border:2px solid var(--beige);border-radius:8px;font-family:'Tajawal',sans-serif;font-size:.9rem;background:var(--cream);color:var(--text);">
+              <select id="newOccMonth" style="width:100%;padding:.7rem;border:2px solid var(--beige);border-radius:8px;font-family:'Cairo',sans-serif;font-size:.9rem;background:var(--cream);color:var(--text);">
                 <option value="1">يناير</option><option value="2">فبراير</option><option value="3">مارس</option>
                 <option value="4">أبريل</option><option value="5">مايو</option><option value="6">يونيو</option>
                 <option value="7">يوليو</option><option value="8">أغسطس</option><option value="9">سبتمبر</option>
@@ -642,7 +732,7 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
               </select>
             </div>
           </div>
-          <button onclick="addNewOccasion()" style="padding:.8rem 2rem;background:linear-gradient(135deg,var(--rose),var(--brown));color:var(--cream);border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;font-family:'Tajawal',sans-serif;">💾 أضف المناسبة</button>
+          <button onclick="addNewOccasion()" style="padding:.8rem 2rem;background:linear-gradient(135deg,var(--rose),var(--brown));color:var(--cream);border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif;">💾 أضف المناسبة</button>
         </div>
       </div>
     </div>
@@ -692,7 +782,7 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
             </div>
           </div>
           <div class="playlist-add-box" style="margin-top:1.5rem;">
-            <h3 style="color:var(--rose);margin-bottom:1rem;font-family:'Amiri',serif;">➕ أضف أغنية جديدة</h3>
+            <h3 style="color:var(--rose);margin-bottom:1rem;font-family:'Noto Naskh Arabic',serif;">➕ أضف أغنية جديدة</h3>
             <div class="playlist-input-row">
               <input class="playlist-input" id="songTitle" type="text" placeholder="اسم الأغنية (اختياري)"/>
               <input class="playlist-input" id="songUrl" type="url" placeholder="رابط اليوتيوب أو MP3..."/>
@@ -764,14 +854,14 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
               <div>
                 <div style="font-size:.72rem;color:var(--gold);font-weight:700;margin-bottom:.4rem;">ألواني المحفوظة</div>
                 <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;" id="savedColorsGrid"></div>
-                <button onclick="saveCurrentColor()" style="width:100%;margin-top:6px;padding:.4rem;background:var(--beige);border:none;border-radius:6px;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:.75rem;color:var(--brown);">+ احفظ اللون</button>
+                <button onclick="saveCurrentColor()" style="width:100%;margin-top:6px;padding:.4rem;background:var(--beige);border:none;border-radius:6px;cursor:pointer;font-family:'Cairo',sans-serif;font-size:.75rem;color:var(--brown);">+ احفظ اللون</button>
               </div>
               <div>
                 <div style="font-size:.72rem;color:var(--gold);font-weight:700;margin-bottom:.4rem;">بالتات جاهزة</div>
                 <div style="display:flex;flex-direction:column;gap:4px;">
-                  <button onclick="applyPalette('romantic')" style="padding:.3rem .6rem;border:1px solid var(--beige);background:var(--cream);border-radius:6px;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:.72rem;color:var(--text);">💕 رومانسي</button>
-                  <button onclick="applyPalette('ocean')" style="padding:.3rem .6rem;border:1px solid var(--beige);background:var(--cream);border-radius:6px;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:.72rem;color:var(--text);">🌊 المحيط</button>
-                  <button onclick="applyPalette('sunset')" style="padding:.3rem .6rem;border:1px solid var(--beige);background:var(--cream);border-radius:6px;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:.72rem;color:var(--text);">🌅 الغروب</button>
+                  <button onclick="applyPalette('romantic')" style="padding:.3rem .6rem;border:1px solid var(--beige);background:var(--cream);border-radius:6px;cursor:pointer;font-family:'Cairo',sans-serif;font-size:.72rem;color:var(--text);">💕 رومانسي</button>
+                  <button onclick="applyPalette('ocean')" style="padding:.3rem .6rem;border:1px solid var(--beige);background:var(--cream);border-radius:6px;cursor:pointer;font-family:'Cairo',sans-serif;font-size:.72rem;color:var(--text);">🌊 المحيط</button>
+                  <button onclick="applyPalette('sunset')" style="padding:.3rem .6rem;border:1px solid var(--beige);background:var(--cream);border-radius:6px;cursor:pointer;font-family:'Cairo',sans-serif;font-size:.72rem;color:var(--text);">🌅 الغروب</button>
                 </div>
               </div>
             </div>
@@ -796,6 +886,10 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
         <button class="back-btn" onclick="showPage('home')">← رجوع</button>
         <h2 class="section-title">قصتنا الكاملة 📖</h2>
         <div class="ornament">❧</div>
+        <div style="display:flex;gap:.8rem;flex-wrap:wrap;justify-content:center;margin-bottom:1.5rem;">
+          <button onclick="openReadingMode()" style="display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.5rem;background:linear-gradient(135deg,var(--gold),var(--brown));color:var(--cream);border:none;border-radius:50px;font-family:'Cairo',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;box-shadow:0 4px 15px rgba(200,150,62,.35);transition:all .3s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">📖 وضع القراءة</button>
+          <button onclick="exportStoryPDF()" style="display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.5rem;background:linear-gradient(135deg,#2d6a4f,#1b4332);color:#fff;border:none;border-radius:50px;font-family:'Cairo',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;box-shadow:0 4px 15px rgba(45,106,79,.35);transition:all .3s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">📄 تصدير PDF</button>
+        </div>
 
         <!-- الأجزاء المحفوظة -->
         <div id="storyChapters" style="margin-bottom:1.5rem;"></div>
@@ -805,14 +899,14 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
           <h3 style="margin-top:0;">✍️ أضف جزءاً جديداً للقصة</h3>
           <div style="margin-bottom:1rem;">
             <label style="display:block;font-size:.85rem;color:var(--gold);font-weight:700;margin-bottom:.4rem;">📌 عنوان الجزء</label>
-            <input id="storyChapterTitle" type="text" placeholder="مثلاً: البداية الجميلة، يوم لا ننساه..." style="width:100%;padding:.8rem 1rem;border:2px solid var(--beige);border-radius:8px;font-family:'Tajawal',sans-serif;font-size:1rem;background:var(--cream);color:var(--text);transition:all .3s;" onfocus="this.style.borderColor='var(--rose)'" onblur="this.style.borderColor='var(--beige)'">
+            <input id="storyChapterTitle" type="text" placeholder="مثلاً: البداية الجميلة، يوم لا ننساه..." style="width:100%;padding:.8rem 1rem;border:2px solid var(--beige);border-radius:8px;font-family:'Cairo',sans-serif;font-size:1rem;background:var(--cream);color:var(--text);transition:all .3s;" onfocus="this.style.borderColor='var(--rose)'" onblur="this.style.borderColor='var(--beige)'">
           </div>
           <div style="margin-bottom:1rem;">
             <label style="display:block;font-size:.85rem;color:var(--gold);font-weight:700;margin-bottom:.4rem;">📝 اكتب هنا</label>
-            <textarea id="storyChapterText" placeholder="اكتب جزء من قصتك هنا... كل كلمة تُضاف للقصة الكبيرة 💕" style="width:100%;padding:1rem;border:2px solid var(--beige);border-radius:8px;font-family:'Tajawal',sans-serif;font-size:.95rem;resize:vertical;min-height:120px;background:var(--cream);color:var(--text);line-height:2;transition:all .3s;" onfocus="this.style.borderColor='var(--rose)'" onblur="this.style.borderColor='var(--beige)'"></textarea>
+            <textarea id="storyChapterText" placeholder="اكتب جزء من قصتك هنا... كل كلمة تُضاف للقصة الكبيرة 💕" style="width:100%;padding:1rem;border:2px solid var(--beige);border-radius:8px;font-family:'Cairo',sans-serif;font-size:.95rem;resize:vertical;min-height:120px;background:var(--cream);color:var(--text);line-height:2;transition:all .3s;" onfocus="this.style.borderColor='var(--rose)'" onblur="this.style.borderColor='var(--beige)'"></textarea>
           </div>
           <div style="display:flex;gap:.8rem;flex-wrap:wrap;align-items:center;">
-            <button onclick="saveStoryChapter()" style="padding:.8rem 2rem;background:linear-gradient(135deg,var(--rose),var(--brown));color:var(--cream);border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;font-family:'Tajawal',sans-serif;transition:all .3s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">💾 احفظ وأضفه للقصة</button>
+            <button onclick="saveStoryChapter()" style="padding:.8rem 2rem;background:linear-gradient(135deg,var(--rose),var(--brown));color:var(--cream);border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif;transition:all .3s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">💾 احفظ وأضفه للقصة</button>
             <span id="storySyncStatus" style="font-size:.82rem;color:var(--text-light);">⚪ لم يتم الحفظ بعد</span>
           </div>
         </div>
@@ -929,16 +1023,16 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:.8rem;">
             <div>
               <label style="font-size:.8rem;color:var(--text-light);display:block;margin-bottom:.3rem;">📅 التاريخ</label>
-              <input id="newDateVal" type="date" style="width:100%;padding:.7rem;border:2px solid var(--beige);border-radius:8px;font-family:'Tajawal',sans-serif;font-size:.9rem;background:var(--cream);color:var(--text);">
+              <input id="newDateVal" type="date" style="width:100%;padding:.7rem;border:2px solid var(--beige);border-radius:8px;font-family:'Cairo',sans-serif;font-size:.9rem;background:var(--cream);color:var(--text);">
             </div>
             <div>
               <label style="font-size:.8rem;color:var(--text-light);display:block;margin-bottom:.3rem;">🏷️ الاسم</label>
-              <input id="newDateName" type="text" placeholder="مثلاً: يوم خاص..." style="width:100%;padding:.7rem;border:2px solid var(--beige);border-radius:8px;font-family:'Tajawal',sans-serif;font-size:.9rem;background:var(--cream);color:var(--text);">
+              <input id="newDateName" type="text" placeholder="مثلاً: يوم خاص..." style="width:100%;padding:.7rem;border:2px solid var(--beige);border-radius:8px;font-family:'Cairo',sans-serif;font-size:.9rem;background:var(--cream);color:var(--text);">
             </div>
           </div>
-          <input id="newDateEmoji" type="text" placeholder="إيموجي (اختياري) مثل: 💕 ✨ 🎉" style="width:100%;padding:.7rem;border:2px solid var(--beige);border-radius:8px;font-family:'Tajawal',sans-serif;font-size:.9rem;background:var(--cream);color:var(--text);margin-bottom:.8rem;">
-          <textarea id="newDateNote" placeholder="✍️ اكتب ذكرياتك عن هذا اليوم..." style="width:100%;padding:.8rem;border:2px solid var(--beige);border-radius:8px;font-family:'Tajawal',sans-serif;font-size:.9rem;resize:vertical;min-height:80px;background:var(--cream);color:var(--text);margin-bottom:.8rem;"></textarea>
-          <button onclick="addNewDate()" style="padding:.8rem 2rem;background:linear-gradient(135deg,var(--rose),var(--brown));color:var(--cream);border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;font-family:'Tajawal',sans-serif;">💾 أضف التاريخ</button>
+          <input id="newDateEmoji" type="text" placeholder="إيموجي (اختياري) مثل: 💕 ✨ 🎉" style="width:100%;padding:.7rem;border:2px solid var(--beige);border-radius:8px;font-family:'Cairo',sans-serif;font-size:.9rem;background:var(--cream);color:var(--text);margin-bottom:.8rem;">
+          <textarea id="newDateNote" placeholder="✍️ اكتب ذكرياتك عن هذا اليوم..." style="width:100%;padding:.8rem;border:2px solid var(--beige);border-radius:8px;font-family:'Cairo',sans-serif;font-size:.9rem;resize:vertical;min-height:80px;background:var(--cream);color:var(--text);margin-bottom:.8rem;"></textarea>
+          <button onclick="addNewDate()" style="padding:.8rem 2rem;background:linear-gradient(135deg,var(--rose),var(--brown));color:var(--cream);border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif;">💾 أضف التاريخ</button>
         </div>
       </div>
     </div>
@@ -955,8 +1049,13 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
           <button class="send-btn" id="sendBtn" onclick="sendMessage()"><span>📤</span> إرسال</button>
         </div>
         <div class="message-box">
-          <h3 style="color:var(--rose);margin-bottom:1rem;font-family:'Amiri',serif;text-align:center;">📬 الرسائل</h3>
-          <div class="messages-list" id="messagesList">
+          <h3 style="color:var(--rose);margin-bottom:1rem;font-family:'Noto Naskh Arabic',serif;text-align:center;">📬 الرسائل</h3>
+          <div class="msg-search-wrap">
+            <span class="msg-search-icon">🔍</span>
+            <input class="msg-search-input" id="msgSearchInput" type="text" placeholder="ابحث في الرسائل..." oninput="filterMessages(this.value)">
+          </div>
+          <div class="msg-search-count" id="msgSearchCount"></div>
+          <div class="messages-list chat-wrapper" id="messagesList">
             <div class="no-messages">💭 لا توجد رسائل بعد...</div>
           </div>
         </div>
@@ -987,6 +1086,16 @@ canvas#particlesCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
       </div>
     </div>
   </nav>
+
+  <!-- READING MODE OVERLAY -->
+  <div class="reading-overlay" id="readingOverlay">
+    <button class="reading-close-btn" onclick="closeReadingMode()">✕</button>
+    <div class="reading-content" id="readingContent"></div>
+    <div class="reading-actions">
+      <button class="reading-action-btn reading-action-pdf" onclick="exportStoryPDF()">📄 PDF</button>
+      <button class="reading-action-btn reading-action-close" onclick="closeReadingMode()">✕ إغلاق</button>
+    </div>
+  </div>
 
 </div><!-- /app-shell -->
 
@@ -1041,20 +1150,6 @@ try {
 // ══════════════════════════════════════════════
 const SECRET_PASSWORD = "khaled22#$";
 
-function checkSecret() {
-  const input = document.getElementById('secretCode').value.trim();
-  const errDiv = document.getElementById('errorMessage');
-  if (input === SECRET_PASSWORD) {
-    localStorage.setItem('loveSession', JSON.stringify({
-      name: 'فاطمة', loginTime: Date.now(), expiresAt: Date.now() + 86400000
-    }));
-    showMainContent();
-    try { firebase.auth().signInAnonymously().catch(() => {}); } catch(e) {}
-  } else {
-    errDiv.textContent = '❌ كلمة السر غير صحيحة';
-    errDiv.classList.add('show');
-  }
-}
 
 function logout() {
   localStorage.removeItem('loveSession');
@@ -1456,28 +1551,6 @@ function addPhoto() {
 // ══════════════════════════════════════════════
 // MESSAGES
 // ══════════════════════════════════════════════
-function loadMessages() {
-  if (!isConnected) return;
-  messagesRef.limitToLast(50).on('value', snap => {
-    const list = document.getElementById('messagesList');
-    if (!list) return;
-    list.innerHTML = '';
-    const data = snap.val();
-    if (!data) { list.innerHTML = '<div class="no-messages">💭 لا توجد رسائل بعد...</div>'; return; }
-    const msgs = Object.values(data).sort((a,b) => (a.timestamp||0)-(b.timestamp||0));
-    msgs.forEach(msg => {
-      const div = document.createElement('div');
-      div.className = 'message-item';
-      const d = msg.timestamp ? new Date(msg.timestamp) : new Date();
-      div.innerHTML = `
-        <div class="message-sender">💕 ${msg.sender||'مجهول'}</div>
-        <div class="message-content">${msg.text||''}</div>
-        <div class="message-time">${d.toLocaleDateString('ar-EG')} ${d.toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'})}</div>`;
-      list.appendChild(div);
-    });
-    list.scrollTop = list.scrollHeight;
-  });
-}
 function sendMessage() {
   const input = document.getElementById('messageInput');
   const btn   = document.getElementById('sendBtn');
@@ -1512,124 +1585,4 @@ function addSong() {
   if (!urlEl || !urlEl.value.trim()) { showCounterNotification('default','أدخل رابط الأغنية'); return; }
   const song = { title: titleEl.value.trim() || 'أغنية جميلة 🎵', url: urlEl.value.trim(), addedAt: Date.now() };
   if (!isConnected) { songs.push(song); renderSongs(); return; }
-  playlistRef.push(song).then(() => { titleEl.value=''; urlEl.value=''; showCounterNotification('default','تمت إضافة الأغنية 🎵'); });
-}
-function renderSongs() {
-  const list = document.getElementById('songsList');
-  if (!list) return;
-  if (!songs.length) { list.innerHTML = '<div class="no-songs">🎵 لا توجد أغاني بعد... أضف أول أغنية!</div>'; return; }
-  list.innerHTML = '';
-  songs.forEach((song, idx) => {
-    const div = document.createElement('div');
-    div.className = 'song-item' + (idx === mpCurrentIndex ? ' mp-active' : '');
-    const isYT = song.url && (song.url.includes('youtube') || song.url.includes('youtu.be'));
-    div.innerHTML = `
-      <div class="song-thumb">${isYT ? '🎬' : '🎵'}</div>
-      <div class="song-info">
-        <div class="song-title">${song.title}</div>
-        <div class="song-url">${song.url}</div>
-        <div class="song-added">${song.addedAt ? new Date(song.addedAt).toLocaleDateString('ar-EG') : ''}</div>
-      </div>
-      ${idx === mpCurrentIndex && mpIsPlaying ? '<div class="mp-bars"><span></span><span></span><span></span></div>' : ''}
-      <a class="song-play-btn" href="${song.url}" target="_blank" onclick="mpPlay(${idx});return false;">▶</a>
-      <button class="song-delete-btn" onclick="deleteSong(${idx},'${song.id||''}')">🗑️</button>`;
-    list.appendChild(div);
-  });
-}
-function deleteSong(idx, firebaseId) {
-  if (!confirm('تأكيد الحذف؟')) return;
-  if (isConnected && firebaseId) { playlistRef.child(firebaseId).remove(); return; }
-  songs.splice(idx, 1); renderSongs();
-}
-function mpPlay(idx) {
-  mpCurrentIndex = idx;
-  const song = songs[idx];
-  if (!song) return;
-  const isYT = song.url && (song.url.includes('youtube') || song.url.includes('youtu.be'));
-  document.getElementById('mpTitle').textContent = song.title;
-  document.getElementById('mpArtist').textContent = isYT ? 'يوتيوب 🎬' : 'ملف صوتي 🎵';
-  if (isYT) { window.open(song.url, '_blank'); return; }
-  if (mpAudio) { mpAudio.pause(); mpAudio = null; }
-  mpAudio = new Audio(song.url);
-  mpAudio.volume = (document.getElementById('mpVolSlider')?.value || 80) / 100;
-  mpAudio.play().then(() => {
-    mpIsPlaying = true;
-    document.getElementById('mpPlayBtn').textContent = '⏸️';
-    document.getElementById('mpAlbumWrap').classList.add('spinning');
-  }).catch(e => console.warn('Audio play error:', e));
-  mpAudio.ontimeupdate = () => {
-    const pct = mpAudio.duration ? (mpAudio.currentTime/mpAudio.duration*100) : 0;
-    const fill = document.getElementById('mpProgressFill');
-    if (fill) fill.style.width = pct + '%';
-    const cur = document.getElementById('mpCurrent');
-    if (cur) cur.textContent = fmtTime(mpAudio.currentTime);
-    const dur = document.getElementById('mpDuration');
-    if (dur && mpAudio.duration) dur.textContent = fmtTime(mpAudio.duration);
-  };
-  mpAudio.onended = () => {
-    mpIsPlaying = false;
-    document.getElementById('mpPlayBtn').textContent = '▶️';
-    document.getElementById('mpAlbumWrap').classList.remove('spinning');
-    if (mpRepeat) { mpPlay(idx); return; }
-    if (mpShuffle) { mpPlay(Math.floor(Math.random()*songs.length)); return; }
-    if (idx+1 < songs.length) mpPlay(idx+1);
-  };
-  renderSongs();
-}
-function fmtTime(s) { const m=Math.floor(s/60),sec=Math.floor(s%60); return m+':'+(sec<10?'0':'')+sec; }
-function mpTogglePlay() {
-  if (!mpAudio) return;
-  if (mpIsPlaying) { mpAudio.pause(); mpIsPlaying=false; document.getElementById('mpPlayBtn').textContent='▶️'; document.getElementById('mpAlbumWrap').classList.remove('spinning'); }
-  else { mpAudio.play(); mpIsPlaying=true; document.getElementById('mpPlayBtn').textContent='⏸️'; document.getElementById('mpAlbumWrap').classList.add('spinning'); }
-}
-function mpNext() { if (songs.length) mpPlay((mpCurrentIndex+1)%songs.length); }
-function mpPrev() { if (songs.length) mpPlay((mpCurrentIndex-1+songs.length)%songs.length); }
-function mpToggleShuffle() { mpShuffle=!mpShuffle; document.getElementById('mpShuffleBtn').classList.toggle('active',mpShuffle); }
-function mpToggleRepeat()  { mpRepeat=!mpRepeat;   document.getElementById('mpRepeatBtn').classList.toggle('active',mpRepeat); }
-function mpSetVolume(v) { if (mpAudio) mpAudio.volume=v/100; }
-function mpSeek(e) {
-  if (!mpAudio || !mpAudio.duration) return;
-  const rect=e.currentTarget.getBoundingClientRect();
-  mpAudio.currentTime = ((e.clientX-rect.left)/rect.width)*mpAudio.duration;
-}
-
-// ══════════════════════════════════════════════
-// STORY — قصة قابلة للتعديل والإضافة
-// ══════════════════════════════════════════════
-
-// الأجزاء الافتراضية المدمجة في الكود
-const DEFAULT_STORY_CHAPTERS = [
-  { title: '🎭 البداية الغريبة', text: 'قصة حبنا دي غريبة شوية بصراحة. من أول ما اتعرفنا على بعض واحنا أصلاً مش عارفين مين اللي بيكلم التاني ولا بعت له ليه. كانت بداية غريبة مليانة صدف ومواقف مش محسوبة، بس في الآخر كل ده كان قدر بيجمعنا مع بعض.', isDefault: true, savedAt: 0 },
-  { title: '🎵 طريق الرجوع', text: 'زي مثلاً لما كنت ببعتلك فيديوهات أغاني لحد ما وصلنا لتاني بلوك بينا. كانت فترة صعبة، بس الأغاني كانت هي السبيل الوحيد اللي بنتواصل من خلاله.', isDefault: true, savedAt: 1 },
-  { title: '💫 لحظة الاعتراف', text: 'عملنا جروب تاني بينا احنا وكنا بنتكلم أكتر وتعرفنا أكتر. كانت لحظة الاعتراف بالمشاعر يوم ١/٢/٢٠٢٣، يوم مش هننساه أبداً.', isDefault: true, savedAt: 2 },
-  { title: '💔 الفراق', text: 'أيوه كانت فترة قصيرة مكملتش شهر تقريباً، بس كانت فترة حبيتها وفاكر كل لحظة فيها. الفراق علمنا قيمة بعض.', isDefault: true, savedAt: 3 },
-  { title: '🌅 العودة من جديد', text: 'وفعلاً قررتِ ترجعي ونكمل مع بعض. إحنا تعلمنا من كل مشكلة، وكل موقف خلانا أقوى وأقرب لبعض.', isDefault: true, savedAt: 4 },
-  { title: '✨ التجدد والمستقبل', text: 'رجعنا لبعض يوم ٩/٨/٢٠٢٥، ومن ساعتها واحنا بنختار بعض كل يوم. 💕', isDefault: true, savedAt: 5 },
-  { title: '🤞 وعد الاصابع', text: 'وعد الاصابع ده مش مجرد كلمة، ده عهد بينا. مهما أي حد فينا غلط، احنا مكملين. علشان دايماً اختيارنا هيكون إحنا. 💕', isDefault: true, savedAt: 6 }
-];
-
-let storyChapters = [];
-
-function loadStory() {
-  if (!isConnected) { storyChapters = [...DEFAULT_STORY_CHAPTERS]; renderStoryChapters(); return; }
-  storyRef.on('value', snap => {
-    const data = snap.val();
-    const saved = data ? Object.entries(data).map(([k,v]) => ({id:k,...v})) : [];
-    // دمج الأجزاء الافتراضية مع المحفوظة
-    storyChapters = [...DEFAULT_STORY_CHAPTERS, ...saved.sort((a,b)=>(a.savedAt||0)-(b.savedAt||0))];
-    renderStoryChapters();
-  });
-}
-
-function renderStoryChapters() {
-  const container = document.getElementById('storyChapters');
-  if (!container) return;
-  container.innerHTML = '';
-  storyChapters.forEach((ch, idx) => {
-    const div = document.createElement('div');
-    div.className = 'story-full';
-    div.style.cssText = 'margin-bottom:1.2rem;';
-    const dateStr = ch.savedAt && !ch.isDefault
-      ? `<div style="font-size:.75rem;color:var(--gold);margin-bottom:.8rem;">🕐 ${new Date(ch.savedAt).toLocaleDateString('ar-EG')} ${new Date(ch.savedAt).toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'})}</div>`
-      : '';
-    const d
+  playlistRef.push(song).then(() => { titleEl.value=''; urlEl.value=''; showCounterNotifica
